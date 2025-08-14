@@ -417,6 +417,11 @@ const ListingPage: React.FC = () => {
     }
   }, [cartDrawerOpen, selectedProduct]);
 
+  // When user clicks "Proceed to Checkout"
+  function handleCheckout() {
+    history.push("/customer-details", { cart }); // Pass cart as location state
+  }
+
   return (
     <div style={pageStyle}>
       <div style={contentWrapperStyle}>
@@ -579,7 +584,9 @@ const ListingPage: React.FC = () => {
                 }}>
                   Subtotal: <span style={{ color: "#7b1fa2", fontWeight: 700 }}>₹{getCartTotal(cart)} INR</span>
                 </div>
-                <button style={checkoutBtnStyle}>Proceed to Checkout</button>
+                <button style={checkoutBtnStyle} onClick={handleCheckout}>
+                  Proceed to Checkout
+                </button>
               </div>
             )}
           </div>
