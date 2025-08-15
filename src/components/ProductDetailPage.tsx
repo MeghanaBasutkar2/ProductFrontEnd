@@ -88,10 +88,13 @@ const ProductDetailPage: React.FC = () => {
   return (
     <div
       style={{
-        padding: "24px 0",
+        padding: window.innerWidth <= 700 ? "16px 0" : "24px 0",
         fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
         background: "#fafbfc",
         minHeight: "100vh",
+        boxSizing: "border-box",
+        width: "100vw",
+        overflowX: "hidden",
       }}
     >
       <div
@@ -100,7 +103,7 @@ const ProductDetailPage: React.FC = () => {
           margin: "0 auto",
           display: "flex",
           flexDirection: window.innerWidth <= 700 ? "column" : "row",
-          gap: window.innerWidth <= 700 ? 32 : 56,
+          gap: window.innerWidth <= 700 ? 24 : 56,
           alignItems: window.innerWidth <= 700 ? "center" : "flex-start",
           justifyContent: "center",
           padding: window.innerWidth <= 700 ? "0 8px" : "0",
@@ -116,8 +119,9 @@ const ProductDetailPage: React.FC = () => {
             justifyContent: "center",
             position: "relative",
             width: window.innerWidth <= 700 ? "100%" : 480,
-            maxWidth: 480,
-            marginBottom: window.innerWidth <= 700 ? 24 : 0,
+            maxWidth: window.innerWidth <= 700 ? "100%" : 480,
+            marginBottom: window.innerWidth <= 700 ? 20 : 0,
+            boxSizing: "border-box",
           }}
         >
           <img
@@ -129,7 +133,7 @@ const ProductDetailPage: React.FC = () => {
             alt={product.name}
             style={{
               width: "100%",
-              maxWidth: 420,
+              maxWidth: window.innerWidth <= 700 ? "100%" : 420,
               height: window.innerWidth <= 700 ? "auto" : 520,
               objectFit: "cover",
               borderRadius: 18,
@@ -174,9 +178,10 @@ const ProductDetailPage: React.FC = () => {
           style={{
             flex: 1,
             minWidth: window.innerWidth <= 700 ? "unset" : 340,
-            maxWidth: 540,
+            maxWidth: window.innerWidth <= 700 ? "100%" : 540,
             width: "100%",
             boxSizing: "border-box",
+            padding: window.innerWidth <= 700 ? "0 2px" : 0,
           }}
         >
           <button
@@ -307,8 +312,8 @@ const ProductDetailPage: React.FC = () => {
         >
           <div
             style={{
-              width: 400,
-              maxWidth: "90vw",
+              width: window.innerWidth <= 700 ? "100vw" : 400,
+              maxWidth: "100vw",
               height: "100vh",
               background: "#fff",
               padding: "32px 0 0 0",
@@ -316,6 +321,7 @@ const ProductDetailPage: React.FC = () => {
               flexDirection: "column",
               overflow: "hidden",
               position: "relative",
+              boxSizing: "border-box",
             }}
             onClick={(e) => e.stopPropagation()}
           >
