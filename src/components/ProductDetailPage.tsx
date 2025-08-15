@@ -1,119 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useParams, useLocation, useHistory } from "react-router-dom";
 
-const cardContainerStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "repeat(3, 1fr)",
-  gap: "32px",
-  justifyContent: "center",
-  alignItems: "start",
-  width: "100%",
-  maxWidth: 1100,
-  margin: "0 auto",
-  boxSizing: "border-box",
-  padding: 0,
-};
-
-const cardStyleBase: React.CSSProperties = {
-  borderRadius: "24px",
-  boxShadow: "0 4px 24px rgba(120,144,156,0.08)",
-  padding: "24px 20px",
-  width: "300px",
-  minHeight: "420px",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "flex-start",
-  marginBottom: "32px",
-  transition: "transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s",
-  cursor: "pointer",
-  background: "#fff",
-  overflow: "hidden",
-  border: "1px solid #e3e8ee",
-};
-
-const imgWrapperStyle: React.CSSProperties = {
-  width: "100%",
-  height: "140px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  background: "#f3f6fa",
-  borderRadius: "16px",
-  marginBottom: "16px",
-  overflow: "hidden",
-  border: "1px solid #e0e0e0",
-};
-
-const imgStyle: React.CSSProperties = {
-  maxWidth: "100%",
-  maxHeight: "100%",
-  width: "auto",
-  height: "auto",
-  objectFit: "contain",
-  borderRadius: "12px",
-  background: "#f6f6f6",
-  border: "none",
-  display: "block",
-  margin: "0 auto",
-};
-
-const buttonStyle: React.CSSProperties = {
-  background: "#4a6fa1",
-  color: "#fff",
-  border: "none",
-  borderRadius: "12px",
-  padding: "12px 28px",
-  cursor: "pointer",
-  fontWeight: 700,
-  fontSize: "1rem",
-  marginTop: "auto",
-  fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-  alignSelf: "center",
-  boxShadow: "0 2px 8px rgba(179,157,219,0.13)",
-  transition: "background 0.2s",
-};
-
-const ListingPage: React.FC = () => {
-  const [listings, setListings] = useState<any[]>([]);
-  const [search, setSearch] = useState("");
-  const [cart, setCart] = useState<any[]>(() => {
-    try {
-      const stored = localStorage.getItem("cart");
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
-  });
-  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
-
-  const location = useLocation();
+const ProductDetailPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const location = useLocation<{ product?: any; cart?: any[] }>();
   const history = useHistory();
 
+  const [product, setProduct] = useState<any>(location.state?.product || null);
+  const [loading, setLoading] = useState(!location.state?.product);
+  const [termsChecked, setTermsChecked] = useState(false);
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
+  const [cart, setCart] = useState<any[]>(location.state?.cart || []);
+
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const dataParam = params.get("data");
-    if (dataParam) {
-      try {
-        const parsed = JSON.parse(decodeURIComponent(dataParam));
-        setListings(parsed);
-      } catch (e) {
-        setListings([]);
-      }
-    } else {
-      setListings([]);
+    if (!product) {
+      fetch(`http://localhost:9090/lighting/api/products/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setProduct(data);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
     }
-  }, [location.search]);
+  }, [id, product]);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const filteredListings = listings.filter((item) =>
-    (item.name || item.title || item.categoryDescription)?.toLowerCase().includes(search.toLowerCase())
-  );
-
-  function handleAdd(item: any) {
-    setCart((prev: any[]) => {
+  function handleAddToCart(item: any) {
+    setCart((prev) => {
       const idx = prev.findIndex((p) => p.id === item.id);
       if (idx > -1) {
         const updated = [...prev];
@@ -141,91 +57,89 @@ const ListingPage: React.FC = () => {
     history.push("/customer-details", { cart });
   }
 
+  function handleBuyNow() {
+    if (!termsChecked) return;
+    const buyNowCart = [{ ...product, qty: 1 }];
+    history.push("/customer-details", { cart: buyNowCart });
+  }
+
   const getCartTotal = () => cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
+  if (loading && !product) return <div>Loading...</div>;
+  if (!product) return <div>Product not found.</div>;
+
   return (
-    <div
-      style={{
-        padding: "24px",
-        fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-        minHeight: "100vh",
-        background: "#fafbfc",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <div
+    <div style={{ padding: "24px", fontFamily: "'Poppins', 'Inter', Arial, sans-serif" }}>
+      <button
         style={{
-          width: "100%",
-          maxWidth: 1100,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-          marginBottom: 24,
+          marginBottom: 18,
+          background: "none",
+          border: "1px solid #e0e0e0",
+          borderRadius: 8,
+          padding: "6px 18px",
+          color: "#7b1fa2",
+          fontWeight: 600,
+          cursor: "pointer",
+          fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
         }}
+        onClick={() => history.goBack()}
       >
-        <div
-          style={{
-            fontWeight: 700,
-            fontSize: "2rem",
-            marginBottom: "24px",
-            textAlign: "left",
-          }}
-        >
-          Find Your Dream Lights
-        </div>
-        <div
-          style={{
-            marginBottom: "24px",
-            width: "100%",
-            maxWidth: 400,
-          }}
-        >
-          <input
-            style={{
-              width: "100%",
-              padding: "12px 18px",
-              borderRadius: 12,
-              border: "1px solid #e0e0e0",
-              fontSize: "1rem",
-              fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-            }}
-            type="text"
-            placeholder="Search based on location, name, or category"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
+        &larr; Back
+      </button>
+      <h2 style={{ fontSize: "2rem", marginBottom: "16px" }}>{product.title || product.name}</h2>
+      <div style={{ marginBottom: "16px" }}>
+        <img
+          src={product.imageUrl && product.imageUrl !== "default.jpg" ? product.imageUrl : "https://img.icons8.com/ios-filled/200/light.png"}
+          alt={product.name}
+          style={{ width: "100%", maxWidth: "400px", borderRadius: "16px" }}
+        />
       </div>
-      <div style={cardContainerStyle}>
-        {filteredListings.map((item) => (
-          <div
-            key={item.id}
-            style={cardStyleBase}
-            onClick={() => history.push(`/product-detail/${item.id}`, { product: item, cart })}
-          >
-            <div style={imgWrapperStyle}>
-              <img
-                src={item.imageUrl && item.imageUrl !== "default.jpg" ? item.imageUrl : "https://img.icons8.com/ios-filled/200/light.png"}
-                alt={item.name}
-                style={imgStyle}
-              />
-            </div>
-            <div style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 8 }}>{item.title || item.name}</div>
-            <div style={{ color: "#7b8aaf", fontSize: "0.98rem", marginBottom: 12 }}>{item.description}</div>
-            <div style={{ fontWeight: 700, color: "#7b1fa2", fontSize: "1.1rem", marginBottom: 12 }}>₹{item.price} INR</div>
-            <button
-              style={buttonStyle}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAdd(item);
-              }}
-            >
-              Add to Cart
-            </button>
-          </div>
-        ))}
+      <p style={{ fontSize: "1rem", marginBottom: "12px" }}>{product.description}</p>
+      <div style={{ fontWeight: 700, fontSize: "1.2rem", marginBottom: "24px" }}>Price: ₹{product.price} INR</div>
+
+      <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
+        <button
+          style={{
+            background: "#4a6fa1",
+            color: "#fff",
+            border: "none",
+            borderRadius: "12px",
+            padding: "12px 24px",
+            cursor: "pointer",
+            fontWeight: 700,
+          }}
+          onClick={() => handleAddToCart(product)}
+        >
+          ADD TO CART
+        </button>
+
+        <button
+          style={{
+            background: termsChecked ? "#b39ddb" : "#ccc",
+            color: "#fff",
+            border: "none",
+            borderRadius: "12px",
+            padding: "12px 24px",
+            cursor: termsChecked ? "pointer" : "not-allowed",
+            fontWeight: 700,
+          }}
+          onClick={handleBuyNow}
+          disabled={!termsChecked}
+        >
+          BUY IT NOW
+        </button>
+      </div>
+
+      <div style={{ marginBottom: "24px" }}>
+        <input
+          type="checkbox"
+          checked={termsChecked}
+          onChange={() => setTermsChecked((prev) => !prev)}
+          id="terms"
+        />
+        <label htmlFor="terms" style={{ marginLeft: "8px" }}>
+          I agree to the terms & conditions
+        </label>
       </div>
 
       {/* Cart Drawer */}
@@ -306,7 +220,7 @@ const ListingPage: React.FC = () => {
             {cart.length > 0 && (
               <div style={{ position: "absolute", left: 16, right: 16, bottom: 24, background: "#fff", padding: "16px", boxShadow: "0 -2px 16px rgba(120,144,156,0.07)", borderTopLeftRadius: "24px", borderTopRightRadius: "24px" }}>
                 <div style={{ fontWeight: 600, margin: "0 0 12px 0", textAlign: "right", color: "#7b1fa2", fontSize: "1.08rem" }}>
-                  Subtotal: <span style={{ color: "#7bfa2", fontWeight: 700 }}>₹{getCartTotal()} INR</span>
+                  Subtotal: <span style={{ color: "#7b1fa2", fontWeight: 700 }}>₹{getCartTotal()} INR</span>
                 </div>
                 <button style={{ background: "#b39ddb", color: "#fff", border: "none", borderRadius: "12px", padding: "16px 0", width: "100%", cursor: "pointer", fontWeight: 700, fontSize: "1.1rem" }} onClick={handleCheckout}>
                   Proceed to Checkout
@@ -320,4 +234,4 @@ const ListingPage: React.FC = () => {
   );
 };
 
-export default ListingPage;
+export default ProductDetailPage;
