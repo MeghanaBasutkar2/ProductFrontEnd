@@ -19,7 +19,8 @@ const cardStyleBase: React.CSSProperties = {
   boxShadow: "0 4px 24px rgba(120,144,156,0.08)",
   padding: "24px 20px",
   width: "300px",
-  minHeight: "420px",
+  minHeight: "340px", // Reduced height
+  maxHeight: "340px", // Reduced height
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
@@ -29,6 +30,7 @@ const cardStyleBase: React.CSSProperties = {
   background: "#fff",
   overflow: "hidden",
   border: "1px solid #e3e8ee",
+  justifyContent: "flex-start",
 };
 
 const imgWrapperStyle: React.CSSProperties = {
@@ -62,16 +64,37 @@ const buttonStyle: React.CSSProperties = {
   color: "#fff",
   border: "none",
   borderRadius: "12px",
-  padding: "12px 28px",
+  padding: "10px 0", // Reduced vertical padding
   cursor: "pointer",
   fontWeight: 700,
   fontSize: "1rem",
-  marginTop: "auto",
   fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
   alignSelf: "center",
   boxShadow: "0 2px 8px rgba(179,157,219,0.13)",
   transition: "background 0.2s",
+  height: 40, // Fixed height for both buttons
+  minWidth: 0,
 };
+
+const buyNowButtonStyle: React.CSSProperties = {
+  ...buttonStyle,
+  background: "#fda085",
+};
+
+const descStyle: React.CSSProperties = {
+  color: "#7b8aaf",
+  fontSize: "0.98rem",
+  marginBottom: 12,
+  display: "block",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  maxWidth: "100%",
+};
+
+function truncate(str: string, n: number) {
+  return str && str.length > n ? str.slice(0, n) + "..." : str;
+}
 
 const ListingPage: React.FC = () => {
   const [listings, setListings] = useState<any[]>([]);
@@ -213,17 +236,41 @@ const ListingPage: React.FC = () => {
               />
             </div>
             <div style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 8 }}>{item.title || item.name}</div>
-            <div style={{ color: "#7b8aaf", fontSize: "0.98rem", marginBottom: 12 }}>{item.description}</div>
-            <div style={{ fontWeight: 700, color: "#7b1fa2", fontSize: "1.1rem", marginBottom: 12 }}>₹{item.price} INR</div>
-            <button
-              style={buttonStyle}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAdd(item);
-              }}
-            >
-              Add to Cart
-            </button>
+            <span style={descStyle}>
+              {truncate(item.description || "", 45)}
+            </span>
+            {/* Order number (orderCode) above price */}
+            {item.orderCode && (
+              <div style={{ color: "#7b8aaf", fontSize: "0.98rem", marginBottom: 4 }}>
+                Product Code: {item.orderCode}
+              </div>
+            )}
+            <div style={{ fontWeight: 700, color: "#7b1fa2", fontSize: "1.1rem", marginBottom: 8 }}>
+              ₹{item.price} INR
+            </div>
+            <div style={{ flexGrow: 1 }} />
+            <div style={{ display: "flex", gap: 8, width: "100%" }}>
+              <button
+                style={{ ...buttonStyle, flex: 1 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAdd(item);
+                }}
+              >
+                Add to Cart
+              </button>
+              <button
+                style={{ ...buyNowButtonStyle, flex: 1 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  history.push("/customer-details", {
+                    cart: [{ ...item, qty: 1 }],
+                  });
+                }}
+              >
+                Buy Now
+              </button>
+            </div>
           </div>
         ))}
       </div>
