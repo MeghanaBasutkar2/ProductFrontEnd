@@ -86,38 +86,59 @@ const ProductDetailPage: React.FC = () => {
   if (!product) return <div>Product not found.</div>;
 
   return (
-    <div style={{
-      padding: "48px 0",
-      fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-      background: "#fafbfc",
-      minHeight: "100vh"
-    }}>
-      <div style={{
-        maxWidth: 1200,
-        margin: "0 auto",
-        display: "flex",
-        gap: 56,
-        alignItems: "flex-start",
-        justifyContent: "center"
-      }}>
+    <div
+      style={{
+        padding: "24px 0",
+        fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+        background: "#fafbfc",
+        minHeight: "100vh",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: "0 auto",
+          display: "flex",
+          flexDirection: window.innerWidth <= 700 ? "column" : "row",
+          gap: window.innerWidth <= 700 ? 32 : 56,
+          alignItems: window.innerWidth <= 700 ? "center" : "flex-start",
+          justifyContent: "center",
+          padding: window.innerWidth <= 700 ? "0 8px" : "0",
+          width: "100%",
+          boxSizing: "border-box",
+        }}
+      >
         {/* Main Product Image */}
-        <div style={{ flex: "0 0 480px", display: "flex", justifyContent: "center", position: "relative" }}>
+        <div
+          style={{
+            flex: window.innerWidth <= 700 ? "unset" : "0 0 480px",
+            display: "flex",
+            justifyContent: "center",
+            position: "relative",
+            width: window.innerWidth <= 700 ? "100%" : 480,
+            maxWidth: 480,
+            marginBottom: window.innerWidth <= 700 ? 24 : 0,
+          }}
+        >
           <img
-            src={product.imageUrl && product.imageUrl !== "default.jpg"
-              ? product.imageUrl
-              : "https://img.icons8.com/ios-filled/400/light.png"}
+            src={
+              product.imageUrl && product.imageUrl !== "default.jpg"
+                ? product.imageUrl
+                : "https://img.icons8.com/ios-filled/400/light.png"
+            }
             alt={product.name}
             style={{
-              width: 420,
-              height: 520,
+              width: "100%",
+              maxWidth: 420,
+              height: window.innerWidth <= 700 ? "auto" : 520,
               objectFit: "cover",
               borderRadius: 18,
               background: "#f6f6f6",
               border: "1px solid #eee",
-              boxShadow: "0 4px 24px rgba(120,144,156,0.08)"
+              boxShadow: "0 4px 24px rgba(120,144,156,0.08)",
             }}
           />
-          {/* Share Button (top right of image on desktop, can be moved for mobile) */}
+          {/* Share Button */}
           <button
             onClick={handleShare}
             style={{
@@ -149,7 +170,15 @@ const ProductDetailPage: React.FC = () => {
           </button>
         </div>
         {/* Product Details */}
-        <div style={{ flex: 1, minWidth: 340, maxWidth: 540 }}>
+        <div
+          style={{
+            flex: 1,
+            minWidth: window.innerWidth <= 700 ? "unset" : 340,
+            maxWidth: 540,
+            width: "100%",
+            boxSizing: "border-box",
+          }}
+        >
           <button
             style={{
               marginBottom: 18,

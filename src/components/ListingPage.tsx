@@ -14,6 +14,20 @@ const cardContainerStyle: React.CSSProperties = {
   padding: 0,
 };
 
+// Responsive grid for phone view
+const getResponsiveCardContainerStyle = () => {
+  if (window.innerWidth <= 600) {
+    return {
+      ...cardContainerStyle,
+      gridTemplateColumns: "1fr",
+      gap: "20px",
+      padding: "0 8px",
+      maxWidth: 400,
+    };
+  }
+  return cardContainerStyle;
+};
+
 const cardStyleBase: React.CSSProperties = {
   borderRadius: "24px",
   boxShadow: "0 4px 24px rgba(120,144,156,0.08)",
@@ -166,6 +180,17 @@ const ListingPage: React.FC = () => {
 
   const getCartTotal = () => cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
+  // Responsive state for grid
+  const [responsiveStyle, setResponsiveStyle] = useState(getResponsiveCardContainerStyle());
+
+  useEffect(() => {
+    function handleResize() {
+      setResponsiveStyle(getResponsiveCardContainerStyle());
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div
       style={{
@@ -221,7 +246,7 @@ const ListingPage: React.FC = () => {
           />
         </div>
       </div>
-      <div style={cardContainerStyle}>
+      <div style={responsiveStyle}>
         {filteredListings.map((item) => (
           <div
             key={item.id}
