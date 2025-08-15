@@ -69,79 +69,150 @@ const ProductDetailPage: React.FC = () => {
   if (!product) return <div>Product not found.</div>;
 
   return (
-    <div style={{ padding: "24px", fontFamily: "'Poppins', 'Inter', Arial, sans-serif" }}>
-      <button
-        style={{
-          marginBottom: 18,
-          background: "none",
-          border: "1px solid #e0e0e0",
-          borderRadius: 8,
-          padding: "6px 18px",
-          color: "#7b1fa2",
-          fontWeight: 600,
-          cursor: "pointer",
-          fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-        }}
-        onClick={() => history.goBack()}
-      >
-        &larr; Back
-      </button>
-      <h2 style={{ fontSize: "2rem", marginBottom: "16px" }}>{product.title || product.name}</h2>
-      <div style={{ marginBottom: "16px" }}>
-        <img
-          src={product.imageUrl && product.imageUrl !== "default.jpg" ? product.imageUrl : "https://img.icons8.com/ios-filled/200/light.png"}
-          alt={product.name}
-          style={{ width: "100%", maxWidth: "400px", borderRadius: "16px" }}
-        />
-      </div>
-      <p style={{ fontSize: "1rem", marginBottom: "12px" }}>{product.description}</p>
-      <div style={{ fontWeight: 700, fontSize: "1.2rem", marginBottom: "24px" }}>Price: ₹{product.price} INR</div>
-
-      <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
-        <button
-          style={{
-            background: "#4a6fa1",
-            color: "#fff",
-            border: "none",
-            borderRadius: "12px",
-            padding: "12px 24px",
-            cursor: "pointer",
+    <div style={{
+      padding: "48px 0",
+      fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+      background: "#fafbfc",
+      minHeight: "100vh"
+    }}>
+      <div style={{
+        maxWidth: 1200,
+        margin: "0 auto",
+        display: "flex",
+        gap: 56,
+        alignItems: "flex-start",
+        justifyContent: "center"
+      }}>
+        {/* Main Product Image */}
+        <div style={{ flex: "0 0 480px", display: "flex", justifyContent: "center" }}>
+          <img
+            src={product.imageUrl && product.imageUrl !== "default.jpg"
+              ? product.imageUrl
+              : "https://img.icons8.com/ios-filled/400/light.png"}
+            alt={product.name}
+            style={{
+              width: 420,
+              height: 520,
+              objectFit: "cover",
+              borderRadius: 18,
+              background: "#f6f6f6",
+              border: "1px solid #eee",
+              boxShadow: "0 4px 24px rgba(120,144,156,0.08)"
+            }}
+          />
+        </div>
+        {/* Product Details */}
+        <div style={{ flex: 1, minWidth: 340, maxWidth: 540 }}>
+          <button
+            style={{
+              marginBottom: 18,
+              background: "none",
+              border: "1px solid #e0e0e0",
+              borderRadius: 8,
+              padding: "6px 18px",
+              color: "#7b1fa2",
+              fontWeight: 600,
+              cursor: "pointer",
+              fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+            }}
+            onClick={() => history.goBack()}
+          >
+            &larr; Back
+          </button>
+          <div style={{
             fontWeight: 700,
-          }}
-          onClick={() => handleAddToCart(product)}
-        >
-          ADD TO CART
-        </button>
-
-        <button
-          style={{
-            background: termsChecked ? "#b39ddb" : "#ccc",
-            color: "#fff",
-            border: "none",
-            borderRadius: "12px",
-            padding: "12px 24px",
-            cursor: termsChecked ? "pointer" : "not-allowed",
+            fontSize: "2rem",
+            marginBottom: 8,
+            color: "#222"
+          }}>
+            {product.title || product.name}
+          </div>
+          <div style={{
+            color: "#7b8aaf",
+            fontSize: "1.08rem",
+            marginBottom: 18,
+            fontFamily: "'Inter', sans-serif"
+          }}>
+            {product.description}
+          </div>
+          {/* Info sections before the price */}
+          <div style={{ margin: "32px 0 0 0" }}>
+            <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
+              Product Details
+            </div>
+            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 10 }}>
+              {product.details}
+            </div>
+            <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
+              Material &amp; Care
+            </div>
+            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 10 }}>
+              {product.material || "—"}
+            </div>
+            <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
+              Product Code
+            </div>
+            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 18 }}>
+              {product.orderCode || product.id}
+            </div>
+          </div>
+          {/* Price comes after details */}
+          <div style={{
             fontWeight: 700,
-          }}
-          onClick={handleBuyNow}
-          disabled={!termsChecked}
-        >
-          BUY IT NOW
-        </button>
+            fontSize: "1.3rem",
+            color: "#7b1fa2",
+            marginBottom: 18
+          }}>
+            ₹{product.price} INR
+          </div>
+          <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
+            <button
+              style={{
+                background: "#fff",
+                color: "#7b1fa2",
+                border: "1.5px solid #e0e0e0",
+                borderRadius: 10,
+                padding: "16px 32px",
+                fontWeight: 700,
+                fontSize: "1.1rem",
+                fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+                cursor: "pointer",
+              }}
+              onClick={() => handleAddToCart(product)}
+            >
+              ADD TO CART
+            </button>
+            <button
+              style={{
+                background: termsChecked ? "#fda085" : "#ccc",
+                color: "#fff",
+                border: "none",
+                borderRadius: 10,
+                padding: "16px 32px",
+                fontWeight: 700,
+                fontSize: "1.1rem",
+                fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+                cursor: termsChecked ? "pointer" : "not-allowed",
+              }}
+              onClick={handleBuyNow}
+              disabled={!termsChecked}
+            >
+              BUY IT NOW
+            </button>
+          </div>
+          <div style={{ marginBottom: "24px" }}>
+            <input
+              type="checkbox"
+              checked={termsChecked}
+              onChange={() => setTermsChecked((prev) => !prev)}
+              id="terms"
+            />
+            <label htmlFor="terms" style={{ marginLeft: "8px" }}>
+              I agree to the terms & conditions
+            </label>
+          </div>
+        </div>
       </div>
-
-      <div style={{ marginBottom: "24px" }}>
-        <input
-          type="checkbox"
-          checked={termsChecked}
-          onChange={() => setTermsChecked((prev) => !prev)}
-          id="terms"
-        />
-        <label htmlFor="terms" style={{ marginLeft: "8px" }}>
-          I agree to the terms & conditions
-        </label>
-      </div>
-
       {/* Cart Drawer */}
       {cartDrawerOpen && (
         <div
@@ -188,9 +259,7 @@ const ProductDetailPage: React.FC = () => {
             >
               &times;
             </button>
-
             <h2 style={{ fontWeight: 700, fontSize: "1.4rem", margin: "0 24px 24px 24px" }}>Cart</h2>
-
             <div style={{ flex: 1, overflowY: "auto", padding: "0 16px 140px 16px" }}>
               {cart.length === 0 ? (
                 <div style={{ color: "#888", marginTop: 32 }}>Your cart is empty.</div>
@@ -216,7 +285,6 @@ const ProductDetailPage: React.FC = () => {
                 ))
               )}
             </div>
-
             {cart.length > 0 && (
               <div style={{ position: "absolute", left: 16, right: 16, bottom: 24, background: "#fff", padding: "16px", boxShadow: "0 -2px 16px rgba(120,144,156,0.07)", borderTopLeftRadius: "24px", borderTopRightRadius: "24px" }}>
                 <div style={{ fontWeight: 600, margin: "0 0 12px 0", textAlign: "right", color: "#7b1fa2", fontSize: "1.08rem" }}>

@@ -211,6 +211,7 @@ const CustomerDetailPage: React.FC = () => {
     setLoading(true);
 
     // Prepare request body as per new API structure
+    const subtotal = getCartTotal(cart);
     const reqBody = {
       customer: {
         firstName,
@@ -220,10 +221,11 @@ const CustomerDetailPage: React.FC = () => {
         address,
         pincode,
       },
+      subtotal,
       order: {
         productList: cart.map(item => ({
           id: item.id,
-          productName: item.title || item.name,
+          name: item.title || item.name, // Use "name" as per API
           price: item.price,
           quantity: item.qty,
         })),
