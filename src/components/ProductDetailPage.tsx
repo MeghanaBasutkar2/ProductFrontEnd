@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useLocation, useHistory } from "react-router-dom";
 
 const ProductDetailPage: React.FC = () => {
@@ -65,6 +65,23 @@ const ProductDetailPage: React.FC = () => {
 
   const getCartTotal = () => cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
+  // Share handler
+  const handleShare = useCallback(() => {
+    const shareData = {
+      title: product.title || product.name || "Product",
+      text: product.description || "",
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else {
+      // Fallback: copy link to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      alert("Product link copied to clipboard!");
+    }
+  }, [product]);
+
   if (loading && !product) return <div>Loading...</div>;
   if (!product) return <div>Product not found.</div>;
 
@@ -84,7 +101,7 @@ const ProductDetailPage: React.FC = () => {
         justifyContent: "center"
       }}>
         {/* Main Product Image */}
-        <div style={{ flex: "0 0 480px", display: "flex", justifyContent: "center" }}>
+        <div style={{ flex: "0 0 480px", display: "flex", justifyContent: "center", position: "relative" }}>
           <img
             src={product.imageUrl && product.imageUrl !== "default.jpg"
               ? product.imageUrl
@@ -100,6 +117,36 @@ const ProductDetailPage: React.FC = () => {
               boxShadow: "0 4px 24px rgba(120,144,156,0.08)"
             }}
           />
+          {/* Share Button (top right of image on desktop, can be moved for mobile) */}
+          <button
+            onClick={handleShare}
+            style={{
+              position: "absolute",
+              top: 18,
+              right: 18,
+              background: "#fff",
+              border: "1px solid #e0e0e0",
+              borderRadius: "50%",
+              width: 44,
+              height: 44,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              boxShadow: "0 2px 8px rgba(120,144,156,0.10)",
+              zIndex: 10,
+            }}
+            aria-label="Share Product"
+            title="Share Product"
+          >
+            <svg width="22" height="22" fill="none" stroke="#7b1fa2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+              <circle cx="18" cy="5" r="3"/>
+              <circle cx="6" cy="12" r="3"/>
+              <circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </button>
         </div>
         {/* Product Details */}
         <div style={{ flex: 1, minWidth: 340, maxWidth: 540 }}>

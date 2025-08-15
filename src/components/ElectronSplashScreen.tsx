@@ -16,6 +16,7 @@ const pageStyle: React.CSSProperties = {
   right: 0,
   bottom: 0,
   zIndex: 0,
+  overflowY: "auto", // Enable vertical scrolling everywhere
 };
 
 const lampContainerStyle: React.CSSProperties = {
@@ -91,23 +92,23 @@ const headerStyle: React.CSSProperties = {
   fontWeight: 900,
   fontSize: "2.8rem",
   color: "#222",
-  textAlign: "left",
+  textAlign: "center", // Center align
   letterSpacing: "0.04em",
   fontFamily: "'Poppins', 'Playfair Display', serif",
   textShadow: "0 4px 24px rgba(0,0,0,0.18)",
-  paddingLeft: 0, // Remove calc, align to wrapper
+  paddingLeft: 0,
   boxSizing: "border-box",
 };
 
 const subHeaderStyle: React.CSSProperties = {
-  textAlign: "left",
+  textAlign: "center", // Center align
   marginBottom: "24px",
   color: "#7b8aaf",
   fontSize: "1.3rem",
   fontWeight: 500,
   letterSpacing: "0.02em",
   textShadow: "0 2px 12px rgba(0,0,0,0.10)",
-  paddingLeft: 0, // Remove calc, align to wrapper
+  paddingLeft: 0,
   boxSizing: "border-box",
 };
 
