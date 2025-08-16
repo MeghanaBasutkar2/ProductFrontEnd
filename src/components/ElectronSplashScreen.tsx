@@ -113,38 +113,34 @@ const subHeaderStyle: React.CSSProperties = {
 };
 
 const ElectronSplashScreen: React.FC = () => {
-  const categories = [
-    { id: "1.0", name: "Category 1.0", icon: "💡" },
-    { id: "2.0", name: "Category 2.0", icon: "✨" },
-    { id: "11.0", name: "Category 11.0", icon: "🔆" },
-  ];
-  const [listings, setListings] = useState<any[]>([]);
-  const [hovered, setHovered] = useState<string | null>(null);
-  const history = useHistory();
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true;
-    fetch("http://localhost:9090/lighting/api/products")
+    setLoading(true);
+    fetch("http://localhost:9090/lighting/api/categories", {
+      headers: { Accept: "application/json" },
+    })
       .then((res) => res.json())
-      .then((data) => {
-        if (isMounted) {
-          const filteredData = data.filter((item: any) =>
-            categories.some((category) => category.id === item.categoryId)
-          );
-          setListings(filteredData);
-        }
-      })
-      .catch(() => {
-        if (isMounted) setListings([]);
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, [categories]);
+      .then((data) => setCategories(data))
+      .catch(() => setCategories([]))
+      .finally(() => setLoading(false));
+  }, []);
 
-  const handleCategoryClick = (categoryId: string) => {
-    const filteredListings = listings.filter(item => item.categoryId === categoryId);
-    history.push(`/listings?category=${categoryId}&data=${encodeURIComponent(JSON.stringify(filteredListings))}`);
+  const history = useHistory();
+
+  // Pass only categoryId, categoryDisplayName, productTypeId, and productTypeHeading in the URL
+  const handleProductTypeClick = (
+    categoryId: string,
+    categoryDisplayName: string,
+    productTypeId: string,
+    productTypeHeading: string
+  ) => {
+    history.push(
+      `/listings?category=${encodeURIComponent(categoryId)}&categoryName=${encodeURIComponent(
+        categoryDisplayName
+      )}&type=${encodeURIComponent(productTypeHeading)}&typeId=${encodeURIComponent(productTypeId)}`
+    );
   };
 
   return (
@@ -163,29 +159,89 @@ const ElectronSplashScreen: React.FC = () => {
       <div style={contentWrapperStyle}>
         <div style={headerStyle}>Electron Innovations</div>
         <div style={subHeaderStyle}>Ignite Your Imagination With Light</div>
-        {/* If you have a search bar, place it here and style it with width: "100%" */}
-        <div style={cardContainerStyle}>
-          {categories.map((category) => (
-            <div
-              key={category.id}
-              style={{
-                ...cardStyle,
-                ...(hovered === category.id ? cardHoverStyle : {}),
-              }}
-              onClick={() => handleCategoryClick(category.id)}
-              onMouseEnter={() => setHovered(category.id)}
-              onMouseLeave={() => setHovered(null)}
-            >
-              <div style={iconStyle}>{category.icon}</div>
-              <h2 style={{ fontFamily: "'Poppins', serif", fontWeight: 700, fontSize: "1.6rem", margin: "0 0 12px 0" }}>
-                {category.name}
-              </h2>
-              <p style={{ color: "#888", fontSize: "1.08rem", margin: 0 }}>
-                Explore lights in <span style={{ color: "#fda085", fontWeight: 600 }}>{category.name}</span>
-              </p>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <div style={{ textAlign: "center", margin: "32px 0" }}>Loading...</div>
+        ) : (
+          <div>
+            {categories.map((cat) => (
+              <div key={cat.id} style={{ marginBottom: 32 }}>
+                <div
+                  style={{
+                    fontWeight: 700,
+                    fontSize: "1.5rem",
+                    margin: "24px 0 12px 0",
+                    textAlign: "left",
+                  }}
+                >
+                  {cat.categoryDisplayName}
+                </div>
+                <div style={cardContainerStyle}>
+                  {cat.items.map((type: any) => (
+                    <div
+                      key={type.productTypeId}
+                      style={cardStyle}
+                      onClick={() =>
+                        handleProductTypeClick(
+                          cat.id,
+                          cat.categoryDisplayName,
+                          type.productTypeId,
+                          type.productTypeHeading
+                        )
+                      }
+                    >
+                      <div style={{ fontSize: "2rem", marginBottom: 10 }}>💡</div>
+                      <div
+                        style={{
+                          fontWeight: 700,
+                          fontSize: "1.15rem",
+                          marginBottom: 8,
+                          minHeight: 52, // Adjusted for two lines
+                          maxHeight: 52, // Adjusted for two lines
+                          maxWidth: 180,
+                          width: 180,
+                          overflow: "hidden",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          textOverflow: "ellipsis",
+                          textAlign: "center",
+                          marginLeft: "auto",
+                          marginRight: "auto",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        title={type.productTypeHeading}
+                      >
+                        {type.productTypeHeading}
+                      </div>
+                      <div
+                        style={{
+                          marginTop: 12,
+                          color: "#a77fd9",
+                          background: "none",
+                          border: "none",
+                          borderRadius: 12,
+                          padding: 0,
+                          width: "100%",
+                          fontWeight: 500,
+                          fontSize: "1rem",
+                          cursor: "pointer",
+                          fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+                          opacity: 0.85,
+                          letterSpacing: "0.01em",
+                          transition: "color 0.2s",
+                          userSelect: "none",
+                        }}
+                      >
+                        Explore
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

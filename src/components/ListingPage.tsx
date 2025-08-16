@@ -74,25 +74,28 @@ const imgStyle: React.CSSProperties = {
 };
 
 const buttonStyle: React.CSSProperties = {
-  background: "#4a6fa1",
-  color: "#fff",
-  border: "none",
+  background: "linear-gradient(90deg, #e0e7ff 0%, #ede7f6 100%)",
+  color: "#5b4c9a",
+  border: "1px solid #e0e0e0",
   borderRadius: "12px",
-  padding: "10px 0", // Reduced vertical padding
+  padding: "10px 0",
   cursor: "pointer",
   fontWeight: 700,
   fontSize: "1rem",
   fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
   alignSelf: "center",
-  boxShadow: "0 2px 8px rgba(179,157,219,0.13)",
-  transition: "background 0.2s",
-  height: 40, // Fixed height for both buttons
+  boxShadow: "0 2px 12px rgba(179,157,219,0.08)",
+  transition: "background 0.2s, color 0.2s, box-shadow 0.2s",
+  height: 40,
   minWidth: 0,
 };
 
 const buyNowButtonStyle: React.CSSProperties = {
   ...buttonStyle,
-  background: "#fda085",
+  background: "linear-gradient(90deg, #fceabb 0%, #fda085 100%)",
+  color: "#7b1fa2",
+  border: "1px solid #fda085",
+  boxShadow: "0 2px 16px rgba(253,160,133,0.10)",
 };
 
 const descStyle: React.CSSProperties = {
@@ -126,16 +129,28 @@ const ListingPage: React.FC = () => {
   const location = useLocation();
   const history = useHistory();
 
+  // Responsive state for grid
+  const [responsiveStyle, setResponsiveStyle] = useState(getResponsiveCardContainerStyle());
+
+  useEffect(() => {
+    function handleResize() {
+      setResponsiveStyle(getResponsiveCardContainerStyle());
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Fetch products by category (no filtering by productTypeHeading here)
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const dataParam = params.get("data");
-    if (dataParam) {
-      try {
-        const parsed = JSON.parse(decodeURIComponent(dataParam));
-        setListings(parsed);
-      } catch (e) {
-        setListings([]);
-      }
+    const category = params.get("category");
+    if (category) {
+      fetch(`http://localhost:9090/lighting/api/products/by-category/${encodeURIComponent(category)}`, {
+        headers: { Accept: "application/json" },
+      })
+        .then((res) => res.json())
+        .then((data) => setListings(data))
+        .catch(() => setListings([]));
     } else {
       setListings([]);
     }
@@ -145,8 +160,13 @@ const ListingPage: React.FC = () => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
+  // Search logic
   const filteredListings = listings.filter((item) =>
-    (item.name || item.title || item.categoryDescription)?.toLowerCase().includes(search.toLowerCase())
+    [item.name, item.description1, item.productTypeHeading, item.orderCode]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase()
+      .includes(search.toLowerCase())
   );
 
   function handleAdd(item: any) {
@@ -179,17 +199,6 @@ const ListingPage: React.FC = () => {
   }
 
   const getCartTotal = () => cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-
-  // Responsive state for grid
-  const [responsiveStyle, setResponsiveStyle] = useState(getResponsiveCardContainerStyle());
-
-  useEffect(() => {
-    function handleResize() {
-      setResponsiveStyle(getResponsiveCardContainerStyle());
-    }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   return (
     <div
@@ -227,20 +236,27 @@ const ListingPage: React.FC = () => {
           style={{
             marginBottom: "24px",
             width: "100%",
-            maxWidth: 400,
+            maxWidth: 600, // Increased width for larger search bar
+            minWidth: 260,
+            flex: 1,
+            display: "flex",
           }}
         >
           <input
             style={{
               width: "100%",
-              padding: "12px 18px",
+              padding: "14px 22px", // More padding for a bigger field
               borderRadius: 12,
               border: "1px solid #e0e0e0",
-              fontSize: "1rem",
+              fontSize: "1.08rem",
               fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+              background: "#fff",
+              boxSizing: "border-box",
+              outline: "none",
+              transition: "border 0.2s",
             }}
             type="text"
-            placeholder="Search based on location, name, or category"
+            placeholder="Search based on product name, type, or description"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />

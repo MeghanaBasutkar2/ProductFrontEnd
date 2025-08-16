@@ -90,7 +90,7 @@ const ProductDetailPage: React.FC = () => {
       style={{
         padding: window.innerWidth <= 700 ? "16px 0" : "24px 0",
         fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-        background: "#fafbfc",
+        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
         minHeight: "100vh",
         boxSizing: "border-box",
         width: "100vw",
@@ -137,9 +137,9 @@ const ProductDetailPage: React.FC = () => {
               height: window.innerWidth <= 700 ? "auto" : 520,
               objectFit: "cover",
               borderRadius: 18,
-              background: "#f6f6f6",
-              border: "1px solid #eee",
-              boxShadow: "0 4px 24px rgba(120,144,156,0.08)",
+              background: "linear-gradient(120deg, #f6d365 0%, #fda085 100%)",
+              border: "1.5px solid #ede7f6",
+              boxShadow: "0 4px 32px 0 rgba(123,31,162,0.10)",
             }}
           />
           {/* Share Button */}
@@ -150,7 +150,7 @@ const ProductDetailPage: React.FC = () => {
               top: 18,
               right: 18,
               background: "#fff",
-              border: "1px solid #e0e0e0",
+              border: "1.5px solid #ede7f6",
               borderRadius: "50%",
               width: 44,
               height: 44,
@@ -158,8 +158,9 @@ const ProductDetailPage: React.FC = () => {
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              boxShadow: "0 2px 8px rgba(120,144,156,0.10)",
+              boxShadow: "0 2px 12px rgba(179,157,219,0.10)",
               zIndex: 10,
+              transition: "box-shadow 0.2s",
             }}
             aria-label="Share Product"
             title="Share Product"
@@ -188,13 +189,15 @@ const ProductDetailPage: React.FC = () => {
             style={{
               marginBottom: 18,
               background: "none",
-              border: "1px solid #e0e0e0",
+              border: "1.5px solid #ede7f6",
               borderRadius: 8,
               padding: "6px 18px",
               color: "#7b1fa2",
               fontWeight: 600,
               cursor: "pointer",
               fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+              letterSpacing: "0.01em",
+              boxShadow: "0 2px 8px rgba(179,157,219,0.07)",
             }}
             onClick={() => history.goBack()}
           >
@@ -204,37 +207,46 @@ const ProductDetailPage: React.FC = () => {
             fontWeight: 700,
             fontSize: "2rem",
             marginBottom: 8,
-            color: "#222"
+            color: "#222",
+            letterSpacing: "0.01em",
+            textShadow: "0 2px 12px rgba(123,31,162,0.06)"
           }}>
-            {product.title || product.name}
+            {product.name}
           </div>
           <div style={{
             color: "#7b8aaf",
             fontSize: "1.08rem",
             marginBottom: 18,
-            fontFamily: "'Inter', sans-serif"
+            fontFamily: "'Inter', sans-serif",
+            letterSpacing: "0.01em"
           }}>
-            {product.description}
+            {product.productTypeHeading} &mdash; {product.categoryDisplayName}
           </div>
           {/* Info sections before the price */}
           <div style={{ margin: "32px 0 0 0" }}>
             <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
               Product Details
             </div>
-            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 10 }}>
-              {product.details}
+            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 10, whiteSpace: "pre-line" }}>
+              {product.description1}
             </div>
             <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
-              Material &amp; Care
+              Technical Details
             </div>
-            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 10 }}>
-              {product.material || "—"}
+            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 10, whiteSpace: "pre-line" }}>
+              {product.description2}
             </div>
             <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
               Product Code
             </div>
-            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 18 }}>
+            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 10 }}>
               {product.orderCode || product.id}
+            </div>
+            <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
+              Variants
+            </div>
+            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 18 }}>
+              {[product.variant1, product.variant2, product.variant3].filter(Boolean).join(" | ")}
             </div>
           </div>
           {/* Price comes after details */}
@@ -242,15 +254,25 @@ const ProductDetailPage: React.FC = () => {
             fontWeight: 700,
             fontSize: "1.3rem",
             color: "#7b1fa2",
-            marginBottom: 18
+            marginBottom: 18,
+            letterSpacing: "0.01em"
           }}>
-            ₹{product.price} INR
+            {product.discountedPrice && product.discountedPrice !== product.price ? (
+              <>
+                <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
+                  ₹{product.price}
+                </span>
+                <span style={{ color: "#fda085" }}>₹{product.discountedPrice} INR</span>
+              </>
+            ) : (
+              <>₹{product.price} INR</>
+            )}
           </div>
           <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
             <button
               style={{
-                background: "#fff",
-                color: "#7b1fa2",
+                background: "linear-gradient(90deg, #e0e7ff 0%, #ede7f6 100%)",
+                color: "#5b4c9a",
                 border: "1.5px solid #e0e0e0",
                 borderRadius: 10,
                 padding: "16px 32px",
@@ -258,6 +280,8 @@ const ProductDetailPage: React.FC = () => {
                 fontSize: "1.1rem",
                 fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
                 cursor: "pointer",
+                boxShadow: "0 2px 12px rgba(179,157,219,0.08)",
+                transition: "background 0.2s, color 0.2s, box-shadow 0.2s",
               }}
               onClick={() => handleAddToCart(product)}
             >
@@ -265,8 +289,8 @@ const ProductDetailPage: React.FC = () => {
             </button>
             <button
               style={{
-                background: termsChecked ? "#fda085" : "#ccc",
-                color: "#fff",
+                background: termsChecked ? "linear-gradient(90deg, #fceabb 0%, #fda085 100%)" : "#ccc",
+                color: termsChecked ? "#7b1fa2" : "#fff",
                 border: "none",
                 borderRadius: 10,
                 padding: "16px 32px",
@@ -274,6 +298,8 @@ const ProductDetailPage: React.FC = () => {
                 fontSize: "1.1rem",
                 fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
                 cursor: termsChecked ? "pointer" : "not-allowed",
+                boxShadow: termsChecked ? "0 2px 16px rgba(253,160,133,0.10)" : "none",
+                transition: "background 0.2s, color 0.2s, box-shadow 0.2s",
               }}
               onClick={handleBuyNow}
               disabled={!termsChecked}
