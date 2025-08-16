@@ -74,28 +74,33 @@ const imgStyle: React.CSSProperties = {
 };
 
 const buttonStyle: React.CSSProperties = {
-  background: "linear-gradient(90deg, #e0e7ff 0%, #ede7f6 100%)",
+  background: "#fff",
   color: "#5b4c9a",
-  border: "1px solid #e0e0e0",
+  border: "1.5px solid #bfc6e0",
   borderRadius: "12px",
   padding: "10px 0",
   cursor: "pointer",
-  fontWeight: 700,
+  fontWeight: 600,
   fontSize: "1rem",
   fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
   alignSelf: "center",
-  boxShadow: "0 2px 12px rgba(179,157,219,0.08)",
+  boxShadow: "none",
   transition: "background 0.2s, color 0.2s, box-shadow 0.2s",
   height: 40,
   minWidth: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 8,
 };
 
 const buyNowButtonStyle: React.CSSProperties = {
   ...buttonStyle,
-  background: "linear-gradient(90deg, #fceabb 0%, #fda085 100%)",
-  color: "#7b1fa2",
-  border: "1px solid #fda085",
-  boxShadow: "0 2px 16px rgba(253,160,133,0.10)",
+  background: "linear-gradient(90deg, #4f8cff 0%, #6f7bfd 100%)",
+  color: "#fff",
+  border: "none",
+  fontWeight: 700,
+  boxShadow: "none",
 };
 
 const descStyle: React.CSSProperties = {
@@ -286,7 +291,7 @@ const ListingPage: React.FC = () => {
                 Product Code: {item.orderCode}
               </div>
             )}
-            <div style={{ fontWeight: 700, color: "#7b1fa2", fontSize: "1.1rem", marginBottom: 8 }}>
+            <div style={{ fontWeight: 700, color: "#2574fb", fontSize: "1.1rem", marginBottom: 8 }}>
               ₹{item.price} INR
             </div>
             <div style={{ flexGrow: 1 }} />
@@ -298,6 +303,13 @@ const ListingPage: React.FC = () => {
                   handleAdd(item);
                 }}
               >
+                <span style={{ display: "flex", alignItems: "center", fontSize: 18, marginRight: 6 }}>
+                  <svg width="20" height="20" fill="none" stroke="#5b4c9a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h7.72a2 2 0 0 0 2-1.61L23 6H6" />
+                  </svg>
+                </span>
                 Add to Cart
               </button>
               <button
