@@ -174,8 +174,16 @@ const summaryWrapperStyle: React.CSSProperties = {
   boxShadow: "0 -2px 16px 0 rgba(123,31,162,0.04)",
 };
 
+function getDisplayPrice(item: any) {
+  const discounted = Number(item.discountedPrice);
+  if (!isNaN(discounted) && discounted > 0) {
+    return discounted;
+  }
+  return Number(item.price);
+}
+
 function getCartTotal(cart: any[]) {
-  return cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  return cart.reduce((sum, item) => sum + getDisplayPrice(item) * item.qty, 0);
 }
 
 const API_URL = "http://localhost:9090/lighting/api/orders/place-order";
@@ -407,7 +415,18 @@ const CustomerDetailPage: React.FC = () => {
               />
               <div style={{ flex: 1 }}>
                 <div style={cartTitleStyle}>{item.title || item.name}</div>
-                <div style={cartPriceStyle}>₹{item.price} × {item.qty}</div>
+                <div style={cartPriceStyle}>
+                  {(!isNaN(Number(item.discountedPrice)) && Number(item.discountedPrice) > 0 && item.discountedPrice !== item.price) ? (
+                    <>
+                      <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
+                        ₹{item.price}
+                      </span>
+                      <span style={{ color: "#fda085" }}>₹{item.discountedPrice} × {item.qty}</span>
+                    </>
+                  ) : (
+                    <>₹{item.price} × {item.qty}</>
+                  )}
+                </div>
               </div>
             </div>
           ))}

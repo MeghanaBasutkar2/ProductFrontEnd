@@ -118,14 +118,12 @@ function truncate(str: string, n: number) {
   return str && str.length > n ? str.slice(0, n) + "..." : str;
 }
 
-// Add this utility function near the top (outside the component)
+// Use discountedPrice if it's a valid number and >0, else use price
 function getDisplayPrice(item: any) {
   const discounted = Number(item.discountedPrice);
-  // Use discountedPrice only if it's a valid number and greater than 0
   if (!isNaN(discounted) && discounted > 0) {
     return discounted;
   }
-  // Otherwise, use the regular price
   return Number(item.price);
 }
 
@@ -306,8 +304,17 @@ const ListingPage: React.FC = () => {
                 Product Code: {item.orderCode}
               </div>
             )}
-            <div style={{ fontWeight: 700, color: "#2574fb", fontSize: "1.1rem", marginBottom: 8 }}>
-              ₹{getDisplayPrice(item)} INR
+            <div style={{ fontWeight: 700, color: "#7b1fa2", fontSize: "1.1rem" }}>
+              {(!isNaN(Number(item.discountedPrice)) && Number(item.discountedPrice) > 0 && item.discountedPrice !== item.price) ? (
+                <>
+                  <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
+                    ₹{item.price}
+                  </span>
+                  <span style={{ color: "#fda085" }}>₹{item.discountedPrice} INR</span>
+                </>
+              ) : (
+                <>₹{item.price} INR</>
+              )}
             </div>
             <div style={{ flexGrow: 1 }} />
             <div style={{ display: "flex", gap: 8, width: "100%" }}>

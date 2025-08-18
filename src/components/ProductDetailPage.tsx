@@ -67,7 +67,7 @@ const ProductDetailPage: React.FC = () => {
     history.push("/customer-details", { cart: buyNowCart });
   }
 
-  const getCartTotal = () => cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const getCartTotal = () => cart.reduce((sum, item) => sum + getDisplayPrice(item) * item.qty, 0);
 
   // Share handler
   const handleShare = useCallback(() => {
@@ -85,6 +85,15 @@ const ProductDetailPage: React.FC = () => {
       alert("Product link copied to clipboard!");
     }
   }, [product]);
+
+  // Use discountedPrice if it's a valid number and >0, else use price
+  function getDisplayPrice(item: any) {
+    const discounted = Number(item.discountedPrice);
+    if (!isNaN(discounted) && discounted > 0) {
+      return discounted;
+    }
+    return Number(item.price);
+  }
 
   if (loading && !product) return <div>Loading...</div>;
   if (!product) return <div>Product not found.</div>;
@@ -261,7 +270,7 @@ const ProductDetailPage: React.FC = () => {
             marginBottom: 18,
             letterSpacing: "0.01em"
           }}>
-            {product.discountedPrice && product.discountedPrice !== product.price ? (
+            {(!isNaN(Number(product.discountedPrice)) && Number(product.discountedPrice) > 0 && product.discountedPrice !== product.price) ? (
               <>
                 <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
                   ₹{product.price}
@@ -418,7 +427,16 @@ const ProductDetailPage: React.FC = () => {
                           {item.title || item.name}
                         </div>
                         <div style={{ fontWeight: 700, color: "#7b1fa2", fontSize: "1.1rem" }}>
-                          ₹{item.price} INR
+                          {(!isNaN(Number(item.discountedPrice)) && Number(item.discountedPrice) > 0 && item.discountedPrice !== item.price) ? (
+                            <>
+                              <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
+                                ₹{item.price}
+                              </span>
+                              <span style={{ color: "#fda085" }}>₹{item.discountedPrice} INR</span>
+                            </>
+                          ) : (
+                            <>₹{item.price} INR</>
+                          )}
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
                           <button onClick={() => handleCartQtyChange(item.id, -1)} style={{ fontSize: 18, padding: "2px 8px" }}>
