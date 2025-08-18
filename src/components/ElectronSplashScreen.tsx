@@ -231,9 +231,14 @@ const ElectronSplashScreen: React.FC = () => {
                           letterSpacing: "0.01em",
                           transition: "color 0.2s",
                           userSelect: "none",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
                         }}
                       >
-                        Explore
+                        <span>Explore</span>
+                        <span style={{ fontSize: "1.15em", display: "flex", alignItems: "center" }}>→</span>
                       </div>
                     </div>
                   ))}
