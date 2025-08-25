@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import Lottie from "lottie-react";
 import happyShopperLottie from "./HappyShopperLottie.json";
+import { fetchCart, clearCart } from "../components/api/CartApi";
 
 // --- Theme Colors ---
 const purple = "#7b1fa2";
@@ -189,15 +190,13 @@ function getCartTotal(cart: any[]) {
 const API_URL = "http://localhost:9090/lighting/api/orders/place-order";
 
 const CustomerDetailPage: React.FC = () => {
-  const location = useLocation<{ cart: any[] }>();
   const history = useHistory();
-  const cart = location.state?.cart || [];
 
-  if (!cart.length) {
-    history.replace("/listings");
-    return null;
-  }
+  // --- Cart state from backend ---
+  const [cart, setCart] = useState<any[]>([]);
+  const [cartLoaded, setCartLoaded] = useState(false);
 
+  // --- Form state ---
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
@@ -208,9 +207,32 @@ const CustomerDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
+  // Fetch cart from backend on mount
+  useEffect(() => {
+    let isMounted = true;
+    async function loadCart() {
+      const data = await fetchCart();
+      if (isMounted) {
+        setCart(
+          (Array.isArray(data) ? data : []).map((item: any) => ({
+            ...item,
+            id: item.lineId,
+            name: item.productName,
+            qty: item.quantity,
+            price: item.unitPrice,
+          }))
+        );
+        setCartLoaded(true);
+      }
+    }
+    loadCart();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // Validate all fields
     if (!firstName.trim() || !phone.trim() || !email.trim()) {
       setError("First name, phone number, and email are required.");
       return;
@@ -218,7 +240,6 @@ const CustomerDetailPage: React.FC = () => {
     setError("");
     setLoading(true);
 
-    // Prepare request body as per new API structure
     const subtotal = getCartTotal(cart);
     const reqBody = {
       customer: {
@@ -233,7 +254,7 @@ const CustomerDetailPage: React.FC = () => {
       order: {
         productList: cart.map(item => ({
           id: item.id,
-          name: item.title || item.name, // Use "name" as per API
+          name: item.title || item.name,
           price: item.price,
           quantity: item.qty,
         })),
@@ -251,8 +272,13 @@ const CustomerDetailPage: React.FC = () => {
         throw new Error("Order failed. Please try again.");
       }
 
-      setLoading(false);
+      // Clear cart after successful order
+      await clearCart();
+      setCart([]);
       setShowSuccess(true);
+      setLoading(false);
+
+      // Do NOT navigate to listing page after placing order
     } catch (err) {
       setLoading(false);
       setError(err instanceof Error ? err.message : "Order failed. Please try again.");
@@ -267,7 +293,7 @@ const CustomerDetailPage: React.FC = () => {
     width: "100vw",
     height: "100vh",
     background: "rgba(60, 40, 120, 0.25)",
-    backdropFilter: "blur(12px)", // Strong, instant blur
+    backdropFilter: "blur(12px)",
     zIndex: 9999,
     display: "flex",
     alignItems: "center",
@@ -303,6 +329,9 @@ const CustomerDetailPage: React.FC = () => {
     marginBottom: 12,
   };
 
+  // Show nothing until cart is loaded (prevents flicker/redirect loop)
+  if (!cartLoaded) return null;
+
   return (
     <div style={pageStyle}>
       {showSuccess && (
@@ -330,6 +359,8 @@ const CustomerDetailPage: React.FC = () => {
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>First Name</label>
               <input
+                id="firstName"
+                name="firstName"
                 style={inputStyle}
                 type="text"
                 value={firstName}
@@ -342,6 +373,8 @@ const CustomerDetailPage: React.FC = () => {
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Last Name</label>
               <input
+                id="lastName"
+                name="lastName"
                 style={inputStyle}
                 type="text"
                 value={lastName}
@@ -353,6 +386,8 @@ const CustomerDetailPage: React.FC = () => {
           </div>
           <label style={labelStyle}>Phone Number</label>
           <input
+            id="phone"
+            name="phone"
             style={inputStyle}
             type="tel"
             value={phone}
@@ -363,6 +398,8 @@ const CustomerDetailPage: React.FC = () => {
           />
           <label style={labelStyle}>Email</label>
           <input
+            id="email"
+            name="email"
             style={inputStyle}
             type="email"
             value={email}
@@ -375,6 +412,8 @@ const CustomerDetailPage: React.FC = () => {
             <div style={{ flex: 2 }}>
               <label style={labelStyle}>Address</label>
               <input
+                id="address"
+                name="address"
                 style={inputStyle}
                 type="text"
                 value={address}
@@ -386,6 +425,8 @@ const CustomerDetailPage: React.FC = () => {
             <div style={{ flex: 1 }}>
               <label style={labelStyle}>Pincode</label>
               <input
+                id="pincode"
+                name="pincode"
                 style={inputStyle}
                 type="text"
                 value={pincode}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useLocation, useHistory } from "react-router-dom";
+import { fetchCart, addToCart, updateCartItem, removeCartItem } from "../components/api/CartApi";
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -8,9 +9,8 @@ const ProductDetailPage: React.FC = () => {
 
   const [product, setProduct] = useState<any>(location.state?.product || null);
   const [loading, setLoading] = useState(!location.state?.product);
-  const [termsChecked, setTermsChecked] = useState(false);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
-  const [cart, setCart] = useState<any[]>(location.state?.cart || []);
+  const [cart, setCart] = useState<any[]>([]);
 
   useEffect(() => {
     if (!product) {
@@ -24,37 +24,72 @@ const ProductDetailPage: React.FC = () => {
     }
   }, [id, product]);
 
+  // Fetch cart on mount
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+    async function loadCart() {
+      const data = await fetchCart();
+      setCart(
+        (Array.isArray(data) ? data : []).map((item: any) => ({
+          ...item,
+          id: item.lineId,
+          name: item.productName,
+          qty: item.quantity,
+          price: item.unitPrice,
+        }))
+      );
+    }
+    loadCart();
+  }, []);
 
-  function handleAddToCart(item: any) {
-    setCart((prev) => {
-      const idx = prev.findIndex((p) => p.id === item.id);
-      if (idx > -1) {
-        const updated = [...prev];
-        updated[idx].qty += 1;
-        return updated;
-      }
-      return [...prev, { ...item, qty: 1 }];
-    });
+  // Add to cart using backend API and update cart from response
+  async function handleAddToCart(item: any) {
+    const data = await addToCart(item.id, 1);
+    setCart(
+      (Array.isArray(data) ? data : []).map((item: any) => ({
+        ...item,
+        id: item.lineId,
+        name: item.productName,
+        qty: item.quantity,
+        price: item.unitPrice,
+      }))
+    );
     setCartDrawerOpen(true);
   }
 
-  function handleCartQtyChange(id: string, delta: number) {
-    setCart((prev) =>
-      prev
-        .map((item) =>
-          item.id === id
-            ? { ...item, qty: item.qty + delta }
-            : item
-        )
-        .filter((item) => item.qty > 0)
+  // Change quantity using backend API and update cart from response
+  async function handleCartQtyChange(lineId: string, delta: number) {
+    const cartItem = cart.find((i) => i.id === lineId);
+    if (!cartItem) return;
+    const newQty = cartItem.qty + delta;
+    let data;
+    if (newQty <= 0) {
+      data = await removeCartItem(cartItem.id);
+    } else {
+      data = await updateCartItem(cartItem.id, newQty);
+    }
+    setCart(
+      (Array.isArray(data) ? data : []).map((item: any) => ({
+        ...item,
+        id: item.lineId,
+        name: item.productName,
+        qty: item.quantity,
+        price: item.unitPrice,
+      }))
     );
   }
 
-  function handleRemoveFromCart(id: string) {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+  // Remove from cart using backend API and update cart from response
+  async function handleRemoveFromCart(lineId: string) {
+    const data = await removeCartItem(lineId);
+    setCart(
+      (Array.isArray(data) ? data : []).map((item: any) => ({
+        ...item,
+        id: item.lineId,
+        name: item.productName,
+        qty: item.quantity,
+        price: item.unitPrice,
+      }))
+    );
   }
 
   function handleCheckout() {
@@ -62,7 +97,6 @@ const ProductDetailPage: React.FC = () => {
   }
 
   function handleBuyNow() {
-    if (!termsChecked) return;
     const buyNowCart = [{ ...product, qty: 1 }];
     history.push("/customer-details", { cart: buyNowCart });
   }
@@ -80,7 +114,6 @@ const ProductDetailPage: React.FC = () => {
     if (navigator.share) {
       navigator.share(shareData).catch(() => {});
     } else {
-      // Fallback: copy link to clipboard
       navigator.clipboard.writeText(window.location.href);
       alert("Product link copied to clipboard!");
     }
@@ -103,7 +136,7 @@ const ProductDetailPage: React.FC = () => {
       style={{
         padding: window.innerWidth <= 700 ? "16px 0" : "24px 0",
         fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-        background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+        background: "#fafbfc",
         minHeight: "100vh",
         boxSizing: "border-box",
         width: "100vw",
@@ -112,7 +145,7 @@ const ProductDetailPage: React.FC = () => {
     >
       <div
         style={{
-          maxWidth: 1200,
+          maxWidth: 1100,
           margin: "0 auto",
           display: "flex",
           flexDirection: window.innerWidth <= 700 ? "column" : "row",
@@ -127,12 +160,12 @@ const ProductDetailPage: React.FC = () => {
         {/* Main Product Image */}
         <div
           style={{
-            flex: window.innerWidth <= 700 ? "unset" : "0 0 480px",
+            flex: window.innerWidth <= 700 ? "unset" : "0 0 420px",
             display: "flex",
             justifyContent: "center",
             position: "relative",
-            width: window.innerWidth <= 700 ? "100%" : 480,
-            maxWidth: window.innerWidth <= 700 ? "100%" : 480,
+            width: window.innerWidth <= 700 ? "100%" : 420,
+            maxWidth: window.innerWidth <= 700 ? "100%" : 420,
             marginBottom: window.innerWidth <= 700 ? 20 : 0,
             boxSizing: "border-box",
           }}
@@ -146,13 +179,13 @@ const ProductDetailPage: React.FC = () => {
             alt={product.name}
             style={{
               width: "100%",
-              maxWidth: window.innerWidth <= 700 ? "100%" : 420,
-              height: window.innerWidth <= 700 ? "auto" : 520,
+              maxWidth: window.innerWidth <= 700 ? "100%" : 380,
+              height: window.innerWidth <= 700 ? "auto" : 320,
               objectFit: "cover",
-              borderRadius: 18,
-              background: "linear-gradient(120deg, #f6d365 0%, #fda085 100%)",
-              border: "1.5px solid #ede7f6",
-              boxShadow: "0 4px 32px 0 rgba(123,31,162,0.10)",
+              borderRadius: 16,
+              background: "#f3f6fa",
+              border: "1.5px solid #e0e0e0",
+              boxShadow: "0 4px 24px rgba(120,144,156,0.08)",
             }}
           />
           {/* Share Button */}
@@ -163,7 +196,7 @@ const ProductDetailPage: React.FC = () => {
               top: 18,
               right: 18,
               background: "#fff",
-              border: "1.5px solid #ede7f6",
+              border: "1.5px solid #e0e0e0",
               borderRadius: "50%",
               width: 44,
               height: 44,
@@ -202,7 +235,7 @@ const ProductDetailPage: React.FC = () => {
             style={{
               marginBottom: 18,
               background: "none",
-              border: "1.5px solid #ede7f6",
+              border: "1.5px solid #e0e0e0",
               borderRadius: 8,
               padding: "6px 18px",
               color: "#7b1fa2",
@@ -218,7 +251,7 @@ const ProductDetailPage: React.FC = () => {
           </button>
           <div style={{
             fontWeight: 700,
-            fontSize: "2rem",
+            fontSize: "1.3rem",
             marginBottom: 8,
             color: "#222",
             letterSpacing: "0.01em",
@@ -228,45 +261,43 @@ const ProductDetailPage: React.FC = () => {
           </div>
           <div style={{
             color: "#7b8aaf",
-            fontSize: "1.08rem",
-            marginBottom: 18,
+            fontSize: "0.98rem",
+            marginBottom: 12,
             fontFamily: "'Inter', sans-serif",
             letterSpacing: "0.01em"
           }}>
             {product.productTypeHeading} &mdash; {product.categoryDisplayName}
           </div>
-          {/* Info sections before the price */}
-          <div style={{ margin: "32px 0 0 0" }}>
+          <div style={{ margin: "24px 0 0 0" }}>
             <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
               Product Details
             </div>
-            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 10, whiteSpace: "pre-line" }}>
+            <div style={{ color: "#7b8aaf", fontSize: "0.98rem", marginBottom: 10, whiteSpace: "pre-line" }}>
               {product.description1}
             </div>
             <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
               Technical Details
             </div>
-            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 10, whiteSpace: "pre-line" }}>
+            <div style={{ color: "#7b8aaf", fontSize: "0.98rem", marginBottom: 10, whiteSpace: "pre-line" }}>
               {product.description2}
             </div>
             <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
               Product Code
             </div>
-            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 10 }}>
+            <div style={{ color: "#7b8aaf", fontSize: "0.98rem", marginBottom: 10 }}>
               {product.orderCode || product.id}
             </div>
             <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
               Variants
             </div>
-            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 18 }}>
+            <div style={{ color: "#7b8aaf", fontSize: "0.98rem", marginBottom: 18 }}>
               {[product.variant1, product.variant2, product.variant3].filter(Boolean).join(" | ")}
             </div>
           </div>
-          {/* Price comes after details */}
           <div style={{
             fontWeight: 700,
-            fontSize: "1.3rem",
             color: "#7b1fa2",
+            fontSize: "1.1rem",
             marginBottom: 18,
             letterSpacing: "0.01em"
           }}>
@@ -284,52 +315,68 @@ const ProductDetailPage: React.FC = () => {
           <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
             <button
               style={{
-                background: "linear-gradient(90deg, #e0e7ff 0%, #ede7f6 100%)",
+                background: "#fff",
                 color: "#5b4c9a",
-                border: "1.5px solid #e0e0e0",
-                borderRadius: 10,
-                padding: "16px 32px",
-                fontWeight: 700,
-                fontSize: "1.1rem",
-                fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+                border: "1.5px solid #bfc6e0",
+                borderRadius: "12px",
+                padding: "10px 0",
                 cursor: "pointer",
-                boxShadow: "0 2px 12px rgba(179,157,219,0.08)",
+                fontWeight: 600,
+                fontSize: "1rem",
+                fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+                alignSelf: "center",
+                boxShadow: "none",
                 transition: "background 0.2s, color 0.2s, box-shadow 0.2s",
+                height: 40,
+                minWidth: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                flex: 1,
               }}
               onClick={() => handleAddToCart(product)}
             >
-              ADD TO CART
+              <span style={{ display: "flex", alignItems: "center", fontSize: 18, marginRight: 6 }}>
+                <svg width="20" height="20" fill="none" stroke="#5b4c9a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                  <circle cx="9" cy="21" r="1" />
+                  <circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h7.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+              </span>
+              Add to Cart
             </button>
             <button
               style={{
-                background: termsChecked ? "linear-gradient(90deg, #fceabb 0%, #fda085 100%)" : "#ccc",
-                color: termsChecked ? "#7b1fa2" : "#fff",
+                background: "linear-gradient(90deg, #4f8cff 0%, #6f7bfd 100%)",
+                color: "#fff",
                 border: "none",
-                borderRadius: 10,
-                padding: "16px 32px",
+                borderRadius: "12px",
+                padding: "10px 0",
+                cursor: "pointer",
                 fontWeight: 700,
-                fontSize: "1.1rem",
+                fontSize: "1rem",
                 fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-                cursor: termsChecked ? "pointer" : "not-allowed",
-                boxShadow: termsChecked ? "0 2px 16px rgba(253,160,133,0.10)" : "none",
+                alignSelf: "center",
+                boxShadow: "none",
                 transition: "background 0.2s, color 0.2s, box-shadow 0.2s",
+                height: 40,
+                minWidth: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                flex: 1,
               }}
               onClick={handleBuyNow}
-              disabled={!termsChecked}
             >
-              BUY IT NOW
+              Buy Now
             </button>
           </div>
           <div style={{ marginBottom: "24px" }}>
-            <input
-              type="checkbox"
-              checked={termsChecked}
-              onChange={() => setTermsChecked((prev) => !prev)}
-              id="terms"
-            />
-            <label htmlFor="terms" style={{ marginLeft: "8px" }}>
-              I agree to the terms & conditions
-            </label>
+            <span style={{ color: "#7b8aaf", fontSize: "0.98rem" }}>
+              * By proceeding, you acknowledge and accept our terms and conditions.
+            </span>
           </div>
         </div>
       </div>
@@ -474,12 +521,11 @@ const ProductDetailPage: React.FC = () => {
                     background: "#fff",
                     zIndex: 10,
                     width: "100%",
-                    padding: "24px 0 24px 0", // Add top padding here for a unified block
+                    padding: "24px 0 24px 0",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     boxShadow: "0 -2px 16px rgba(120,144,156,0.07)",
-                    // Remove marginTop to avoid patchy separation
                   }}
                 >
                   <div

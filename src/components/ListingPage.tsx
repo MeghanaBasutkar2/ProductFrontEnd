@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useHistory, useLocation } from "react-router-dom";
+import { fetchCart, addToCart, updateCartItem, removeCartItem } from "../components/api/CartApi";
 
 const cardContainerStyle: React.CSSProperties = {
   display: "grid",
@@ -128,17 +129,10 @@ function getDisplayPrice(item: any) {
 }
 
 const ListingPage: React.FC = () => {
-  const [listings, setListings] = useState<any[]>([]);
-  const [search, setSearch] = useState("");
-  const [cart, setCart] = useState<any[]>(() => {
-    try {
-      const stored = localStorage.getItem("cart");
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [cart, setCart] = useState<any[]>([]);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
+  const [listings, setListings] = useState<any[]>([]);
+  const [search, setSearch] = useState<string>("");
 
   const location = useLocation();
   const history = useHistory();
@@ -154,8 +148,8 @@ const ListingPage: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Fetch products by category (no filtering by productTypeHeading here)
-  useEffect(() => {
+  // --- Refetch products by category ---
+  const fetchProducts = useCallback(() => {
     const params = new URLSearchParams(location.search);
     const category = params.get("category");
     if (category) {
@@ -171,46 +165,102 @@ const ListingPage: React.FC = () => {
   }, [location.search]);
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+    fetchProducts();
+  }, [fetchProducts]);
+
+  // --- Refetch products on back navigation or tab focus ---
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        fetchProducts();
+      }
+    };
+    const handlePopState = () => {
+      fetchProducts();
+    };
+    window.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [fetchProducts]);
+
+  // --- Fetch cart on mount ---
+  useEffect(() => {
+    async function loadCart() {
+      const data = await fetchCart();
+      setCart(
+        (Array.isArray(data) ? data : []).map((item: any) => ({
+          ...item,
+          id: item.lineId,
+          name: item.productName,
+          qty: item.quantity,
+          price: item.unitPrice,
+        }))
+      );
+    }
+    loadCart();
+  }, []);
+
+  async function handleAdd(item: any) {
+    const data = await addToCart(item.id, 1);
+    setCart(
+      (Array.isArray(data) ? data : []).map((item: any) => ({
+        ...item,
+        id: item.lineId,
+        name: item.productName,
+        qty: item.quantity,
+        price: item.unitPrice,
+      }))
+    );
+    setCartDrawerOpen(true);
+  }
+
+  async function handleCartQtyChange(lineId: string, delta: number) {
+    const cartItem = cart.find((i) => i.id === lineId);
+    if (!cartItem) return;
+    const newQty = cartItem.qty + delta;
+    let data;
+    if (newQty <= 0) {
+      data = await removeCartItem(cartItem.id);
+    } else {
+      data = await updateCartItem(cartItem.id, newQty);
+    }
+    setCart(
+      (Array.isArray(data) ? data : []).map((item: any) => ({
+        ...item,
+        id: item.lineId,
+        name: item.productName,
+        qty: item.quantity,
+        price: item.unitPrice,
+      }))
+    );
+  }
+
+  async function handleRemoveFromCart(lineId: string) {
+    const data = await removeCartItem(lineId);
+    setCart(
+      (Array.isArray(data) ? data : []).map((item: any) => ({
+        ...item,
+        id: item.lineId,
+        name: item.productName,
+        qty: item.quantity,
+        price: item.unitPrice,
+      }))
+    );
+  }
 
   // Search logic
   const filteredListings = listings.filter((item) =>
-    [item.name, item.description1, item.productTypeHeading, item.orderCode]
+    [item.name, item.description1, item.productTypeHeading, item.orderCode, (!isNaN(Number(item.discountedPrice)) && Number(item.discountedPrice) > 0)
+    ? item.discountedPrice
+    : item.price]
       .filter(Boolean)
       .join(" ")
       .toLowerCase()
       .includes(search.toLowerCase())
   );
-
-  function handleAdd(item: any) {
-    setCart((prev: any[]) => {
-      const idx = prev.findIndex((p) => p.id === item.id);
-      if (idx > -1) {
-        const updated = [...prev];
-        updated[idx].qty += 1;
-        return updated;
-      }
-      return [...prev, { ...item, qty: 1 }];
-    });
-    setCartDrawerOpen(true);
-  }
-
-  function handleCartQtyChange(id: string, delta: number) {
-    setCart((prev) =>
-      prev
-        .map((item) =>
-          item.id === id
-            ? { ...item, qty: item.qty + delta }
-            : item
-        )
-        .filter((item) => item.qty > 0)
-    );
-  }
-
-  function handleRemoveFromCart(id: string) {
-    setCart((prev) => prev.filter((item) => item.id !== id));
-  }
 
   function handleCheckout() {
     history.push("/customer-details", { cart });
@@ -346,6 +396,31 @@ const ListingPage: React.FC = () => {
                 Buy Now
               </button>
             </div>
+            {item.hurryUpPromoText && (
+              <div
+                style={{
+                  marginTop: 8,
+                  color: "#219150",
+                  background: "linear-gradient(90deg, #43e97b 0%, #38f9d7 100%)",
+                  fontWeight: 500,
+                  fontSize: "0.68rem", // Much smaller font
+                  padding: "3px 8px",
+                  borderRadius: 8,
+                  boxShadow: "0 2px 8px rgba(67,233,123,0.10)",
+                  display: "block",
+                  minWidth: 0,
+                  maxWidth: "100%",
+                  whiteSpace: "normal", // Allow full text to wrap
+                  overflow: "visible",
+                  textOverflow: "clip",
+                  letterSpacing: "0.01em",
+                  wordBreak: "break-word",
+                }}
+                title={item.hurryUpPromoText}
+              >
+                {item.hurryUpPromoText}
+              </div>
+            )}
           </div>
         ))}
       </div>
