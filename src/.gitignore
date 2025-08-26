@@ -5,3 +5,11 @@ node_modules/.cache/.eslintcache
 
 # Node / build junk
 node_modules/.cache/dist/build/
+
+node_modules/
+node_modules/.cache/
+.cache/
+dist/
+build/
+*.log
+.DS_Store
