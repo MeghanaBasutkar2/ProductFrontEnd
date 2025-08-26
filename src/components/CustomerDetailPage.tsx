@@ -214,13 +214,15 @@ const CustomerDetailPage: React.FC = () => {
       const data = await fetchCart();
       if (isMounted) {
         setCart(
-          (Array.isArray(data) ? data : []).map((item: any) => ({
-            ...item,
-            id: item.lineId,
-            name: item.productName,
-            qty: item.quantity,
-            price: item.unitPrice,
-          }))
+          Array.isArray(data.items)
+            ? data.items.map((item: any) => ({
+                ...item,
+                id: item.lineId,
+                name: item.productName,
+                qty: item.quantity,
+                price: item.unitPrice,
+              }))
+            : []
         );
         setCartLoaded(true);
       }

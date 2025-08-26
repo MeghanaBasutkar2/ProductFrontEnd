@@ -29,13 +29,15 @@ const ProductDetailPage: React.FC = () => {
     async function loadCart() {
       const data = await fetchCart();
       setCart(
-        (Array.isArray(data) ? data : []).map((item: any) => ({
-          ...item,
-          id: item.lineId,
-          name: item.productName,
-          qty: item.quantity,
-          price: item.unitPrice,
-        }))
+        Array.isArray(data.items)
+          ? data.items.map((item: any) => ({
+              ...item,
+              id: item.lineId,
+              name: item.productName,
+              qty: item.quantity,
+              price: item.unitPrice,
+            }))
+          : []
       );
     }
     loadCart();
@@ -45,13 +47,15 @@ const ProductDetailPage: React.FC = () => {
   async function handleAddToCart(item: any) {
     const data = await addToCart(item.id, 1);
     setCart(
-      (Array.isArray(data) ? data : []).map((item: any) => ({
-        ...item,
-        id: item.lineId,
-        name: item.productName,
-        qty: item.quantity,
-        price: item.unitPrice,
-      }))
+      Array.isArray(data.items)
+        ? data.items.map((item: any) => ({
+            ...item,
+            id: item.lineId,
+            name: item.productName,
+            qty: item.quantity,
+            price: item.unitPrice,
+          }))
+        : []
     );
     setCartDrawerOpen(true);
   }
@@ -68,13 +72,15 @@ const ProductDetailPage: React.FC = () => {
       data = await updateCartItem(cartItem.id, newQty);
     }
     setCart(
-      (Array.isArray(data) ? data : []).map((item: any) => ({
-        ...item,
-        id: item.lineId,
-        name: item.productName,
-        qty: item.quantity,
-        price: item.unitPrice,
-      }))
+      Array.isArray(data.items)
+        ? data.items.map((item: any) => ({
+            ...item,
+            id: item.lineId,
+            name: item.productName,
+            qty: item.quantity,
+            price: item.unitPrice,
+          }))
+        : []
     );
   }
 
@@ -82,13 +88,15 @@ const ProductDetailPage: React.FC = () => {
   async function handleRemoveFromCart(lineId: string) {
     const data = await removeCartItem(lineId);
     setCart(
-      (Array.isArray(data) ? data : []).map((item: any) => ({
-        ...item,
-        id: item.lineId,
-        name: item.productName,
-        qty: item.quantity,
-        price: item.unitPrice,
-      }))
+      Array.isArray(data.items)
+        ? data.items.map((item: any) => ({
+            ...item,
+            id: item.lineId,
+            name: item.productName,
+            qty: item.quantity,
+            price: item.unitPrice,
+          }))
+        : []
     );
   }
 
