@@ -191,32 +191,38 @@ const ListingPage: React.FC = () => {
     async function loadCart() {
       const data = await fetchCart();
       setCart(
-        (Array.isArray(data) ? data : []).map((item: any) => ({
-          ...item,
-          id: item.lineId,
-          name: item.productName,
-          qty: item.quantity,
-          price: item.unitPrice,
-        }))
+        Array.isArray(data.items)
+          ? data.items.map((item: any) => ({
+              ...item,
+              id: item.lineId,
+              name: item.productName,
+              qty: item.quantity,
+              price: item.unitPrice,
+            }))
+          : []
       );
     }
     loadCart();
   }, []);
 
+  // --- Add to Cart ---
   async function handleAdd(item: any) {
     const data = await addToCart(item.id, 1);
     setCart(
-      (Array.isArray(data) ? data : []).map((item: any) => ({
-        ...item,
-        id: item.lineId,
-        name: item.productName,
-        qty: item.quantity,
-        price: item.unitPrice,
-      }))
+      Array.isArray(data.items)
+        ? data.items.map((item: any) => ({
+            ...item,
+            id: item.lineId,
+            name: item.productName,
+            qty: item.quantity,
+            price: item.unitPrice,
+          }))
+        : []
     );
     setCartDrawerOpen(true);
   }
 
+  // --- Change Cart Quantity ---
   async function handleCartQtyChange(lineId: string, delta: number) {
     const cartItem = cart.find((i) => i.id === lineId);
     if (!cartItem) return;
@@ -228,26 +234,31 @@ const ListingPage: React.FC = () => {
       data = await updateCartItem(cartItem.id, newQty);
     }
     setCart(
-      (Array.isArray(data) ? data : []).map((item: any) => ({
-        ...item,
-        id: item.lineId,
-        name: item.productName,
-        qty: item.quantity,
-        price: item.unitPrice,
-      }))
+      Array.isArray(data.items)
+        ? data.items.map((item: any) => ({
+            ...item,
+            id: item.lineId,
+            name: item.productName,
+            qty: item.quantity,
+            price: item.unitPrice,
+          }))
+        : []
     );
   }
 
+  // --- Remove from Cart ---
   async function handleRemoveFromCart(lineId: string) {
     const data = await removeCartItem(lineId);
     setCart(
-      (Array.isArray(data) ? data : []).map((item: any) => ({
-        ...item,
-        id: item.lineId,
-        name: item.productName,
-        qty: item.quantity,
-        price: item.unitPrice,
-      }))
+      Array.isArray(data.items)
+        ? data.items.map((item: any) => ({
+            ...item,
+            id: item.lineId,
+            name: item.productName,
+            qty: item.quantity,
+            price: item.unitPrice,
+          }))
+        : []
     );
   }
 

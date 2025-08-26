@@ -255,7 +255,7 @@ const CustomerDetailPage: React.FC = () => {
       subtotal,
       order: {
         productList: cart.map(item => ({
-          id: item.id,
+          id: item.productId,
           name: item.title || item.name,
           price: item.price,
           quantity: item.qty,
