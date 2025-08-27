@@ -142,13 +142,26 @@ const ProductDetailPage: React.FC = () => {
   return (
     <div
       style={{
-        padding: window.innerWidth <= 700 ? "16px 0" : "24px 0",
-        fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-        background: "#fafbfc",
         minHeight: "100vh",
-        boxSizing: "border-box",
         width: "100vw",
+        background: "linear-gradient(135deg, #f6f6f6 60%, #e9e9ff 100%)",
+        fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+        margin: 0,
+        padding: 0,
+        boxSizing: "border-box",
+        border: "none",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0,
+        overflowY: "auto",
         overflowX: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        paddingTop: 32, // Add this line for spacing
       }}
     >
       <div
@@ -314,7 +327,7 @@ const ProductDetailPage: React.FC = () => {
                 <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
                   ₹{product.price}
                 </span>
-                <span style={{ color: "#fda085" }}>₹{product.discountedPrice} INR</span>
+                <span style={{ color: "#4f8cff" }}>₹{product.discountedPrice} INR</span>
               </>
             ) : (
               <>₹{product.price} INR</>
@@ -481,13 +494,13 @@ const ProductDetailPage: React.FC = () => {
                         <div style={{ fontWeight: 600, fontSize: "1.05rem", marginBottom: 4 }}>
                           {item.title || item.name}
                         </div>
-                        <div style={{ fontWeight: 700, color: "#7b1fa2", fontSize: "1.1rem" }}>
+                        <div style={{ fontWeight: 700, color: "#4f8cff", fontSize: "1.1rem" }}>
                           {(!isNaN(Number(item.discountedPrice)) && Number(item.discountedPrice) > 0 && item.discountedPrice !== item.price) ? (
                             <>
                               <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
                                 ₹{item.price}
                               </span>
-                              <span style={{ color: "#fda085" }}>₹{item.discountedPrice} INR</span>
+                              <span style={{ color: "#4f8cff" }}>₹{item.discountedPrice} INR</span>
                             </>
                           ) : (
                             <>₹{item.price} INR</>
@@ -505,7 +518,7 @@ const ProductDetailPage: React.FC = () => {
                             onClick={() => handleRemoveFromCart(item.id)}
                             style={{
                               marginLeft: 12,
-                              color: "#fda085",
+                              color: "#7b8aaf",
                               background: "none",
                               border: "none",
                               cursor: "pointer",
@@ -541,13 +554,13 @@ const ProductDetailPage: React.FC = () => {
                       fontWeight: 600,
                       margin: "0 0 12px 0",
                       textAlign: "center",
-                      color: "#7b1fa2",
+                      color: "#4f8cff",
                       fontSize: "1.08rem",
                       width: "100%",
                     }}
                   >
                     Subtotal:{" "}
-                    <span style={{ color: "#7b1fa2", fontWeight: 700 }}>₹{getCartTotal()} INR</span>
+                    <span style={{ color: "#4f8cff", fontWeight: 700 }}>₹{getCartTotal()} INR</span>
                   </div>
                   <button
                     style={{

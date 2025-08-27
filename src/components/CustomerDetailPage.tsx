@@ -14,8 +14,21 @@ const cardBg = "rgba(255,255,255,0.98)";
 const pageStyle: React.CSSProperties = {
   display: "flex",
   minHeight: "100vh",
-  background: bgGradient,
+  width: "100vw",
+  background: "linear-gradient(135deg, #f6f6f6 60%, #e9e9ff 100%)",
   fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+  margin: 0,
+  padding: 0,
+  boxSizing: "border-box",
+  border: "none",
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  zIndex: 0,
+  overflowY: "auto",
+  overflowX: "hidden",
 };
 
 const leftStyle: React.CSSProperties = {
@@ -151,7 +164,7 @@ const cartTitleStyle: React.CSSProperties = {
 
 const cartPriceStyle: React.CSSProperties = {
   fontWeight: 700,
-  color: blue,
+  color: "#4f8cff", // Use theme blue for all prices
   fontSize: "1.08rem",
 };
 
@@ -165,7 +178,7 @@ const summaryWrapperStyle: React.CSSProperties = {
   textAlign: "right",
   fontWeight: 700,
   fontSize: "1.15rem",
-  color: purple,
+  color: "#4f8cff", // Use theme blue for subtotal
   height: 64,
   display: "flex",
   alignItems: "center",
@@ -464,7 +477,7 @@ const CustomerDetailPage: React.FC = () => {
                       <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
                         ₹{item.price}
                       </span>
-                      <span style={{ color: "#fda085" }}>₹{item.discountedPrice} × {item.qty}</span>
+                      <span style={{ color: "#4f8cff" }}>₹{item.discountedPrice} × {item.qty}</span>
                     </>
                   ) : (
                     <>₹{item.price} × {item.qty}</>

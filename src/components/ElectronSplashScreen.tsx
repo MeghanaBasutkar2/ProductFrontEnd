@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import Lottie from "lottie-react";
+import splashLottie from "../components/splash-lottie.json";
 
 const pageStyle: React.CSSProperties = {
   background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
@@ -52,10 +54,10 @@ const cardContainerStyle: React.CSSProperties = {
 
 const cardStyle: React.CSSProperties = {
   background: "rgba(255,255,255,0.97)",
-  borderRadius: "28px", // Slightly smaller radius
+  borderRadius: "24px", // slightly smaller radius
   boxShadow: "0 6px 24px rgba(0,0,0,0.10)",
-  padding: "28px 18px", // Reduced padding inside card
-  width: "240px", // Reduced card width
+  padding: "20px 12px", // reduced padding
+  width: "180px", // reduced card width
   textAlign: "center",
   cursor: "pointer",
   transition: "transform 0.22s cubic-bezier(.4,2,.6,1), box-shadow 0.22s",
@@ -63,7 +65,11 @@ const cardStyle: React.CSSProperties = {
   border: "2px solid #fff",
   position: "relative",
   overflow: "hidden",
-  marginBottom: "24px", // Reduced bottom margin
+  marginBottom: "20px", // reduced bottom margin
+  minHeight: 160, // reduced card height
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-end",
 };
 
 const cardHoverStyle: React.CSSProperties = {
@@ -89,15 +95,16 @@ const contentWrapperStyle: React.CSSProperties = {
 
 const headerStyle: React.CSSProperties = {
   margin: "0 0 12px 0",
-  fontWeight: 900,
-  fontSize: "2.8rem",
-  color: "#222",
-  textAlign: "center", // Center align
-  letterSpacing: "0.04em",
-  fontFamily: "'Poppins', 'Playfair Display', serif",
-  textShadow: "0 4px 24px rgba(0,0,0,0.18)",
+  fontWeight: 500, // Thinner font weight for a sleeker look
+  fontSize: "2.1rem",
+  color: "#a78bfa",   // Lighter violet for a softer appearance
+  textAlign: "center",
+  letterSpacing: "0.01em",
+  fontFamily: "'Montserrat', 'Poppins', 'Inter', Arial, sans-serif",
+  textShadow: "none",
   paddingLeft: 0,
   boxSizing: "border-box",
+  fontStyle: "normal",
 };
 
 const subHeaderStyle: React.CSSProperties = {
@@ -129,7 +136,6 @@ const ElectronSplashScreen: React.FC = () => {
 
   const history = useHistory();
 
-  // Pass only categoryId, categoryDisplayName, productTypeId, and productTypeHeading in the URL
   const handleProductTypeClick = (
     categoryId: string,
     categoryDisplayName: string,
@@ -146,18 +152,16 @@ const ElectronSplashScreen: React.FC = () => {
   return (
     <div style={pageStyle}>
       <div style={lampContainerStyle}>
-        {/* SVG Lamp Illustration */}
-        <svg style={lampSVGStyle} viewBox="0 0 180 180" fill="none">
-          <rect x="87" y="10" width="6" height="60" rx="3" fill="#222" />
-          <ellipse cx="90" cy="80" rx="60" ry="12" fill="#ffe7b2" opacity="0.3" />
-          <polygon points="40,70 140,70 90,130" fill="#f6d365" />
-          <ellipse cx="90" cy="130" rx="22" ry="8" fill="#fffbe7" />
-          <circle cx="90" cy="120" r="13" fill="#fffde7" />
-          <circle cx="90" cy="120" r="7" fill="#fffbe7" />
-        </svg>
+        {/* Splash Lottie Animation */}
+        <Lottie
+          animationData={splashLottie}
+          loop
+          autoplay
+          style={{ width: 180, height: 180, marginBottom: "-32px" }}
+        />
       </div>
       <div style={contentWrapperStyle}>
-        <div style={headerStyle}>Electron Innovations</div>
+        <div style={headerStyle}>ElectronInnovations</div>
         <div style={subHeaderStyle}>Ignite Your Imagination With Light</div>
         {loading ? (
           <div style={{ textAlign: "center", margin: "32px 0" }}>Loading...</div>
@@ -179,7 +183,24 @@ const ElectronSplashScreen: React.FC = () => {
                   {cat.items.map((type: any) => (
                     <div
                       key={type.productTypeId}
-                      style={cardStyle}
+                      style={{
+                        ...cardStyle,
+                        background: type.imageUrl
+                          ? `url(${type.imageUrl}) center center/cover no-repeat`
+                          : cardStyle.background,
+                        position: "relative",
+                        color: "#222",
+                        cursor: "pointer",
+                        border: "2px solid #fff",
+                        boxShadow: "0 6px 24px rgba(0,0,0,0.10)",
+                        transition: "transform 0.22s cubic-bezier(.4,2,.6,1), box-shadow 0.22s",
+                        overflow: "hidden",
+                        marginBottom: "24px",
+                        minHeight: 220,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "flex-end",
+                      }}
                       onClick={() =>
                         handleProductTypeClick(
                           cat.id,
@@ -189,56 +210,69 @@ const ElectronSplashScreen: React.FC = () => {
                         )
                       }
                     >
-                      <div style={{ fontSize: "2rem", marginBottom: 10 }}>💡</div>
+                      {/* Overlay for readability */}
                       <div
                         style={{
-                          fontWeight: 700,
-                          fontSize: "1.15rem",
-                          marginBottom: 8,
-                          minHeight: 52, // Adjusted for two lines
-                          maxHeight: 52, // Adjusted for two lines
-                          maxWidth: 180,
-                          width: 180,
-                          overflow: "hidden",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          textOverflow: "ellipsis",
-                          textAlign: "center",
-                          marginLeft: "auto",
-                          marginRight: "auto",
-                          alignItems: "center",
-                          justifyContent: "center",
+                          position: "absolute",
+                          inset: 0,
+                          background: type.imageUrl
+                            ? "linear-gradient(0deg, rgba(255,255,255,0.92) 40%, rgba(255,255,255,0.12) 100%)"
+                            : "none",
+                          zIndex: 1,
                         }}
-                        title={type.productTypeHeading}
-                      >
-                        {type.productTypeHeading}
-                      </div>
-                      <div
-                        style={{
-                          marginTop: 12,
-                          color: "#a77fd9",
-                          background: "none",
-                          border: "none",
-                          borderRadius: 12,
-                          padding: 0,
-                          width: "100%",
-                          fontWeight: 500,
-                          fontSize: "1rem",
-                          cursor: "pointer",
-                          fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-                          opacity: 0.85,
-                          letterSpacing: "0.01em",
-                          transition: "color 0.2s",
-                          userSelect: "none",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: 8,
-                        }}
-                      >
-                        <span>Explore</span>
-                        <span style={{ fontSize: "1.15em", display: "flex", alignItems: "center" }}>→</span>
+                      />
+                      <div style={{ position: "relative", zIndex: 2 }}>
+                        <div
+                          style={{
+                            fontWeight: 700,
+                            fontSize: "1.15rem",
+                            marginBottom: 8,
+                            minHeight: 52,
+                            maxHeight: 52,
+                            maxWidth: 180,
+                            width: 180,
+                            overflow: "hidden",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            textOverflow: "ellipsis",
+                            textAlign: "center",
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#181818",
+                          }}
+                          title={type.productTypeHeading}
+                        >
+                          {type.productTypeHeading}
+                        </div>
+                        <div
+                          style={{
+                            marginTop: 12,
+                            color: "#a77fd9",
+                            background: "none",
+                            border: "none",
+                            borderRadius: 12,
+                            padding: 0,
+                            width: "100%",
+                            fontWeight: 500,
+                            fontSize: "1rem",
+                            cursor: "pointer",
+                            fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+                            opacity: 0.85,
+                            letterSpacing: "0.01em",
+                            transition: "color 0.2s",
+                            userSelect: "none",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 8,
+                          }}
+                        >
+                          <span>Explore</span>
+                          <span style={{ fontSize: "1.15em", display: "flex", alignItems: "center" }}>→</span>
+                        </div>
                       </div>
                     </div>
                   ))}

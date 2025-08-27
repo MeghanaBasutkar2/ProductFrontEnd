@@ -282,13 +282,26 @@ const ListingPage: React.FC = () => {
   return (
     <div
       style={{
-        padding: "24px",
-        fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
         minHeight: "100vh",
-        background: "#fafbfc",
+        width: "100vw",
+        background: "linear-gradient(135deg, #f6f6f6 60%, #e9e9ff 100%)",
+        fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+        margin: 0,
+        padding: 0,
+        boxSizing: "border-box",
+        border: "none",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0,
+        overflowY: "auto",
+        overflowX: "hidden",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        paddingTop: 32, // Add this line for spacing
       }}
     >
       <div
@@ -365,13 +378,13 @@ const ListingPage: React.FC = () => {
                 Product Code: {item.orderCode}
               </div>
             )}
-            <div style={{ fontWeight: 700, color: "#7b1fa2", fontSize: "1.1rem" }}>
+            <div style={{ fontWeight: 700, color: "#4f8cff", fontSize: "1.1rem" }}>
               {(!isNaN(Number(item.discountedPrice)) && Number(item.discountedPrice) > 0 && item.discountedPrice !== item.price) ? (
                 <>
                   <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
                     ₹{item.price}
                   </span>
-                  <span style={{ color: "#fda085" }}>₹{item.discountedPrice} INR</span>
+                  <span style={{ color: "#4f8cff" }}>₹{item.discountedPrice} INR</span>
                 </>
               ) : (
                 <>₹{item.price} INR</>
@@ -454,8 +467,8 @@ const ListingPage: React.FC = () => {
         >
           <div
             style={{
-              width: 400,
-              maxWidth: "90vw",
+              width: window.innerWidth <= 700 ? "100vw" : 400,
+              maxWidth: "100vw",
               height: "100vh",
               background: "#fff",
               padding: "32px 0 0 0",
@@ -510,7 +523,11 @@ const ListingPage: React.FC = () => {
                       }}
                     >
                       <img
-                        src={item.imageUrl && item.imageUrl !== "default.jpg" ? item.imageUrl : "https://img.icons8.com/ios-filled/200/light.png"}
+                        src={
+                          item.imageUrl && item.imageUrl !== "default.jpg"
+                            ? item.imageUrl
+                            : "https://img.icons8.com/ios-filled/200/light.png"
+                        }
                         alt={item.name}
                         style={{
                           width: 64,
@@ -523,14 +540,34 @@ const ListingPage: React.FC = () => {
                       />
                       <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: 600, fontSize: "1.05rem", marginBottom: 4 }}>{item.title || item.name}</div>
-                        <div style={{ fontWeight: 700, color: "#7b1fa2", fontSize: "1.1rem" }}>
-                          ₹{getDisplayPrice(item)} INR
+                        <div style={{ fontWeight: 700, color: "#4f8cff", fontSize: "1.1rem" }}>
+                          {(!isNaN(Number(item.discountedPrice)) && Number(item.discountedPrice) > 0 && item.discountedPrice !== item.price) ? (
+                            <>
+                              <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
+                                ₹{item.price}
+                              </span>
+                              <span style={{ color: "#4f8cff" }}>₹{item.discountedPrice} INR</span>
+                            </>
+                          ) : (
+                            <>₹{item.price} INR</>
+                          )}
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
                           <button onClick={() => handleCartQtyChange(item.id, -1)} style={{ fontSize: 18, padding: "2px 8px" }}>-</button>
                           <span>{item.qty}</span>
                           <button onClick={() => handleCartQtyChange(item.id, 1)} style={{ fontSize: 18, padding: "2px 8px" }}>+</button>
-                          <button onClick={() => handleRemoveFromCart(item.id)} style={{ marginLeft: 12, color: "#fda085", background: "none", border: "none", cursor: "pointer" }}>Remove</button>
+                          <button
+                            onClick={() => handleRemoveFromCart(item.id)}
+                            style={{
+                              marginLeft: 12,
+                              color: "#7b8aaf", // Updated to theme color
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer"
+                            }}
+                          >
+                            Remove
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -559,13 +596,13 @@ const ListingPage: React.FC = () => {
                       fontWeight: 600,
                       margin: "0 0 12px 0",
                       textAlign: "center",
-                      color: "#7b1fa2",
+                      color: "#4f8cff",
                       fontSize: "1.08rem",
                       width: "100%",
                     }}
                   >
                     Subtotal:{" "}
-                    <span style={{ color: "#7b1fa2", fontWeight: 700 }}>₹{getCartTotal()} INR</span>
+                    <span style={{ color: "#4f8cff", fontWeight: 700 }}>₹{getCartTotal()} INR</span>
                   </div>
                   <button
                     style={{
@@ -581,7 +618,8 @@ const ListingPage: React.FC = () => {
                       fontWeight: 700,
                       fontSize: "1.1rem",
                       boxShadow: "0 2px 8px rgba(120,144,156,0.10)",
-                      letterSpacing: "0.5px",
+                      letterSpacing: "0.01em",
+                      display: "block",
                     }}
                     onClick={handleCheckout}
                   >
