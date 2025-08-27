@@ -550,15 +550,18 @@ const ListingPage: React.FC = () => {
                       <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: 600, fontSize: "1.05rem", marginBottom: 4 }}>{item.title || item.name}</div>
                         <div style={{ fontWeight: 700, color: "#4f8cff", fontSize: "1.1rem" }}>
-                          {(!isNaN(Number(item.discountedPrice)) && Number(item.discountedPrice) > 0 && item.discountedPrice !== item.price) ? (
+                          {(typeof item.discountedPrice === "number" &&
+                            !isNaN(item.discountedPrice) &&
+                            item.discountedPrice > 0 &&
+                            item.discountedPrice < item.price) ? (
                             <>
                               <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
-                                ₹{item.price}
+                                ₹{Number(item.price)}
                               </span>
-                              <span style={{ color: "#4f8cff" }}>₹{item.discountedPrice} INR</span>
+                              <span style={{ color: "#4f8cff" }}>₹{Number(item.discountedPrice)} INR</span>
                             </>
                           ) : (
-                            <>₹{item.price} INR</>
+                            <>₹{Number(item.price)} INR</>
                           )}
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
