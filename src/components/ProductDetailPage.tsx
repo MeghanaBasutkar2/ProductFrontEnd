@@ -30,13 +30,22 @@ const ProductDetailPage: React.FC = () => {
       const data = await fetchCart();
       setCart(
         Array.isArray(data.items)
-          ? data.items.map((item: any) => ({
-              ...item,
-              id: item.lineId,
-              name: item.productName,
-              qty: item.quantity,
-              price: item.unitPrice,
-            }))
+          ? data.items.map((item: any) => {
+              const price = Number(item.unitPrice);
+              const discounted = Number(item.discountPrice);
+              const validDiscount =
+                !isNaN(discounted) &&
+                discounted > 0 &&
+                discounted < price;
+              return {
+                ...item,
+                id: item.lineId,
+                name: item.productName,
+                qty: item.quantity,
+                price,
+                discountedPrice: validDiscount ? discounted : null,
+              };
+            })
           : []
       );
     }
@@ -48,13 +57,22 @@ const ProductDetailPage: React.FC = () => {
     const data = await addToCart(item.id, 1);
     setCart(
       Array.isArray(data.items)
-        ? data.items.map((item: any) => ({
-            ...item,
-            id: item.lineId,
-            name: item.productName,
-            qty: item.quantity,
-            price: item.unitPrice,
-          }))
+        ? data.items.map((item: any) => {
+            const price = Number(item.unitPrice);
+            const discounted = Number(item.discountPrice);
+            const validDiscount =
+              !isNaN(discounted) &&
+              discounted > 0 &&
+              discounted < price;
+            return {
+              ...item,
+              id: item.lineId,
+              name: item.productName,
+              qty: item.quantity,
+              price,
+              discountedPrice: validDiscount ? discounted : null,
+            };
+          })
         : []
     );
     setCartDrawerOpen(true);
@@ -73,13 +91,22 @@ const ProductDetailPage: React.FC = () => {
     }
     setCart(
       Array.isArray(data.items)
-        ? data.items.map((item: any) => ({
-            ...item,
-            id: item.lineId,
-            name: item.productName,
-            qty: item.quantity,
-            price: item.unitPrice,
-          }))
+        ? data.items.map((item: any) => {
+            const price = Number(item.unitPrice);
+            const discounted = Number(item.discountPrice);
+            const validDiscount =
+              !isNaN(discounted) &&
+              discounted > 0 &&
+              discounted < price;
+            return {
+              ...item,
+              id: item.lineId,
+              name: item.productName,
+              qty: item.quantity,
+              price,
+              discountedPrice: validDiscount ? discounted : null,
+            };
+          })
         : []
     );
   }
@@ -89,13 +116,22 @@ const ProductDetailPage: React.FC = () => {
     const data = await removeCartItem(lineId);
     setCart(
       Array.isArray(data.items)
-        ? data.items.map((item: any) => ({
-            ...item,
-            id: item.lineId,
-            name: item.productName,
-            qty: item.quantity,
-            price: item.unitPrice,
-          }))
+        ? data.items.map((item: any) => {
+            const price = Number(item.unitPrice);
+            const discounted = Number(item.discountPrice);
+            const validDiscount =
+              !isNaN(discounted) &&
+              discounted > 0 &&
+              discounted < price;
+            return {
+              ...item,
+              id: item.lineId,
+              name: item.productName,
+              qty: item.quantity,
+              price,
+              discountedPrice: validDiscount ? discounted : null,
+            };
+          })
         : []
     );
   }
@@ -130,7 +166,12 @@ const ProductDetailPage: React.FC = () => {
   // Use discountedPrice if it's a valid number and >0, else use price
   function getDisplayPrice(item: any) {
     const discounted = Number(item.discountedPrice);
-    if (!isNaN(discounted) && discounted > 0) {
+    if (
+      typeof discounted === "number" &&
+      !isNaN(discounted) &&
+      discounted > 0 &&
+      discounted < Number(item.price)
+    ) {
       return discounted;
     }
     return Number(item.price);
@@ -497,7 +538,12 @@ const ProductDetailPage: React.FC = () => {
                           {item.title || item.name}
                         </div>
                         <div style={{ fontWeight: 700, color: "#4f8cff", fontSize: "1.1rem" }}>
-                          {(!isNaN(Number(item.discountedPrice)) && Number(item.discountedPrice) > 0 && item.discountedPrice !== item.price) ? (
+                          {(
+                            typeof item.discountedPrice === "number" &&
+                            !isNaN(item.discountedPrice) &&
+                            item.discountedPrice > 0 &&
+                            item.discountedPrice < item.price
+                          ) ? (
                             <>
                               <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
                                 ₹{item.price}

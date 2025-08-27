@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { fetchCart, addToCart, updateCartItem, removeCartItem } from "../components/api/CartApi";
 
@@ -120,11 +120,90 @@ function truncate(str: string, n: number) {
 // Use discountedPrice if it's a valid number and >0, else use price
 function getDisplayPrice(item: any) {
   const discounted = Number(item.discountedPrice);
-  if (!isNaN(discounted) && discounted > 0) {
+  if (
+    typeof discounted === "number" &&
+    !isNaN(discounted) &&
+    discounted > 0 &&
+    discounted < Number(item.price)
+  ) {
     return discounted;
   }
   return Number(item.price);
 }
+
+const pillButtonStyle: React.CSSProperties = {
+  borderRadius: 999,
+  border: "1px solid #e0e0e0",
+  background: "#fff",
+  fontWeight: 500,
+  fontSize: "1rem",
+  padding: "8px 20px",
+  marginRight: 12,
+  cursor: "pointer",
+  outline: "none",
+  minWidth: 0,
+  boxShadow: "none",
+  display: "flex",
+  alignItems: "center",
+  height: 40,
+};
+
+const dropdownStyle: React.CSSProperties = {
+  position: "absolute",
+  top: "110%",
+  left: 0,
+  minWidth: 180,
+  background: "#fff",
+  border: "1px solid #e0e0e0",
+  borderRadius: 16,
+  boxShadow: "0 4px 16px rgba(120,144,156,0.10)",
+  zIndex: 100,
+  padding: "8px 0",
+};
+
+const dropdownItemStyle: React.CSSProperties = {
+  padding: "10px 20px",
+  cursor: "pointer",
+  fontSize: "1rem",
+  color: "#222",
+  background: "none",
+  border: "none",
+  textAlign: "left",
+  width: "100%",
+};
+
+const selectedDropdownItemStyle: React.CSSProperties = {
+  ...dropdownItemStyle,
+  fontWeight: 700,
+  background: "#f6f6f6",
+};
+
+const searchBarWrapperStyle: React.CSSProperties = {
+  width: "100%",
+  maxWidth: 600,
+  minWidth: 260,
+  flex: 1,
+  display: "flex",
+  alignItems: "center",
+  marginBottom: "24px",
+  gap: 12,
+};
+
+const searchInputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "0 28px", // Remove vertical padding, keep horizontal
+  height: 40,        // Match pillButtonStyle height
+  borderRadius: 999, // More rounded, pill shape
+  border: "1px solid #e0e0e0",
+  fontSize: "1.08rem",
+  fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+  background: "#fff",
+  boxSizing: "border-box",
+  outline: "none",
+  transition: "border 0.2s",
+  display: "flex",
+  alignItems: "center",
+};
 
 const ListingPage: React.FC = () => {
   const [cart, setCart] = useState<any[]>([]);
@@ -219,13 +298,22 @@ const ListingPage: React.FC = () => {
     const data = await addToCart(item.id, 1);
     setCart(
       Array.isArray(data.items)
-        ? data.items.map((item: any) => ({
-            ...item,
-            id: item.lineId,
-            name: item.productName,
-            qty: item.quantity,
-            price: item.unitPrice,
-          }))
+        ? data.items.map((item: any) => {
+            const price = Number(item.unitPrice);
+            const discounted = Number(item.discountPrice);
+            const validDiscount =
+              !isNaN(discounted) &&
+              discounted > 0 &&
+              discounted < price;
+            return {
+              ...item,
+              id: item.lineId,
+              name: item.productName,
+              qty: item.quantity,
+              price,
+              discountedPrice: validDiscount ? discounted : null,
+            };
+          })
         : []
     );
     setCartDrawerOpen(true);
@@ -243,31 +331,49 @@ const ListingPage: React.FC = () => {
       data = await updateCartItem(cartItem.id, newQty);
     }
     setCart(
-      Array.isArray(data.items)
-        ? data.items.map((item: any) => ({
-            ...item,
-            id: item.lineId,
-            name: item.productName,
-            qty: item.quantity,
-            price: item.unitPrice,
-          }))
-        : []
-    );
+  Array.isArray(data.items)
+    ? data.items.map((item: any) => {
+        const price = Number(item.unitPrice);
+        const discounted = Number(item.discountPrice);
+        const validDiscount =
+          !isNaN(discounted) &&
+          discounted > 0 &&
+          discounted < price;
+        return {
+          ...item,
+          id: item.lineId,
+          name: item.productName,
+          qty: item.quantity,
+          price,
+          discountedPrice: validDiscount ? discounted : null,
+        };
+      })
+    : []
+  );
   }
 
   // --- Remove from Cart ---
   async function handleRemoveFromCart(lineId: string) {
     const data = await removeCartItem(lineId);
     setCart(
-      Array.isArray(data.items)
-        ? data.items.map((item: any) => ({
-            ...item,
-            id: item.lineId,
-            name: item.productName,
-            qty: item.quantity,
-            price: item.unitPrice,
-          }))
-        : []
+  Array.isArray(data.items)
+    ? data.items.map((item: any) => {
+        const price = Number(item.unitPrice);
+        const discounted = Number(item.discountPrice);
+        const validDiscount =
+          !isNaN(discounted) &&
+          discounted > 0 &&
+          discounted < price;
+        return {
+          ...item,
+          id: item.lineId,
+          name: item.productName,
+          qty: item.quantity,
+          price,
+          discountedPrice: validDiscount ? discounted : null,
+        };
+      })
+    : []
     );
   }
 
@@ -281,6 +387,21 @@ const ListingPage: React.FC = () => {
       .toLowerCase()
       .includes(search.toLowerCase())
   );
+
+  // Sorting logic
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<"featured" | "price-low" | "price-high">("featured");
+  const sortDropdownRef = useRef<HTMLDivElement>(null);
+
+  const sortedListings = [...filteredListings].sort((a, b) => {
+    if (sortBy === "price-low") {
+      return getDisplayPrice(a) - getDisplayPrice(b);
+    }
+    if (sortBy === "price-high") {
+      return getDisplayPrice(b) - getDisplayPrice(a);
+    }
+    return 0; // featured
+  });
 
   function handleCheckout() {
     history.push("/customer-details", { cart });
@@ -310,7 +431,7 @@ const ListingPage: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        paddingTop: 32, // Add this line for spacing
+        paddingTop: 32,
       }}
     >
       <div
@@ -333,38 +454,61 @@ const ListingPage: React.FC = () => {
         >
           Find Your Dream Lights
         </div>
-        <div
-          style={{
-            marginBottom: "24px",
-            width: "100%",
-            maxWidth: 600, // Increased width for larger search bar
-            minWidth: 260,
-            flex: 1,
-            display: "flex",
-          }}
-        >
+        <div style={searchBarWrapperStyle}>
           <input
-            style={{
-              width: "100%",
-              padding: "14px 22px", // More padding for a bigger field
-              borderRadius: 12,
-              border: "1px solid #e0e0e0",
-              fontSize: "1.08rem",
-              fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-              background: "#fff",
-              boxSizing: "border-box",
-              outline: "none",
-              transition: "border 0.2s",
-            }}
+            style={searchInputStyle}
             type="text"
-            placeholder="Search based on product name, type, or description"
+            placeholder="Search based on product name, type..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          <div style={{ position: "relative" }} ref={sortDropdownRef}>
+            <button
+              style={{
+                ...pillButtonStyle,
+                minWidth: 0,
+                width: "auto",
+                justifyContent: "center",
+                color: "#5b4c9a",
+                paddingLeft: "0.7em",
+                paddingRight: "0.7em",
+                whiteSpace: "nowrap",
+              }}
+              onClick={() => setSortDropdownOpen((open) => !open)}
+              type="button"
+            >
+              Price Sort
+              <span style={{ marginLeft: 8, fontSize: 16 }}>▼</span>
+            </button>
+            {sortDropdownOpen && (
+              <div style={dropdownStyle}>
+                <button
+                  style={sortBy === "price-low" ? selectedDropdownItemStyle : dropdownItemStyle}
+                  onClick={() => {
+                    setSortBy("price-low");
+                    setSortDropdownOpen(false);
+                  }}
+                  type="button"
+                >
+                  Price-low to high
+                </button>
+                <button
+                  style={sortBy === "price-high" ? selectedDropdownItemStyle : dropdownItemStyle}
+                  onClick={() => {
+                    setSortBy("price-high");
+                    setSortDropdownOpen(false);
+                  }}
+                  type="button"
+                >
+                  Price-high to low
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div style={responsiveStyle}>
-        {filteredListings.map((item) => (
+        {sortedListings.map((item) => (
           <div
             key={item.id}
             style={cardStyleBase}
@@ -388,7 +532,12 @@ const ListingPage: React.FC = () => {
               </div>
             )}
             <div style={{ fontWeight: 700, color: "#4f8cff", fontSize: "1.1rem" }}>
-              {(!isNaN(Number(item.discountedPrice)) && Number(item.discountedPrice) > 0 && item.discountedPrice !== item.price) ? (
+              {(
+                typeof item.discountedPrice === "number" &&
+                !isNaN(item.discountedPrice) &&
+                item.discountedPrice > 0 &&
+                item.discountedPrice < item.price
+              ) ? (
                 <>
                   <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
                     ₹{item.price}
@@ -436,14 +585,14 @@ const ListingPage: React.FC = () => {
                   color: "#219150",
                   background: "linear-gradient(90deg, #43e97b 0%, #38f9d7 100%)",
                   fontWeight: 500,
-                  fontSize: "0.68rem", // Much smaller font
+                  fontSize: "0.68rem",
                   padding: "3px 8px",
                   borderRadius: 8,
                   boxShadow: "0 2px 8px rgba(67,233,123,0.10)",
                   display: "block",
                   minWidth: 0,
                   maxWidth: "100%",
-                  whiteSpace: "normal", // Allow full text to wrap
+                  whiteSpace: "normal",
                   overflow: "visible",
                   textOverflow: "clip",
                   letterSpacing: "0.01em",
@@ -550,10 +699,12 @@ const ListingPage: React.FC = () => {
                       <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: 600, fontSize: "1.05rem", marginBottom: 4 }}>{item.title || item.name}</div>
                         <div style={{ fontWeight: 700, color: "#4f8cff", fontSize: "1.1rem" }}>
-                          {(typeof item.discountedPrice === "number" &&
+                          {(
+                            typeof item.discountedPrice === "number" &&
                             !isNaN(item.discountedPrice) &&
                             item.discountedPrice > 0 &&
-                            item.discountedPrice < item.price) ? (
+                            item.discountedPrice < item.price
+                          ) ? (
                             <>
                               <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
                                 ₹{Number(item.price)}
@@ -572,7 +723,7 @@ const ListingPage: React.FC = () => {
                             onClick={() => handleRemoveFromCart(item.id)}
                             style={{
                               marginLeft: 12,
-                              color: "#7b8aaf", // Updated to theme color
+                              color: "#7b8aaf",
                               background: "none",
                               border: "none",
                               cursor: "pointer"
