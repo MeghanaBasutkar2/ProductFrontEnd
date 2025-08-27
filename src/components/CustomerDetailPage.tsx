@@ -5,18 +5,18 @@ import happyShopperLottie from "./HappyShopperLottie.json";
 import { fetchCart, clearCart } from "../components/api/CartApi";
 
 // --- Theme Colors ---
-const purple = "#7b1fa2";
-const blue = "#3949ab";
-const bgGradient = "linear-gradient(135deg, #e3e6ff 0%, #f3e7fa 100%)";
-const cardBg = "rgba(255,255,255,0.98)";
+const purple = "#5b4c9a";
+const blue = "#4f8cff";
+const bgGradient = "linear-gradient(135deg, #f6f6f6 60%, #e9e9ff 100%)";
+const cardBg = "#fff";
 
 // --- Styles ---
 const pageStyle: React.CSSProperties = {
   display: "flex",
   minHeight: "100vh",
   width: "100vw",
-  background: "linear-gradient(135deg, #f6f6f6 60%, #e9e9ff 100%)",
-  fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+  background: bgGradient,
+  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
   margin: 0,
   padding: 0,
   boxSizing: "border-box",
@@ -33,7 +33,7 @@ const pageStyle: React.CSSProperties = {
 
 const leftStyle: React.CSSProperties = {
   flex: 1,
-  padding: "48px 48px 40px 80px",
+  padding: "48px 32px 40px 32px",
   background: "none",
   display: "flex",
   flexDirection: "column",
@@ -44,9 +44,9 @@ const leftStyle: React.CSSProperties = {
 
 const formCardStyle: React.CSSProperties = {
   background: cardBg,
-  borderRadius: 24,
-  boxShadow: "0 8px 32px rgba(123,31,162,0.08)",
-  padding: "36px 32px 32px 32px",
+  borderRadius: 20,
+  boxShadow: "0 4px 24px rgba(120,144,156,0.10)",
+  padding: "32px 28px 28px 28px",
   width: "100%",
   maxWidth: 480,
   margin: "0 auto",
@@ -57,29 +57,31 @@ const formCardStyle: React.CSSProperties = {
 
 const sectionTitleStyle: React.CSSProperties = {
   fontWeight: 700,
-  fontSize: "1.5rem",
-  margin: "0 0 24px 0",
+  fontSize: "1.35rem",
+  margin: "0 0 22px 0",
   color: purple,
   letterSpacing: "0.01em",
+  fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
 };
 
 const labelStyle: React.CSSProperties = {
-  fontWeight: 600,
-  marginBottom: 6,
-  fontSize: "1rem",
-  color: blue,
+  fontWeight: 500,
+  marginBottom: 5,
+  fontSize: "0.98rem",
+  color: "#222",
+  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
 };
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
   minWidth: 0,
-  padding: "13px 16px",
+  padding: "12px 14px",
   borderRadius: 10,
-  border: `1.5px solid ${purple}`,
-  marginBottom: 18,
-  fontSize: "1.08rem",
-  fontFamily: "'Inter', Arial, sans-serif",
-  background: "#f7f7fa",
+  border: `1.5px solid #e0e0e0`,
+  marginBottom: 16,
+  fontSize: "1.04rem",
+  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
+  background: "#f8f9fb",
   boxSizing: "border-box",
   display: "block",
   outline: "none",
@@ -88,52 +90,52 @@ const inputStyle: React.CSSProperties = {
 
 const inputRowStyle: React.CSSProperties = {
   display: "flex",
-  gap: 16,
-  marginBottom: 18,
+  gap: 14,
+  marginBottom: 16,
 };
 
 const errorStyle: React.CSSProperties = {
   color: "#d32f2f",
-  fontSize: "0.98rem",
-  marginBottom: 12,
-  minHeight: 22,
+  fontSize: "0.97rem",
+  marginBottom: 10,
+  minHeight: 20,
   display: "block",
 };
 
 const submitBtnStyle: React.CSSProperties = {
-  marginTop: 18,
-  background: `linear-gradient(90deg, ${purple} 0%, ${blue} 100%)`,
+  marginTop: 16,
+  background: `linear-gradient(90deg, ${blue} 0%, ${purple} 100%)`,
   color: "#fff",
   border: "none",
   borderRadius: 12,
-  padding: "16px 0",
+  padding: "14px 0",
   width: "100%",
   cursor: "pointer",
-  fontWeight: 700,
-  fontSize: "1.13rem",
-  fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-  boxShadow: "0 2px 12px rgba(123,31,162,0.10)",
+  fontWeight: 600,
+  fontSize: "1.08rem",
+  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
+  boxShadow: "0 2px 12px rgba(91,76,154,0.10)",
   transition: "background 0.2s",
   display: "block",
-  letterSpacing: "0.02em",
+  letterSpacing: "0.01em",
 };
 
 const rightStyle: React.CSSProperties = {
   width: 400,
-  background: "rgba(255,255,255,0.97)",
-  padding: "40px 0 0 0",
-  borderLeft: `2px solid ${purple}22`,
+  background: "#fff",
+  padding: "36px 0 0 0",
+  borderLeft: `1.5px solid #e0e0e0`,
   height: "100vh",
   display: "flex",
   flexDirection: "column",
   position: "relative",
-  boxShadow: "0 0 32px 0 rgba(123,31,162,0.04)",
+  boxShadow: "0 0 24px 0 rgba(120,144,156,0.06)",
 };
 
 const cartListStyle: React.CSSProperties = {
   flex: 1,
   overflowY: "auto",
-  padding: "0 32px 0 32px",
+  padding: "0 24px 0 24px",
   marginBottom: 0,
   minHeight: 0,
 };
@@ -141,31 +143,33 @@ const cartListStyle: React.CSSProperties = {
 const cartItemStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
-  gap: 14,
-  marginBottom: 18,
+  gap: 12,
+  marginBottom: 16,
   borderBottom: "1px solid #eee",
-  paddingBottom: 12,
+  paddingBottom: 10,
 };
 
 const cartImgStyle: React.CSSProperties = {
-  width: 48,
-  height: 48,
+  width: 44,
+  height: 44,
   objectFit: "cover",
   borderRadius: 8,
-  background: "#f3f6fa",
-  border: "1px solid #eee",
+  background: "#f6f6f6",
+  border: "none",
 };
 
 const cartTitleStyle: React.CSSProperties = {
   fontWeight: 600,
-  fontSize: "1.08rem",
-  color: purple,
+  fontSize: "1.02rem",
+  color: "#222",
+  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
 };
 
 const cartPriceStyle: React.CSSProperties = {
   fontWeight: 700,
-  color: "#4f8cff", // Use theme blue for all prices
-  fontSize: "1.08rem",
+  color: blue,
+  fontSize: "1.02rem",
+  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
 };
 
 const summaryWrapperStyle: React.CSSProperties = {
@@ -173,19 +177,19 @@ const summaryWrapperStyle: React.CSSProperties = {
   bottom: 0,
   left: 0,
   right: 0,
-  background: "rgba(255,255,255,0.97)",
-  borderTop: `2px solid ${purple}22`,
+  background: "#fff",
+  borderTop: `1.5px solid #e0e0e0`,
   textAlign: "right",
   fontWeight: 700,
-  fontSize: "1.15rem",
-  color: "#4f8cff", // Use theme blue for subtotal
-  height: 64,
+  fontSize: "1.08rem",
+  color: blue,
+  height: 56,
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-end",
-  padding: "0 32px",
+  padding: "0 24px",
   zIndex: 2,
-  boxShadow: "0 -2px 16px 0 rgba(123,31,162,0.04)",
+  boxShadow: "0 -2px 12px 0 rgba(120,144,156,0.04)",
 };
 
 function getDisplayPrice(item: any) {
@@ -488,7 +492,12 @@ const CustomerDetailPage: React.FC = () => {
           ))}
         </div>
         <div style={summaryWrapperStyle}>
-          Subtotal: <span style={{ color: purple, fontWeight: 800, marginLeft: 8 }}>₹{getCartTotal(cart)} INR</span>
+          <span style={{ color: blue, fontWeight: 700 }}>
+            Subtotal:
+          </span>
+          <span style={{ color: blue, fontWeight: 800, marginLeft: 8 }}>
+            ₹{getCartTotal(cart)} INR
+          </span>
         </div>
       </div>
     </div>

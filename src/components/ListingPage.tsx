@@ -54,11 +54,9 @@ const imgWrapperStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  background: "#f3f6fa",
   borderRadius: "16px",
   marginBottom: "16px",
   overflow: "hidden",
-  border: "1px solid #e0e0e0",
 };
 
 const imgStyle: React.CSSProperties = {
@@ -151,6 +149,17 @@ const ListingPage: React.FC = () => {
   // --- Refetch products by category ---
   const fetchProducts = useCallback(() => {
     const params = new URLSearchParams(location.search);
+    const categoryId = params.get("categoryId");
+    const productTypeId = params.get("productTypeId");
+    if (categoryId && productTypeId) {
+      fetch(`http://localhost:9090/lighting/api/products/by-category/${encodeURIComponent(categoryId)}/by-type/${encodeURIComponent(productTypeId)}`, {
+        headers: { Accept: "application/json" },
+      })
+        .then((res) => res.json())
+        .then((data) => setListings(data))
+        .catch(() => setListings([]));
+      return;
+    }
     const category = params.get("category");
     if (category) {
       fetch(`http://localhost:9090/lighting/api/products/by-category/${encodeURIComponent(category)}`, {

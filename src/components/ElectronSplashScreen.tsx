@@ -143,9 +143,7 @@ const ElectronSplashScreen: React.FC = () => {
     productTypeHeading: string
   ) => {
     history.push(
-      `/listings?category=${encodeURIComponent(categoryId)}&categoryName=${encodeURIComponent(
-        categoryDisplayName
-      )}&type=${encodeURIComponent(productTypeHeading)}&typeId=${encodeURIComponent(productTypeId)}`
+      `/listings?categoryId=${encodeURIComponent(categoryId)}&productTypeId=${encodeURIComponent(productTypeId)}`
     );
   };
 

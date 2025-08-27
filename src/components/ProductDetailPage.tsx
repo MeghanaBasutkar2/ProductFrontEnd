@@ -202,11 +202,13 @@ const ProductDetailPage: React.FC = () => {
               width: "100%",
               maxWidth: window.innerWidth <= 700 ? "100%" : 380,
               height: window.innerWidth <= 700 ? "auto" : 320,
-              objectFit: "cover",
+              objectFit: "contain", // Show full image, no cropping
               borderRadius: 16,
-              background: "#f3f6fa",
+              background: "#fff",
               border: "1.5px solid #e0e0e0",
               boxShadow: "0 4px 24px rgba(120,144,156,0.08)",
+              display: "block",
+              margin: "0 auto",
             }}
           />
           {/* Share Button */}
