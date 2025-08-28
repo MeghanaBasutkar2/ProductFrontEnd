@@ -452,9 +452,16 @@ const ListingPage: React.FC = () => {
           >
             <div style={imgWrapperStyle}>
               <img
-                src={item.imageUrl && item.imageUrl !== "default.jpg" ? item.imageUrl : "https://img.icons8.com/ios-filled/200/light.png"}
+                src={
+                  item.imageUrl && item.imageUrl !== "default.jpg"
+                    ? item.imageUrl
+                    : undefined // Don't show placeholder
+                }
                 alt={item.name}
-                style={imgStyle}
+                style={{
+                  ...imgStyle,
+                  display: item.imageUrl && item.imageUrl !== "default.jpg" ? "block" : "none", // Hide img tag if no image
+                }}
               />
             </div>
             <div
@@ -641,22 +648,38 @@ const ListingPage: React.FC = () => {
                         paddingBottom: 16,
                       }}
                     >
-                      <img
-                        src={
-                          item.imageUrl && item.imageUrl !== "default.jpg"
-                            ? item.imageUrl
-                            : "https://img.icons8.com/ios-filled/200/light.png"
-                        }
-                        alt={item.name}
-                        style={{
-                          width: 64,
-                          height: 64,
-                          objectFit: "cover",
-                          borderRadius: 8,
-                          background: "#f3f6fa",
-                          border: "1px solid #eee",
-                        }}
-                      />
+                      {item.imageUrl && item.imageUrl !== "default.jpg" ? (
+                        <img
+                          src={item.imageUrl}
+                          alt={item.name}
+                          style={{
+                            width: 64,
+                            height: 64,
+                            objectFit: "cover",
+                            borderRadius: 8,
+                            background: "#f3f6fa",
+                            border: "1px solid #eee",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: 64,
+                            height: 64,
+                            borderRadius: 8,
+                            background: "#f3f6fa",
+                            border: "1px solid #eee",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#bfc6e0",
+                            fontSize: 22,
+                            fontWeight: 600,
+                          }}
+                        >
+                          {/* Optionally, show initials or nothing */}
+                        </div>
+                      )}
                       <div style={{ flex: 1 }}>
                         <div
                           style={{
