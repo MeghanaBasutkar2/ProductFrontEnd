@@ -10,13 +10,16 @@ const blue = "#4f8cff";
 const bgGradient = "linear-gradient(135deg, #f6f6f6 60%, #e9e9ff 100%)";
 const cardBg = "#fff";
 
+// --- Font similar to the image header (e.g., 'Orbitron', 'Rajdhani', or 'Exo') ---
+const futuristicFont = "'Rajdhani', 'Orbitron', 'Exo', Arial, sans-serif";
+
 // --- Styles ---
 const pageStyle: React.CSSProperties = {
   display: "flex",
   minHeight: "100vh",
   width: "100vw",
   background: bgGradient,
-  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
+  fontFamily: futuristicFont,
   margin: 0,
   padding: 0,
   boxSizing: "border-box",
@@ -59,39 +62,48 @@ const sectionTitleStyle: React.CSSProperties = {
   fontWeight: 700,
   fontSize: "1.35rem",
   margin: "0 0 22px 0",
-  color: purple,
+  color: blue,
   letterSpacing: "0.01em",
-  fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+  fontFamily: futuristicFont,
+  textTransform: "capitalize",
 };
 
 const labelStyle: React.CSSProperties = {
   fontWeight: 500,
-  marginBottom: 5,
+  marginBottom: 4, // Make this 4px for all labels for even spacing
   fontSize: "0.98rem",
   color: "#222",
-  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
+  fontFamily: futuristicFont,
 };
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
   minWidth: 0,
-  padding: "12px 14px",
-  borderRadius: 10,
-  border: `1.5px solid #e0e0e0`,
+  padding: "14px 16px",
+  borderRadius: 12,
+  border: `2px solid #e0e0e0`,
   marginBottom: 16,
-  fontSize: "1.04rem",
-  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
+  fontSize: "1.08rem",
+  fontFamily: futuristicFont,
   background: "#f8f9fb",
   boxSizing: "border-box",
   display: "block",
   outline: "none",
   transition: "border 0.2s",
+  boxShadow: "0 2px 8px rgba(120,144,156,0.06)",
 };
 
 const inputRowStyle: React.CSSProperties = {
   display: "flex",
   gap: 14,
   marginBottom: 16,
+};
+
+const labelInputColumn: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  flex: 1,
+  minWidth: 0,
 };
 
 const errorStyle: React.CSSProperties = {
@@ -108,12 +120,12 @@ const submitBtnStyle: React.CSSProperties = {
   color: "#fff",
   border: "none",
   borderRadius: 12,
-  padding: "14px 0",
+  padding: "16px 0",
   width: "100%",
   cursor: "pointer",
-  fontWeight: 600,
-  fontSize: "1.08rem",
-  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
+  fontWeight: 700,
+  fontSize: "1.1rem",
+  fontFamily: futuristicFont,
   boxShadow: "0 2px 12px rgba(91,76,154,0.10)",
   transition: "background 0.2s",
   display: "block",
@@ -121,7 +133,7 @@ const submitBtnStyle: React.CSSProperties = {
 };
 
 const rightStyle: React.CSSProperties = {
-  width: 400,
+  flex: 1,
   background: "#fff",
   padding: "36px 0 0 0",
   borderLeft: `1.5px solid #e0e0e0`,
@@ -130,14 +142,18 @@ const rightStyle: React.CSSProperties = {
   flexDirection: "column",
   position: "relative",
   boxShadow: "0 0 24px 0 rgba(120,144,156,0.06)",
+  minWidth: 340,
+  maxWidth: 540,
+  overflow: "hidden", // Prevent scroll
 };
 
 const cartListStyle: React.CSSProperties = {
-  flex: 1,
+  flex: "0 1 auto",
   overflowY: "auto",
   padding: "0 24px 0 24px",
   marginBottom: 0,
   minHeight: 0,
+  maxHeight: "calc(100vh - 320px)", // Limit cart height so payment is always visible
 };
 
 const cartItemStyle: React.CSSProperties = {
@@ -162,24 +178,19 @@ const cartTitleStyle: React.CSSProperties = {
   fontWeight: 600,
   fontSize: "1.02rem",
   color: "#222",
-  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
+  fontFamily: futuristicFont,
 };
 
 const cartPriceStyle: React.CSSProperties = {
   fontWeight: 700,
   color: blue,
   fontSize: "1.02rem",
-  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
+  fontFamily: futuristicFont,
 };
 
 const summaryWrapperStyle: React.CSSProperties = {
-  position: "sticky",
-  bottom: 0,
-  left: 0,
-  right: 0,
   background: "#fff",
   borderTop: `1.5px solid #e0e0e0`,
-  textAlign: "right",
   fontWeight: 700,
   fontSize: "1.08rem",
   color: blue,
@@ -190,18 +201,50 @@ const summaryWrapperStyle: React.CSSProperties = {
   padding: "0 24px",
   zIndex: 2,
   boxShadow: "0 -2px 12px 0 rgba(120,144,156,0.04)",
+  position: "static",
+  marginBottom: 90, // Give space for payment section
+};
+
+const paymentSectionStyle: React.CSSProperties = {
+  margin: "0 24px 24px 24px",
+  padding: "18px 16px",
+  borderRadius: 14,
+  background: "#f8f9fb",
+  boxShadow: "0 2px 8px rgba(120,144,156,0.06)",
+  display: "flex",
+  flexDirection: "column",
+  gap: 14,
+  position: "absolute",
+  left: 0,
+  right: 0,
+  bottom: 0,
+  zIndex: 10,
+};
+
+const paymentPlaceholderStyle: React.CSSProperties = {
+  background: "#fff",
+  border: "1.5px solid #e0e0e0",
+  borderRadius: 10,
+  padding: "12px 0",
+  textAlign: "center",
+  fontFamily: futuristicFont,
+  fontWeight: 600,
+  color: "#7b8aaf",
+  fontSize: "1.08rem",
+  marginBottom: 0,
+  letterSpacing: "0.04em",
 };
 
 function getDisplayPrice(item: any) {
   const discounted = Number(item.discountedPrice);
-  if (!isNaN(discounted) && discounted > 0) {
+  if (!isNaN(discounted) && discounted > 0 && discounted < Number(item.price)) {
     return discounted;
   }
   return Number(item.price);
 }
 
 function getCartTotal(cart: any[]) {
-  return cart.reduce((sum, item) => sum + getDisplayPrice(item) * item.qty, 0);
+  return cart.reduce((sum, item) => getDisplayPrice(item) * item.qty + sum, 0);
 }
 
 const API_URL = "http://localhost:9090/lighting/api/orders/place-order";
@@ -232,13 +275,22 @@ const CustomerDetailPage: React.FC = () => {
       if (isMounted) {
         setCart(
           Array.isArray(data.items)
-            ? data.items.map((item: any) => ({
-                ...item,
-                id: item.lineId,
-                name: item.productName,
-                qty: item.quantity,
-                price: item.unitPrice,
-              }))
+            ? data.items.map((item: any) => {
+                const price = Number(item.unitPrice);
+                const discounted = Number(item.discountPrice);
+                const validDiscount =
+                  !isNaN(discounted) &&
+                  discounted > 0 &&
+                  discounted < price;
+                return {
+                  ...item,
+                  id: item.lineId,
+                  name: item.productName,
+                  qty: item.quantity,
+                  price,
+                  discountedPrice: validDiscount ? discounted : null,
+                };
+              })
             : []
         );
         setCartLoaded(true);
@@ -373,9 +425,9 @@ const CustomerDetailPage: React.FC = () => {
 
       <div style={leftStyle}>
         <form style={formCardStyle} onSubmit={handleSubmit} autoComplete="off">
-          <div style={sectionTitleStyle}>Contact Information</div>
+          <div style={sectionTitleStyle}>Contact information</div>
           <div style={inputRowStyle}>
-            <div style={{ flex: 1 }}>
+            <div style={labelInputColumn}>
               <label style={labelStyle}>First Name</label>
               <input
                 id="firstName"
@@ -389,7 +441,8 @@ const CustomerDetailPage: React.FC = () => {
                 required
               />
             </div>
-            <div style={{ flex: 1 }}>
+            <div style={{ width: 14 }} /> {/* gap between columns */}
+            <div style={labelInputColumn}>
               <label style={labelStyle}>Last Name</label>
               <input
                 id="lastName"
@@ -403,32 +456,36 @@ const CustomerDetailPage: React.FC = () => {
               />
             </div>
           </div>
-          <label style={labelStyle}>Phone Number</label>
-          <input
-            id="phone"
-            name="phone"
-            style={inputStyle}
-            type="tel"
-            value={phone}
-            onChange={e => setPhone(e.target.value)}
-            placeholder="Phone Number"
-            autoComplete="tel"
-            required
-          />
-          <label style={labelStyle}>Email</label>
-          <input
-            id="email"
-            name="email"
-            style={inputStyle}
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="Email"
-            autoComplete="email"
-            required
-          />
+          <div style={labelInputColumn}>
+            <label style={labelStyle}>Phone Number</label>
+            <input
+              id="phone"
+              name="phone"
+              style={inputStyle}
+              type="tel"
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+              placeholder="Phone Number"
+              autoComplete="tel"
+              required
+            />
+          </div>
+          <div style={labelInputColumn}>
+            <label style={labelStyle}>Email</label>
+            <input
+              id="email"
+              name="email"
+              style={inputStyle}
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="Email"
+              autoComplete="email"
+              required
+            />
+          </div>
           <div style={inputRowStyle}>
-            <div style={{ flex: 2 }}>
+            <div style={{ ...labelInputColumn, flex: 2 }}>
               <label style={labelStyle}>Address</label>
               <input
                 id="address"
@@ -441,7 +498,8 @@ const CustomerDetailPage: React.FC = () => {
                 autoComplete="street-address"
               />
             </div>
-            <div style={{ flex: 1 }}>
+            <div style={{ width: 14 }} />
+            <div style={{ ...labelInputColumn, flex: 1 }}>
               <label style={labelStyle}>Pincode</label>
               <input
                 id="pincode"
@@ -476,7 +534,10 @@ const CustomerDetailPage: React.FC = () => {
               <div style={{ flex: 1 }}>
                 <div style={cartTitleStyle}>{item.title || item.name}</div>
                 <div style={cartPriceStyle}>
-                  {(!isNaN(Number(item.discountedPrice)) && Number(item.discountedPrice) > 0 && item.discountedPrice !== item.price) ? (
+                  {(typeof item.discountedPrice === "number" &&
+                    !isNaN(item.discountedPrice) &&
+                    item.discountedPrice > 0 &&
+                    item.discountedPrice < item.price) ? (
                     <>
                       <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
                         ₹{item.price}
@@ -498,6 +559,13 @@ const CustomerDetailPage: React.FC = () => {
           <span style={{ color: blue, fontWeight: 800, marginLeft: 8 }}>
             ₹{getCartTotal(cart)} INR
           </span>
+        </div>
+        {/* Payment placeholders always visible at the bottom */}
+        <div style={paymentSectionStyle}>
+          <div style={paymentPlaceholderStyle}>UPI / QR Code (Coming Soon)</div>
+          <div style={paymentPlaceholderStyle}>Credit / Debit Card (Coming Soon)</div>
+          <div style={paymentPlaceholderStyle}>Net Banking (Coming Soon)</div>
+          <div style={paymentPlaceholderStyle}>Pay on Delivery</div>
         </div>
       </div>
     </div>

@@ -2,6 +2,9 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { fetchCart, addToCart, updateCartItem, removeCartItem } from "../components/api/CartApi";
 
+const futuristicFont = "'Rajdhani', 'Orbitron', 'Exo', Arial, sans-serif";
+const blue = "#4f8cff";
+
 const cardContainerStyle: React.CSSProperties = {
   display: "grid",
   gridTemplateColumns: "repeat(3, 1fr)",
@@ -446,9 +449,13 @@ const ListingPage: React.FC = () => {
       >
         <div
           style={{
-            fontWeight: 700,
-            fontSize: "2rem",
-            marginBottom: "24px",
+              fontWeight: 700,
+              fontSize: "1.35rem",
+              margin: "0 0 22px 0",
+              color: blue,
+              letterSpacing: "0.01em",
+              fontFamily: futuristicFont,
+              textTransform: "capitalize",
             textAlign: "left",
           }}
         >
