@@ -26,15 +26,24 @@ const pageStyle: React.CSSProperties = {
   border: "none",
 };
 
+const contentWrapperStyle: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "row",
+  width: "100vw",
+  height: "100vh",
+  boxSizing: "border-box",
+};
+
 const leftStyle: React.CSSProperties = {
   flex: 1,
-  padding: "48px 32px 40px 32px",
+  padding: 28, // Remove all padding!
   background: "none",
   display: "flex",
   flexDirection: "column",
   justifyContent: "flex-start",
   minWidth: 340,
   maxWidth: 540,
+  boxSizing: "border-box",
 };
 
 const formCardStyle: React.CSSProperties = {
@@ -44,10 +53,11 @@ const formCardStyle: React.CSSProperties = {
   padding: "32px 28px 28px 28px",
   width: "100%",
   maxWidth: 480,
-  margin: "0 auto",
+  margin: 0, // Remove "0 auto" to left-align
   display: "flex",
   flexDirection: "column",
   gap: 0,
+  boxSizing: "border-box",
 };
 
 const sectionTitleStyle: React.CSSProperties = {
@@ -227,7 +237,19 @@ const CustomerDetailPage: React.FC = () => {
   const [showSuccess, setShowSuccess] = useState(false);
 
   const formCardRef = useRef<HTMLFormElement>(null);
-  const [formCardHeight, setFormCardHeight] = useState<number>(0);
+  const [formCardHeight, setFormCardHeight] = React.useState<number>(0);
+
+  // Measure the height of the contact info box after mount and on resize
+  React.useEffect(() => {
+    function updateHeight() {
+      if (formCardRef.current) {
+        setFormCardHeight(formCardRef.current.offsetHeight);
+      }
+    }
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, [firstName, lastName, phone, email, address, pincode, error, loading]);
 
   // Fetch cart from backend on mount
   useEffect(() => {
@@ -263,18 +285,6 @@ const CustomerDetailPage: React.FC = () => {
       isMounted = false;
     };
   }, []);
-
-  // Measure the height of the contact info box after mount and on resize
-  useEffect(() => {
-    function updateHeight() {
-      if (formCardRef.current) {
-        setFormCardHeight(formCardRef.current.offsetHeight);
-      }
-    }
-    updateHeight();
-    window.addEventListener("resize", updateHeight);
-    return () => window.removeEventListener("resize", updateHeight);
-  }, [firstName, lastName, phone, email, address, pincode, error, loading]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -396,150 +406,151 @@ const CustomerDetailPage: React.FC = () => {
           </div>
         </>
       )}
-
-      <div style={leftStyle}>
-        <form ref={formCardRef} style={formCardStyle} onSubmit={handleSubmit} autoComplete="off">
-          <div style={sectionTitleStyle}>Contact information</div>
-          <div style={inputRowStyle}>
+      <div style={contentWrapperStyle}>
+        <div style={leftStyle}>
+          <form ref={formCardRef} style={formCardStyle} onSubmit={handleSubmit} autoComplete="off">
+            <div style={sectionTitleStyle}>Contact information</div>
+            <div style={inputRowStyle}>
+              <div style={labelInputColumn}>
+                <label style={labelStyle}>First Name</label>
+                <input
+                  id="firstName"
+                  name="firstName"
+                  style={inputStyle}
+                  type="text"
+                  value={firstName}
+                  onChange={e => setFirstName(e.target.value)}
+                  placeholder="First Name"
+                  autoComplete="given-name"
+                  required
+                />
+              </div>
+              <div style={{ width: 14 }} /> {/* gap between columns */}
+              <div style={labelInputColumn}>
+                <label style={labelStyle}>Last Name</label>
+                <input
+                  id="lastName"
+                  name="lastName"
+                  style={inputStyle}
+                  type="text"
+                  value={lastName}
+                  onChange={e => setLastName(e.target.value)}
+                  placeholder="Last Name"
+                  autoComplete="family-name"
+                />
+              </div>
+            </div>
             <div style={labelInputColumn}>
-              <label style={labelStyle}>First Name</label>
+              <label style={labelStyle}>Phone Number</label>
               <input
-                id="firstName"
-                name="firstName"
+                id="phone"
+                name="phone"
                 style={inputStyle}
-                type="text"
-                value={firstName}
-                onChange={e => setFirstName(e.target.value)}
-                placeholder="First Name"
-                autoComplete="given-name"
+                type="tel"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                placeholder="Phone Number"
+                autoComplete="tel"
                 required
               />
             </div>
-            <div style={{ width: 14 }} /> {/* gap between columns */}
             <div style={labelInputColumn}>
-              <label style={labelStyle}>Last Name</label>
+              <label style={labelStyle}>Email</label>
               <input
-                id="lastName"
-                name="lastName"
+                id="email"
+                name="email"
                 style={inputStyle}
-                type="text"
-                value={lastName}
-                onChange={e => setLastName(e.target.value)}
-                placeholder="Last Name"
-                autoComplete="family-name"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="Email"
+                autoComplete="email"
+                required
               />
             </div>
-          </div>
-          <div style={labelInputColumn}>
-            <label style={labelStyle}>Phone Number</label>
-            <input
-              id="phone"
-              name="phone"
-              style={inputStyle}
-              type="tel"
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
-              placeholder="Phone Number"
-              autoComplete="tel"
-              required
-            />
-          </div>
-          <div style={labelInputColumn}>
-            <label style={labelStyle}>Email</label>
-            <input
-              id="email"
-              name="email"
-              style={inputStyle}
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="Email"
-              autoComplete="email"
-              required
-            />
-          </div>
-          <div style={inputRowStyle}>
-            <div style={{ ...labelInputColumn, flex: 2 }}>
-              <label style={labelStyle}>Address</label>
-              <input
-                id="address"
-                name="address"
-                style={inputStyle}
-                type="text"
-                value={address}
-                onChange={e => setAddress(e.target.value)}
-                placeholder="Address"
-                autoComplete="street-address"
-              />
-            </div>
-            <div style={{ width: 14 }} />
-            <div style={{ ...labelInputColumn, flex: 1 }}>
-              <label style={labelStyle}>Pincode</label>
-              <input
-                id="pincode"
-                name="pincode"
-                style={inputStyle}
-                type="text"
-                value={pincode}
-                onChange={e => setPincode(e.target.value)}
-                placeholder="Pincode"
-                autoComplete="postal-code"
-              />
-            </div>
-          </div>
-          <span style={errorStyle}>{error}</span>
-          <button style={submitBtnStyle} type="submit" disabled={loading}>
-            {loading ? "Placing Order..." : "Place Order"}
-          </button>
-        </form>
-      </div>
-      <div style={rightStyle}>
-        <div style={{ ...sectionTitleStyle, fontSize: "1.25rem", margin: "0 0 18px 32px" }}>Your Cart</div>
-        <div
-          style={{
-            ...cartListStyle,
-            maxHeight: formCardHeight ? formCardHeight : 500, // fallback if not measured yet
-            overflowY: "auto",
-            minHeight: 0,
-          }}
-        >
-          {cart.map(item => (
-            <div key={item.id} style={cartItemStyle}>
-              <img
-                src={item.imageUrl && item.imageUrl !== "default.jpg"
-                  ? item.imageUrl
-                  : "https://img.icons8.com/ios-filled/200/light.png"}
-                alt={item.name}
-                style={cartImgStyle}
-              />
-              <div style={{ flex: 1 }}>
-                <div style={cartTitleStyle}>{item.title || item.name}</div>
-                <div style={cartPriceStyle}>
-                  {(typeof item.discountedPrice === "number" &&
-                    !isNaN(item.discountedPrice) &&
-                    item.discountedPrice > 0 &&
-                    item.discountedPrice < item.price) ? (
-                    <>
-                      <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
-                        ₹{item.price}
-                      </span>
-                      <span style={{ color: "#4f8cff" }}>₹{item.discountedPrice} × {item.qty}</span>
-                    </>
-                  ) : (
-                    <>₹{item.price} × {item.qty}</>
-                  )}
-                </div>
+            <div style={inputRowStyle}>
+              <div style={{ ...labelInputColumn, flex: 2 }}>
+                <label style={labelStyle}>Address</label>
+                <input
+                  id="address"
+                  name="address"
+                  style={inputStyle}
+                  type="text"
+                  value={address}
+                  onChange={e => setAddress(e.target.value)}
+                  placeholder="Address"
+                  autoComplete="street-address"
+                />
+              </div>
+              <div style={{ width: 14 }} />
+              <div style={{ ...labelInputColumn, flex: 1 }}>
+                <label style={labelStyle}>Pincode</label>
+                <input
+                  id="pincode"
+                  name="pincode"
+                  style={inputStyle}
+                  type="text"
+                  value={pincode}
+                  onChange={e => setPincode(e.target.value)}
+                  placeholder="Pincode"
+                  autoComplete="postal-code"
+                />
               </div>
             </div>
-          ))}
+            <span style={errorStyle}>{error}</span>
+            <button style={submitBtnStyle} type="submit" disabled={loading}>
+              {loading ? "Placing Order..." : "Place Order"}
+            </button>
+          </form>
         </div>
-        <div style={summaryWrapperStyle}>
-          <span style={{ color: blue, fontWeight: 700 }}>
-            Subtotal:
-          </span>
-          <span style={{ color: blue, fontWeight: 800, marginLeft: 8 }}>
-            ₹{getCartTotal(cart)} INR
-          </span>
+        <div style={rightStyle}>
+          <div style={{ ...sectionTitleStyle, fontSize: "1.25rem", margin: "0 0 18px 32px" }}>Your Cart</div>
+          <div
+            style={{
+              ...cartListStyle,
+              maxHeight: formCardHeight ? formCardHeight : 500, // fallback if not measured yet
+              overflowY: "auto",
+              minHeight: 0,
+            }}
+          >
+            {cart.map(item => (
+              <div key={item.id} style={cartItemStyle}>
+                <img
+                  src={item.imageUrl && item.imageUrl !== "default.jpg"
+                    ? item.imageUrl
+                    : "https://img.icons8.com/ios-filled/200/light.png"}
+                  alt={item.name}
+                  style={cartImgStyle}
+                />
+                <div style={{ flex: 1 }}>
+                  <div style={cartTitleStyle}>{item.title || item.name}</div>
+                  <div style={cartPriceStyle}>
+                    {(typeof item.discountedPrice === "number" &&
+                      !isNaN(item.discountedPrice) &&
+                      item.discountedPrice > 0 &&
+                      item.discountedPrice < item.price) ? (
+                      <>
+                        <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
+                          ₹{item.price}
+                        </span>
+                        <span style={{ color: "#4f8cff" }}>₹{item.discountedPrice} × {item.qty}</span>
+                      </>
+                    ) : (
+                      <>₹{item.price} × {item.qty}</>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={summaryWrapperStyle}>
+            <span style={{ color: blue, fontWeight: 700 }}>
+              Subtotal:
+            </span>
+            <span style={{ color: blue, fontWeight: 800, marginLeft: 8 }}>
+              ₹{getCartTotal(cart)} INR
+            </span>
+          </div>
         </div>
       </div>
     </div>
