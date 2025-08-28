@@ -429,7 +429,13 @@ const ProductDetailPage: React.FC = () => {
                         }}
                       />
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 600, fontSize: "1.05rem", marginBottom: 2, color: theme.blue, fontFamily: theme.futuristicFont }}>
+                        <div style={{
+                          fontWeight: 600,
+                          fontSize: "1.05rem",
+                          marginBottom: 2,
+                          color: "#444", // Use the same as in ListingPage for product name
+                          fontFamily: "'Inter', Arial, sans-serif",
+                        }}>
                           {item.title || item.name}
                         </div>
                         <div style={{

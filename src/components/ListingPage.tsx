@@ -493,10 +493,14 @@ const ListingPage: React.FC = () => {
                   <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 400 }}>
                     ₹{item.price}
                   </span>
-                  <span style={{ color: theme.blue, fontWeight: 600 }}>₹{item.discountedPrice} INR</span>
+                  <span style={{ color: theme.blue, fontWeight: 600, fontFamily: theme.futuristicFont }}>
+                    ₹{item.discountedPrice} INR
+                  </span>
                 </>
               ) : (
-                <>₹{item.price} INR</>
+                <span style={{ color: theme.blue, fontWeight: 600, fontFamily: theme.futuristicFont }}>
+                  ₹{item.price} INR
+                </span>
               )}
             </div>
             <div style={{ flexGrow: 1 }} />
@@ -656,7 +660,19 @@ const ListingPage: React.FC = () => {
                         }}
                       />
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 600, fontSize: "1.05rem", marginBottom: 2 }}>{item.title || item.name}</div>
+                        <div
+                          style={{
+                            fontWeight: 600,
+                            fontSize: "1.05rem",
+                            marginBottom: 2,
+                            color: "#222", // Match PDP: strong black
+                            fontFamily: "'Inter', Arial, sans-serif",
+                            letterSpacing: "0.01em",
+                            textShadow: "0 2px 12px rgba(123,31,162,0.06)",
+                          }}
+                        >
+                          {item.title || item.name}
+                        </div>
                         <div style={cartDescStyle}>
                           {truncate(item.description || "", 45)}
                         </div>
@@ -671,10 +687,14 @@ const ListingPage: React.FC = () => {
                               <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 400 }}>
                                 ₹{item.price}
                               </span>
-                              <span style={{ color: theme.blue, fontWeight: 600 }}>₹{item.discountedPrice} INR</span>
+                              <span style={{ color: theme.blue, fontWeight: 600, fontFamily: theme.futuristicFont }}>
+                                ₹{item.discountedPrice} INR
+                              </span>
                             </>
                           ) : (
-                            <>₹{item.price} INR</>
+                            <span style={{ color: theme.blue, fontWeight: 600, fontFamily: theme.futuristicFont }}>
+                              ₹{item.price} INR
+                            </span>
                           )}
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
