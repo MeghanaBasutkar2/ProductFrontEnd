@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Lottie from "lottie-react";
-import splashLottie from "../components/splash-lottie.json";
+import splashLottie from "../components/lottie/splash-lottie.json";
 
 const pageStyle: React.CSSProperties = {
   background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Lottie from "lottie-react";
-import happyShopperLottie from "./HappyShopperLottie.json";
+import happyShopperLottie from "../components/lottie/happy-shopper-lottie.json";
 import { fetchCart, clearCart } from "../components/api/CartApi";
 
 // --- Theme Colors ---
@@ -24,14 +24,6 @@ const pageStyle: React.CSSProperties = {
   padding: 0,
   boxSizing: "border-box",
   border: "none",
-  position: "fixed",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  zIndex: 0,
-  overflowY: "auto",
-  overflowX: "hidden",
 };
 
 const leftStyle: React.CSSProperties = {
@@ -137,23 +129,20 @@ const rightStyle: React.CSSProperties = {
   background: "#fff",
   padding: "36px 0 0 0",
   borderLeft: `1.5px solid #e0e0e0`,
-  height: "100vh",
   display: "flex",
   flexDirection: "column",
   position: "relative",
   boxShadow: "0 0 24px 0 rgba(120,144,156,0.06)",
   minWidth: 340,
   maxWidth: 540,
-  overflow: "hidden", // Prevent scroll
 };
 
 const cartListStyle: React.CSSProperties = {
   flex: "0 1 auto",
-  overflowY: "auto",
+  overflow: "visible", // Remove scroll
   padding: "0 24px 0 24px",
   marginBottom: 0,
   minHeight: 0,
-  maxHeight: "calc(100vh - 320px)", // Limit cart height so payment is always visible
 };
 
 const cartItemStyle: React.CSSProperties = {
@@ -214,11 +203,6 @@ const paymentSectionStyle: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
   gap: 14,
-  position: "absolute",
-  left: 0,
-  right: 0,
-  bottom: 0,
-  zIndex: 10,
 };
 
 const paymentPlaceholderStyle: React.CSSProperties = {

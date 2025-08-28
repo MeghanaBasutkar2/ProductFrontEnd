@@ -1,16 +1,24 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useLocation, useHistory } from "react-router-dom";
-import { fetchCart, addToCart, updateCartItem, removeCartItem } from "../components/api/CartApi";
+import { useCart, theme } from "../components/common-dependencies/CartContext";
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const location = useLocation<{ product?: any; cart?: any[] }>();
+  const location = useLocation<{ product?: any }>();
   const history = useHistory();
+
+  const {
+    cart,
+    handleAdd,
+    handleCartQtyChange,
+    handleRemoveFromCart,
+    getDisplayPrice,
+    getCartTotal,
+  } = useCart();
 
   const [product, setProduct] = useState<any>(location.state?.product || null);
   const [loading, setLoading] = useState(!location.state?.product);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
-  const [cart, setCart] = useState<any[]>([]);
 
   useEffect(() => {
     if (!product) {
@@ -24,134 +32,11 @@ const ProductDetailPage: React.FC = () => {
     }
   }, [id, product]);
 
-  // Fetch cart on mount
-  useEffect(() => {
-    async function loadCart() {
-      const data = await fetchCart();
-      setCart(
-        Array.isArray(data.items)
-          ? data.items.map((item: any) => {
-              const price = Number(item.unitPrice);
-              const discounted = Number(item.discountPrice);
-              const validDiscount =
-                !isNaN(discounted) &&
-                discounted > 0 &&
-                discounted < price;
-              return {
-                ...item,
-                id: item.lineId,
-                name: item.productName,
-                qty: item.quantity,
-                price,
-                discountedPrice: validDiscount ? discounted : null,
-              };
-            })
-          : []
-      );
-    }
-    loadCart();
-  }, []);
-
-  // Add to cart using backend API and update cart from response
-  async function handleAddToCart(item: any) {
-    const data = await addToCart(item.id, 1);
-    setCart(
-      Array.isArray(data.items)
-        ? data.items.map((item: any) => {
-            const price = Number(item.unitPrice);
-            const discounted = Number(item.discountPrice);
-            const validDiscount =
-              !isNaN(discounted) &&
-              discounted > 0 &&
-              discounted < price;
-            return {
-              ...item,
-              id: item.lineId,
-              name: item.productName,
-              qty: item.quantity,
-              price,
-              discountedPrice: validDiscount ? discounted : null,
-            };
-          })
-        : []
-    );
-    setCartDrawerOpen(true);
-  }
-
-  // Change quantity using backend API and update cart from response
-  async function handleCartQtyChange(lineId: string, delta: number) {
-    const cartItem = cart.find((i) => i.id === lineId);
-    if (!cartItem) return;
-    const newQty = cartItem.qty + delta;
-    let data;
-    if (newQty <= 0) {
-      data = await removeCartItem(cartItem.id);
-    } else {
-      data = await updateCartItem(cartItem.id, newQty);
-    }
-    setCart(
-      Array.isArray(data.items)
-        ? data.items.map((item: any) => {
-            const price = Number(item.unitPrice);
-            const discounted = Number(item.discountPrice);
-            const validDiscount =
-              !isNaN(discounted) &&
-              discounted > 0 &&
-              discounted < price;
-            return {
-              ...item,
-              id: item.lineId,
-              name: item.productName,
-              qty: item.quantity,
-              price,
-              discountedPrice: validDiscount ? discounted : null,
-            };
-          })
-        : []
-    );
-  }
-
-  // Remove from cart using backend API and update cart from response
-  async function handleRemoveFromCart(lineId: string) {
-    const data = await removeCartItem(lineId);
-    setCart(
-      Array.isArray(data.items)
-        ? data.items.map((item: any) => {
-            const price = Number(item.unitPrice);
-            const discounted = Number(item.discountPrice);
-            const validDiscount =
-              !isNaN(discounted) &&
-              discounted > 0 &&
-              discounted < price;
-            return {
-              ...item,
-              id: item.lineId,
-              name: item.productName,
-              qty: item.quantity,
-              price,
-              discountedPrice: validDiscount ? discounted : null,
-            };
-          })
-        : []
-    );
-  }
-
-  function handleCheckout() {
-    history.push("/customer-details", { cart });
-  }
-
-  function handleBuyNow() {
-    const buyNowCart = [{ ...product, qty: 1 }];
-    history.push("/customer-details", { cart: buyNowCart });
-  }
-
-  const getCartTotal = () => cart.reduce((sum, item) => sum + getDisplayPrice(item) * item.qty, 0);
-
   // Share handler
   const handleShare = useCallback(() => {
     const shareData = {
-      title: product.title || product.name || "Product",
-      text: product.description || "",
+      title: product?.title || product?.name || "Product",
+      text: product?.description || "",
       url: window.location.href,
     };
 
@@ -163,18 +48,20 @@ const ProductDetailPage: React.FC = () => {
     }
   }, [product]);
 
-  // Use discountedPrice if it's a valid number and >0, else use price
-  function getDisplayPrice(item: any) {
-    const discounted = Number(item.discountedPrice);
-    if (
-      typeof discounted === "number" &&
-      !isNaN(discounted) &&
-      discounted > 0 &&
-      discounted < Number(item.price)
-    ) {
-      return discounted;
+  function handleCheckout() {
+    history.push("/customer-details", { cart });
+  }
+
+  async function handleBuyNow() {
+    const existing = cart.find((c) => c.productId === product.productId || c.id === product.id);
+    if (existing) {
+      await handleCartQtyChange(existing.id, 1); // increment quantity by 1
+    } else {
+      await handleAdd(product);
     }
-    return Number(item.price);
+    history.push("/customer-details", {
+      cart: [{ ...product, qty: existing ? existing.qty + 1 : 1 }],
+    });
   }
 
   if (loading && !product) return <div>Loading...</div>;
@@ -202,7 +89,7 @@ const ProductDetailPage: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        paddingTop: 32, // Add this line for spacing
+        paddingTop: 32,
       }}
     >
       <div
@@ -243,7 +130,7 @@ const ProductDetailPage: React.FC = () => {
               width: "100%",
               maxWidth: window.innerWidth <= 700 ? "100%" : 380,
               height: window.innerWidth <= 700 ? "auto" : 320,
-              objectFit: "contain", // Show full image, no cropping
+              objectFit: "contain",
               borderRadius: 16,
               background: "#fff",
               border: "1.5px solid #e0e0e0",
@@ -314,7 +201,7 @@ const ProductDetailPage: React.FC = () => {
             &larr; Back
           </button>
           <div style={{
-            fontWeight: 700,
+            fontWeight: 600,
             fontSize: "1.3rem",
             marginBottom: 8,
             color: "#222",
@@ -358,19 +245,22 @@ const ProductDetailPage: React.FC = () => {
               {[product.variant1, product.variant2, product.variant3].filter(Boolean).join(" | ")}
             </div>
           </div>
-          <div style={{
-            fontWeight: 700,
-            color: "#7b1fa2",
-            fontSize: "1.1rem",
-            marginBottom: 18,
-            letterSpacing: "0.01em"
-          }}>
+          <div
+            style={{
+              fontWeight: 500,
+              color: "#222",
+              fontSize: "1.12rem",
+              fontFamily: "'Inter', Arial, sans-serif",
+              letterSpacing: 0,
+              marginBottom: 18,
+            }}
+          >
             {(!isNaN(Number(product.discountedPrice)) && Number(product.discountedPrice) > 0 && product.discountedPrice !== product.price) ? (
               <>
-                <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
+                <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 400 }}>
                   ₹{product.price}
                 </span>
-                <span style={{ color: "#4f8cff" }}>₹{product.discountedPrice} INR</span>
+                <span style={{ color: theme.blue, fontWeight: 600 }}>₹{product.discountedPrice} INR</span>
               </>
             ) : (
               <>₹{product.price} INR</>
@@ -399,7 +289,10 @@ const ProductDetailPage: React.FC = () => {
                 gap: 8,
                 flex: 1,
               }}
-              onClick={() => handleAddToCart(product)}
+              onClick={() => {
+                handleAdd(product);
+                setCartDrawerOpen(true);
+              }}
             >
               <span style={{ display: "flex", alignItems: "center", fontSize: 18, marginRight: 6 }}>
                 <svg width="20" height="20" fill="none" stroke="#5b4c9a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -432,7 +325,9 @@ const ProductDetailPage: React.FC = () => {
                 gap: 8,
                 flex: 1,
               }}
-              onClick={handleBuyNow}
+              onClick={async () => {
+                await handleBuyNow();
+              }}
             >
               Buy Now
             </button>
@@ -534,21 +429,26 @@ const ProductDetailPage: React.FC = () => {
                         }}
                       />
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 600, fontSize: "1.05rem", marginBottom: 4 }}>
+                        <div style={{ fontWeight: 600, fontSize: "1.05rem", marginBottom: 2, color: theme.blue, fontFamily: theme.futuristicFont }}>
                           {item.title || item.name}
                         </div>
-                        <div style={{ fontWeight: 700, color: "#4f8cff", fontSize: "1.1rem" }}>
-                          {(
-                            typeof item.discountedPrice === "number" &&
+                        <div style={{
+                          fontWeight: 500,
+                          color: "#222",
+                          fontSize: "1.12rem",
+                          fontFamily: "'Inter', Arial, sans-serif",
+                          letterSpacing: 0,
+                        }}>
+                          {(typeof item.discountedPrice === "number" &&
                             !isNaN(item.discountedPrice) &&
                             item.discountedPrice > 0 &&
                             item.discountedPrice < item.price
                           ) ? (
                             <>
-                              <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
+                              <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 400 }}>
                                 ₹{item.price}
                               </span>
-                              <span style={{ color: "#4f8cff" }}>₹{item.discountedPrice} INR</span>
+                              <span style={{ color: theme.blue, fontWeight: 600 }}>₹{item.discountedPrice} INR</span>
                             </>
                           ) : (
                             <>₹{item.price} INR</>

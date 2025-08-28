@@ -1,9 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { fetchCart, addToCart, updateCartItem, removeCartItem } from "../components/api/CartApi";
-
-const futuristicFont = "'Rajdhani', 'Orbitron', 'Exo', Arial, sans-serif";
-const blue = "#4f8cff";
+import { useCart, theme } from "../components/common-dependencies/CartContext";
 
 const cardContainerStyle: React.CSSProperties = {
   display: "grid",
@@ -106,32 +103,29 @@ const buyNowButtonStyle: React.CSSProperties = {
 };
 
 const descStyle: React.CSSProperties = {
-  color: "#7b8aaf",
-  fontSize: "0.98rem",
+  color: "#555",
+  fontSize: "1rem", // Match example image
   marginBottom: 12,
   display: "block",
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
   maxWidth: "100%",
+  fontWeight: 400, // Normal weight as in example
+  fontFamily: "'Inter', Arial, sans-serif",
+};
+
+const priceStyle: React.CSSProperties = {
+  fontWeight: 500, // Slightly less bold, as in example
+  color: "#222",
+  fontSize: "1.12rem", // Slightly larger, as in example
+  margin: "8px 0 0 0",
+  fontFamily: "'Inter', Arial, sans-serif",
+  letterSpacing: 0,
 };
 
 function truncate(str: string, n: number) {
   return str && str.length > n ? str.slice(0, n) + "..." : str;
-}
-
-// Use discountedPrice if it's a valid number and >0, else use price
-function getDisplayPrice(item: any) {
-  const discounted = Number(item.discountedPrice);
-  if (
-    typeof discounted === "number" &&
-    !isNaN(discounted) &&
-    discounted > 0 &&
-    discounted < Number(item.price)
-  ) {
-    return discounted;
-  }
-  return Number(item.price);
 }
 
 const pillButtonStyle: React.CSSProperties = {
@@ -194,12 +188,13 @@ const searchBarWrapperStyle: React.CSSProperties = {
 
 const searchInputStyle: React.CSSProperties = {
   width: "100%",
-  padding: "0 28px", // Remove vertical padding, keep horizontal
-  height: 40,        // Match pillButtonStyle height
-  borderRadius: 999, // More rounded, pill shape
+  padding: "0 28px",
+  height: 40,
+  borderRadius: 999,
   border: "1px solid #e0e0e0",
-  fontSize: "1.08rem",
-  fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+  fontSize: "1rem", // Match pillButtonStyle
+  fontFamily: "'Poppins', 'Inter', Arial, sans-serif", // Match pillButtonStyle
+  color: "#5b4c9a", // Match pillButtonStyle color
   background: "#fff",
   boxSizing: "border-box",
   outline: "none",
@@ -208,8 +203,47 @@ const searchInputStyle: React.CSSProperties = {
   alignItems: "center",
 };
 
+// Add this style block in your component or in a CSS file for the placeholder color:
+<style>
+{`
+input::placeholder {
+  color: #5b4c9a;
+  opacity: 1;
+  font-family: 'Poppins', 'Inter', Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+}
+`}
+</style>
+
+// Update cart drawer price and description styles
+const cartDescStyle: React.CSSProperties = {
+  color: "#7b8aaf", // subtle, muted blue-grey
+  fontSize: "0.97rem",
+  fontWeight: 400,
+  fontFamily: "'Inter', Arial, sans-serif",
+  marginBottom: 2,
+  lineHeight: 1.3,
+};
+
+const cartPriceStyle: React.CSSProperties = {
+  fontWeight: 500,
+  color: "#222",
+  fontSize: "1.12rem",
+  fontFamily: "'Inter', Arial, sans-serif",
+  letterSpacing: 0,
+};
+
 const ListingPage: React.FC = () => {
-  const [cart, setCart] = useState<any[]>([]);
+  const {
+    cart,
+    handleAdd,
+    handleCartQtyChange,
+    handleRemoveFromCart,
+    getDisplayPrice,
+    getCartTotal,
+  } = useCart();
+
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [listings, setListings] = useState<any[]>([]);
   const [search, setSearch] = useState<string>("");
@@ -277,109 +311,6 @@ const ListingPage: React.FC = () => {
     };
   }, [fetchProducts]);
 
-  // --- Fetch cart on mount ---
-  useEffect(() => {
-    async function loadCart() {
-      const data = await fetchCart();
-      setCart(
-        Array.isArray(data.items)
-          ? data.items.map((item: any) => ({
-              ...item,
-              id: item.lineId,
-              name: item.productName,
-              qty: item.quantity,
-              price: item.unitPrice,
-            }))
-          : []
-      );
-    }
-    loadCart();
-  }, []);
-
-  // --- Add to Cart ---
-  async function handleAdd(item: any) {
-    const data = await addToCart(item.id, 1);
-    setCart(
-      Array.isArray(data.items)
-        ? data.items.map((item: any) => {
-            const price = Number(item.unitPrice);
-            const discounted = Number(item.discountPrice);
-            const validDiscount =
-              !isNaN(discounted) &&
-              discounted > 0 &&
-              discounted < price;
-            return {
-              ...item,
-              id: item.lineId,
-              name: item.productName,
-              qty: item.quantity,
-              price,
-              discountedPrice: validDiscount ? discounted : null,
-            };
-          })
-        : []
-    );
-    setCartDrawerOpen(true);
-  }
-
-  // --- Change Cart Quantity ---
-  async function handleCartQtyChange(lineId: string, delta: number) {
-    const cartItem = cart.find((i) => i.id === lineId);
-    if (!cartItem) return;
-    const newQty = cartItem.qty + delta;
-    let data;
-    if (newQty <= 0) {
-      data = await removeCartItem(cartItem.id);
-    } else {
-      data = await updateCartItem(cartItem.id, newQty);
-    }
-    setCart(
-  Array.isArray(data.items)
-    ? data.items.map((item: any) => {
-        const price = Number(item.unitPrice);
-        const discounted = Number(item.discountPrice);
-        const validDiscount =
-          !isNaN(discounted) &&
-          discounted > 0 &&
-          discounted < price;
-        return {
-          ...item,
-          id: item.lineId,
-          name: item.productName,
-          qty: item.quantity,
-          price,
-          discountedPrice: validDiscount ? discounted : null,
-        };
-      })
-    : []
-  );
-  }
-
-  // --- Remove from Cart ---
-  async function handleRemoveFromCart(lineId: string) {
-    const data = await removeCartItem(lineId);
-    setCart(
-  Array.isArray(data.items)
-    ? data.items.map((item: any) => {
-        const price = Number(item.unitPrice);
-        const discounted = Number(item.discountPrice);
-        const validDiscount =
-          !isNaN(discounted) &&
-          discounted > 0 &&
-          discounted < price;
-        return {
-          ...item,
-          id: item.lineId,
-          name: item.productName,
-          qty: item.quantity,
-          price,
-          discountedPrice: validDiscount ? discounted : null,
-        };
-      })
-    : []
-    );
-  }
-
   // Search logic
   const filteredListings = listings.filter((item) =>
     [item.name, item.description1, item.productTypeHeading, item.orderCode, (!isNaN(Number(item.discountedPrice)) && Number(item.discountedPrice) > 0)
@@ -409,8 +340,6 @@ const ListingPage: React.FC = () => {
   function handleCheckout() {
     history.push("/customer-details", { cart });
   }
-
-  const getCartTotal = () => cart.reduce((sum, item) => sum + getDisplayPrice(item) * item.qty, 0);
 
   return (
     <div
@@ -449,17 +378,17 @@ const ListingPage: React.FC = () => {
       >
         <div
           style={{
-              fontWeight: 700,
-              fontSize: "1.35rem",
-              margin: "0 0 22px 0",
-              color: blue,
-              letterSpacing: "0.01em",
-              fontFamily: futuristicFont,
-              textTransform: "capitalize",
+            fontWeight: 700,
+            fontSize: "1.35rem", // Match Contact Information font size
+            marginBottom: "24px",
             textAlign: "left",
+            color: theme.blue,
+            fontFamily: theme.futuristicFont,
+            letterSpacing: "0.01em",
+            textTransform: "lowercase", // All small caps
           }}
         >
-          Find Your Dream Lights
+          Find your dream lights!
         </div>
         <div style={searchBarWrapperStyle}>
           <input
@@ -528,17 +457,32 @@ const ListingPage: React.FC = () => {
                 style={imgStyle}
               />
             </div>
-            <div style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 8 }}>{item.title || item.name}</div>
-            <span style={descStyle}>
+            <div
+              style={{
+                fontWeight: 600,
+                fontSize: "1.05rem",
+                marginBottom: 8,
+                color: "#444",
+                fontFamily: "'Inter', Arial, sans-serif",
+                letterSpacing: 0,
+                lineHeight: 1.2,
+                minHeight: "2.6em", // Ensures two lines of space for all names
+                maxHeight: "2.6em",
+                overflow: "hidden",
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                textOverflow: "ellipsis",
+                whiteSpace: "normal",
+              }}
+              title={item.title || item.name} // Show full name on hover
+            >
+              {item.title || item.name}
+            </div>
+            <div style={descStyle}>
               {truncate(item.description || "", 45)}
-            </span>
-            {/* Order number (orderCode) above price */}
-            {item.orderCode && (
-              <div style={{ color: "#7b8aaf", fontSize: "0.98rem", marginBottom: 4 }}>
-                Product Code: {item.orderCode}
-              </div>
-            )}
-            <div style={{ fontWeight: 700, color: "#4f8cff", fontSize: "1.1rem" }}>
+            </div>
+            <div style={priceStyle}>
               {(
                 typeof item.discountedPrice === "number" &&
                 !isNaN(item.discountedPrice) &&
@@ -546,10 +490,10 @@ const ListingPage: React.FC = () => {
                 item.discountedPrice < item.price
               ) ? (
                 <>
-                  <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
+                  <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 400 }}>
                     ₹{item.price}
                   </span>
-                  <span style={{ color: "#4f8cff" }}>₹{item.discountedPrice} INR</span>
+                  <span style={{ color: theme.blue, fontWeight: 600 }}>₹{item.discountedPrice} INR</span>
                 </>
               ) : (
                 <>₹{item.price} INR</>
@@ -562,6 +506,7 @@ const ListingPage: React.FC = () => {
                 onClick={(e) => {
                   e.stopPropagation();
                   handleAdd(item);
+                  setCartDrawerOpen(true);
                 }}
               >
                 <span style={{ display: "flex", alignItems: "center", fontSize: 18, marginRight: 6 }}>
@@ -575,10 +520,17 @@ const ListingPage: React.FC = () => {
               </button>
               <button
                 style={{ ...buyNowButtonStyle, flex: 1 }}
-                onClick={(e) => {
+                onClick={async (e) => {
                   e.stopPropagation();
+                  // Check if item already in cart
+                  const existing = cart.find((c) => c.productId === item.productId || c.id === item.id);
+                  if (existing) {
+                    await handleCartQtyChange(existing.id, 1); // increment quantity by 1
+                  } else {
+                    await handleAdd(item);
+                  }
                   history.push("/customer-details", {
-                    cart: [{ ...item, qty: 1 }],
+                    cart: [{ ...item, qty: (existing ? existing.qty + 1 : 1) }],
                   });
                 }}
               >
@@ -704,8 +656,11 @@ const ListingPage: React.FC = () => {
                         }}
                       />
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 600, fontSize: "1.05rem", marginBottom: 4 }}>{item.title || item.name}</div>
-                        <div style={{ fontWeight: 700, color: "#4f8cff", fontSize: "1.1rem" }}>
+                        <div style={{ fontWeight: 600, fontSize: "1.05rem", marginBottom: 2 }}>{item.title || item.name}</div>
+                        <div style={cartDescStyle}>
+                          {truncate(item.description || "", 45)}
+                        </div>
+                        <div style={cartPriceStyle}>
                           {(
                             typeof item.discountedPrice === "number" &&
                             !isNaN(item.discountedPrice) &&
@@ -713,13 +668,13 @@ const ListingPage: React.FC = () => {
                             item.discountedPrice < item.price
                           ) ? (
                             <>
-                              <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
-                                ₹{Number(item.price)}
+                              <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 400 }}>
+                                ₹{item.price}
                               </span>
-                              <span style={{ color: "#4f8cff" }}>₹{Number(item.discountedPrice)} INR</span>
+                              <span style={{ color: theme.blue, fontWeight: 600 }}>₹{item.discountedPrice} INR</span>
                             </>
                           ) : (
-                            <>₹{Number(item.price)} INR</>
+                            <>₹{item.price} INR</>
                           )}
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
