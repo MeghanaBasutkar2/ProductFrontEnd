@@ -12,6 +12,7 @@ const cardContainerStyle: React.CSSProperties = {
   maxWidth: 1100,
   margin: "0 auto",
   boxSizing: "border-box",
+  marginBottom: 32,
   padding: 0,
 };
 
@@ -32,14 +33,13 @@ const getResponsiveCardContainerStyle = () => {
 const cardStyleBase: React.CSSProperties = {
   borderRadius: "24px",
   boxShadow: "0 4px 24px rgba(120,144,156,0.08)",
-  padding: "24px 20px",
+  padding: "16px 16px",
   width: "300px",
-  minHeight: "340px", // Reduced height
-  maxHeight: "340px", // Reduced height
+  minHeight: "300px",
+  maxHeight: "300px",
   display: "flex",
   flexDirection: "column",
   alignItems: "flex-start",
-  marginBottom: "32px",
   transition: "transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s",
   cursor: "pointer",
   background: "#fff",
@@ -77,7 +77,7 @@ const buttonStyle: React.CSSProperties = {
   color: "#5b4c9a",
   border: "1.5px solid #bfc6e0",
   borderRadius: "12px",
-  padding: "10px 0",
+  padding: "2px 0",
   cursor: "pointer",
   fontWeight: 600,
   fontSize: "1rem",
@@ -105,7 +105,7 @@ const buyNowButtonStyle: React.CSSProperties = {
 const descStyle: React.CSSProperties = {
   color: "#555",
   fontSize: "1rem", // Match example image
-  marginBottom: 12,
+  marginBottom: 6,
   display: "block",
   overflow: "hidden",
   textOverflow: "ellipsis",
@@ -461,12 +461,11 @@ const ListingPage: React.FC = () => {
               style={{
                 fontWeight: 600,
                 fontSize: "1.05rem",
-                marginBottom: 8,
                 color: "#444",
                 fontFamily: "'Inter', Arial, sans-serif",
                 letterSpacing: 0,
                 lineHeight: 1.2,
-                minHeight: "2.6em", // Ensures two lines of space for all names
+                minHeight: "2.6em",
                 maxHeight: "2.6em",
                 overflow: "hidden",
                 display: "-webkit-box",
@@ -475,14 +474,14 @@ const ListingPage: React.FC = () => {
                 textOverflow: "ellipsis",
                 whiteSpace: "normal",
               }}
-              title={item.title || item.name} // Show full name on hover
+              title={item.title || item.name}
             >
               {item.title || item.name}
             </div>
-            <div style={descStyle}>
+            <div style={{ ...descStyle, marginBottom: 0 }}>
               {truncate(item.description || "", 45)}
             </div>
-            <div style={priceStyle}>
+            <div style={{ ...priceStyle, margin: "4px 0 0 0" }}>
               {(
                 typeof item.discountedPrice === "number" &&
                 !isNaN(item.discountedPrice) &&
@@ -503,8 +502,7 @@ const ListingPage: React.FC = () => {
                 </span>
               )}
             </div>
-            <div style={{ flexGrow: 1 }} />
-            <div style={{ display: "flex", gap: 8, width: "100%" }}>
+            <div style={{ display: "flex", gap: 4, width: "100%", marginTop: 18 }}>
               <button
                 style={{ ...buttonStyle, flex: 1 }}
                 onClick={(e) => {
