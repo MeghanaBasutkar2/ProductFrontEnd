@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import Lottie from "lottie-react";
 import happyShopperLottie from "../components/lottie/happy-shopper-lottie.json";
@@ -139,7 +139,7 @@ const rightStyle: React.CSSProperties = {
 
 const cartListStyle: React.CSSProperties = {
   flex: "0 1 auto",
-  overflow: "visible", // Remove scroll
+  overflowY: "auto",
   padding: "0 24px 0 24px",
   marginBottom: 0,
   minHeight: 0,
@@ -194,31 +194,6 @@ const summaryWrapperStyle: React.CSSProperties = {
   marginBottom: 90, // Give space for payment section
 };
 
-const paymentSectionStyle: React.CSSProperties = {
-  margin: "0 24px 24px 24px",
-  padding: "18px 16px",
-  borderRadius: 14,
-  background: "#f8f9fb",
-  boxShadow: "0 2px 8px rgba(120,144,156,0.06)",
-  display: "flex",
-  flexDirection: "column",
-  gap: 14,
-};
-
-const paymentPlaceholderStyle: React.CSSProperties = {
-  background: "#fff",
-  border: "1.5px solid #e0e0e0",
-  borderRadius: 10,
-  padding: "12px 0",
-  textAlign: "center",
-  fontFamily: futuristicFont,
-  fontWeight: 600,
-  color: "#7b8aaf",
-  fontSize: "1.08rem",
-  marginBottom: 0,
-  letterSpacing: "0.04em",
-};
-
 function getDisplayPrice(item: any) {
   const discounted = Number(item.discountedPrice);
   if (!isNaN(discounted) && discounted > 0 && discounted < Number(item.price)) {
@@ -250,6 +225,9 @@ const CustomerDetailPage: React.FC = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  const formCardRef = useRef<HTMLFormElement>(null);
+  const [formCardHeight, setFormCardHeight] = useState<number>(0);
 
   // Fetch cart from backend on mount
   useEffect(() => {
@@ -285,6 +263,18 @@ const CustomerDetailPage: React.FC = () => {
       isMounted = false;
     };
   }, []);
+
+  // Measure the height of the contact info box after mount and on resize
+  useEffect(() => {
+    function updateHeight() {
+      if (formCardRef.current) {
+        setFormCardHeight(formCardRef.current.offsetHeight);
+      }
+    }
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, [firstName, lastName, phone, email, address, pincode, error, loading]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -408,7 +398,7 @@ const CustomerDetailPage: React.FC = () => {
       )}
 
       <div style={leftStyle}>
-        <form style={formCardStyle} onSubmit={handleSubmit} autoComplete="off">
+        <form ref={formCardRef} style={formCardStyle} onSubmit={handleSubmit} autoComplete="off">
           <div style={sectionTitleStyle}>Contact information</div>
           <div style={inputRowStyle}>
             <div style={labelInputColumn}>
@@ -505,7 +495,14 @@ const CustomerDetailPage: React.FC = () => {
       </div>
       <div style={rightStyle}>
         <div style={{ ...sectionTitleStyle, fontSize: "1.25rem", margin: "0 0 18px 32px" }}>Your Cart</div>
-        <div style={cartListStyle}>
+        <div
+          style={{
+            ...cartListStyle,
+            maxHeight: formCardHeight ? formCardHeight : 500, // fallback if not measured yet
+            overflowY: "auto",
+            minHeight: 0,
+          }}
+        >
           {cart.map(item => (
             <div key={item.id} style={cartItemStyle}>
               <img
@@ -543,13 +540,6 @@ const CustomerDetailPage: React.FC = () => {
           <span style={{ color: blue, fontWeight: 800, marginLeft: 8 }}>
             ₹{getCartTotal(cart)} INR
           </span>
-        </div>
-        {/* Payment placeholders always visible at the bottom */}
-        <div style={paymentSectionStyle}>
-          <div style={paymentPlaceholderStyle}>UPI / QR Code (Coming Soon)</div>
-          <div style={paymentPlaceholderStyle}>Credit / Debit Card (Coming Soon)</div>
-          <div style={paymentPlaceholderStyle}>Net Banking (Coming Soon)</div>
-          <div style={paymentPlaceholderStyle}>Pay on Delivery</div>
         </div>
       </div>
     </div>
