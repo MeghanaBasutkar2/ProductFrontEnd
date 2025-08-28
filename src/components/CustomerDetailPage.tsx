@@ -15,7 +15,8 @@ const futuristicFont = "'Rajdhani', 'Orbitron', 'Exo', Arial, sans-serif";
 
 // --- Styles ---
 const pageStyle: React.CSSProperties = {
-  display: "flex",
+  position: "fixed", // Ensures the background covers the viewport
+  inset: 0,          // Top, right, bottom, left = 0
   minHeight: "100vh",
   width: "100vw",
   background: bgGradient,
@@ -24,6 +25,7 @@ const pageStyle: React.CSSProperties = {
   padding: 0,
   boxSizing: "border-box",
   border: "none",
+  overflow: "auto", // Allow scrolling if needed
 };
 
 const contentWrapperStyle: React.CSSProperties = {
@@ -32,11 +34,13 @@ const contentWrapperStyle: React.CSSProperties = {
   width: "100vw",
   height: "100vh",
   boxSizing: "border-box",
+  margin: 0,
+  padding: 0,
 };
 
 const leftStyle: React.CSSProperties = {
   flex: 1,
-  padding: 28, // Remove all padding!
+  padding: 0, // Remove all padding!
   background: "none",
   display: "flex",
   flexDirection: "column",
@@ -53,7 +57,7 @@ const formCardStyle: React.CSSProperties = {
   padding: "32px 28px 28px 28px",
   width: "100%",
   maxWidth: 480,
-  margin: 0, // Remove "0 auto" to left-align
+  margin: 16,
   display: "flex",
   flexDirection: "column",
   gap: 0,
