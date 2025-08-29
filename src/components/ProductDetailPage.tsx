@@ -436,19 +436,24 @@ const ProductDetailPage: React.FC = () => {
                         }}
                       />
                       <div style={{ flex: 1 }}>
-                        <div style={{
-                          fontWeight: 600,
-                          fontSize: "1.05rem",
-                          marginBottom: 2,
-                          color: "#444", // Use the same as in ListingPage for product name
-                          fontFamily: "'Inter', Arial, sans-serif",
-                        }}>
+                        <div
+                          style={{
+                            fontWeight: 1000,
+                            fontSize: "0.98rem",
+                            color: "#37184bff",
+                            fontFamily: "'Roboto', 'Arial', sans-serif",
+                            letterSpacing: "0.01em",
+                            marginBottom: 2,
+                            // font size reduced for cart, spacing unchanged
+                          }}
+                          title={item.title || item.name}
+                        >
                           {item.title || item.name}
                         </div>
                         <div style={{
                           fontWeight: 700,
                           color: "#4f8cff",
-                          fontSize: "1.08rem",
+                          fontSize: "0.98rem",
                           fontFamily: "'Inter', Arial, sans-serif",
                           letterSpacing: "0.04em",
                           textAlign: "left",

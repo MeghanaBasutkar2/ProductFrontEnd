@@ -236,7 +236,7 @@ const cartDescStyle: React.CSSProperties = {
 const cartPriceStyle: React.CSSProperties = {
   fontWeight: 700,
   color: "#4f8cff",
-  fontSize: "1.08rem",
+  fontSize: "0.98rem",
   fontFamily: "'Inter', Arial, sans-serif",
   letterSpacing: "0.04em",
   textAlign: "left",
@@ -690,14 +690,15 @@ const ListingPage: React.FC = () => {
                       <div style={{ flex: 1 }}>
                         <div
                           style={{
-                            fontWeight: 600,
-                            fontSize: "1.05rem",
-                            marginBottom: 2,
-                            color: "#222", // Match PDP: strong black
-                            fontFamily: "'Inter', Arial, sans-serif",
+                            fontWeight: 1000,
+                            fontSize: "0.98rem",
+                            color: "#37184bff",
+                            fontFamily: "'Roboto', 'Arial', sans-serif",
                             letterSpacing: "0.01em",
-                            textShadow: "0 2px 12px rgba(123,31,162,0.06)",
+                            marginBottom: 2,
+                            // font size reduced for cart, spacing unchanged
                           }}
+                          title={item.title || item.name}
                         >
                           {item.title || item.name}
                         </div>

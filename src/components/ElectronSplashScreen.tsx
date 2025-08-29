@@ -288,20 +288,35 @@ const ElectronSplashScreen: React.FC = () => {
       <div style={{ height: 12 }} />
       <div style={contentWrapperStyle}>
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', width: '100%' }}>
-            <span style={headerStyle}>\Electron\/Innovations/</span>
+          <div style={{ width: '100%', marginBottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <span style={{
+              ...headerStyle,
+              display: 'block',
+              textAlign: 'center',
+              fontSize: '0.98rem',
+              marginLeft: 0,
+              marginRight: 0,
+              paddingLeft: 0,
+              position: 'static',
+              minWidth: 'unset',
+              maxWidth: '100vw',
+            }}>{'\\Electron\\/Innovations/'}</span>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'flex-start',
-              gap: 10,
+              justifyContent: 'center',
+              gap: 8,
               marginTop: 8,
-              width: '100%'
+              width: '100%',
+              marginLeft: 0,
+              marginRight: 0,
+              paddingLeft: 0,
+              position: 'static',
             }}>
               <span style={{
                 fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
                 fontWeight: 500,
-                fontSize: '1.18rem',
+                fontSize: '0.98rem',
                 color: '#d6bcf6ff',
                 letterSpacing: '0.01em',
                 lineHeight: 1.13,
@@ -309,18 +324,23 @@ const ElectronSplashScreen: React.FC = () => {
                 alignItems: 'center',
                 marginBottom: 0,
                 paddingTop: 0,
+                textAlign: 'center',
+                marginLeft: 0,
+                marginRight: 0,
+                paddingLeft: 0,
               }}>
                 Ignite Your Imagination
-                <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 8, marginTop: 2 }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 6, marginTop: 2 }}>
                   <Lottie
                     animationData={splashLottie}
                     loop
                     autoplay
-                    style={{ width: 34, height: 36, verticalAlign: 'middle', filter: 'blur(0.2px) drop-shadow(0 0 6px #a78bfa55)', opacity: 0.92 }}
+                    style={{ width: 28, height: 36, verticalAlign: 'middle', filter: 'blur(0.2px) drop-shadow(0 0 6px #a78bfa55)', opacity: 0.92 }}
                   />
                 </span>
               </span>
             </div>
+            <div style={{ height: 32 }} />
           </div>
           <div style={{ marginTop: 40 }} />
           {loading ? (

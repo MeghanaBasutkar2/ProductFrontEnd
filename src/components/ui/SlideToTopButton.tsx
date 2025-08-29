@@ -10,10 +10,8 @@ const containerStyle: React.CSSProperties = {
 };
 
 const boxStyle: React.CSSProperties = {
-  background: "linear-gradient(90deg, #5f3c8bff 0%, #1121cfff 100%)",
+  background: "linear-gradient(90deg, #0f1315ff 0%, #090a0aff 100%)",
   color: "#fff",
-  border: "none",
-  borderRadius: 2,
   width: 60,
   height: 30,
   display: "flex",
@@ -27,6 +25,7 @@ const boxStyle: React.CSSProperties = {
   fontSize: "1rem",
   fontWeight: 400,
   padding: "0 12px",
+  transition: "box-shadow 0.22s, border 0.22s, transform 0.22s cubic-bezier(.4,2,.6,1), filter 0.4s cubic-bezier(.4,2,.6,1)",
 };
 
 const arrowStyle: React.CSSProperties = {
@@ -98,6 +97,20 @@ const SlideToTopButton: React.FC<SlideToTopButtonProps> = ({ scrollContainerId, 
         }}
         onClick={handleClick}
         aria-label="Scroll to top"
+        onMouseEnter={e => {
+          e.currentTarget.style.transform = 'scale(1.045) translateY(-6px)';
+          e.currentTarget.style.filter = 'brightness(1.04)';
+          e.currentTarget.style.boxShadow = '0 0 24px 4px #00eaff88, 0 6px 24px rgba(0,0,0,0.10)';
+          e.currentTarget.style.border = '2.5px solid #00eaff';
+          e.currentTarget.style.transition = 'box-shadow 0.25s cubic-bezier(.4,2,.6,1), border 0.22s, transform 0.22s cubic-bezier(.4,2,.6,1), filter 0.4s cubic-bezier(.4,2,.6,1)';
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.transform = '';
+          e.currentTarget.style.filter = '';
+          e.currentTarget.style.boxShadow = '0 2px 16px rgba(73, 68, 135, 0.1)';
+          e.currentTarget.style.border = 'none';
+          e.currentTarget.style.transition = 'box-shadow 0.22s, border 0.22s, transform 0.22s cubic-bezier(.4,2,.6,1), filter 0.4s cubic-bezier(.4,2,.6,1)';
+        }}
       >
         <svg style={{ ...arrowStyle, width: 22, height: 22, marginRight: 8, marginLeft: 0 }} viewBox="0 0 22 22" fill="none">
           <polyline
@@ -125,7 +138,6 @@ const SlideToTopButton: React.FC<SlideToTopButtonProps> = ({ scrollContainerId, 
             justifyContent: 'center',
             background: 'none',
             border: 'none',
-            borderRadius: 0,
             opacity: 0.85,
             transition: 'color 0.2s',
             userSelect: 'none',
