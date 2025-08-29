@@ -518,24 +518,54 @@ const ListingPage: React.FC = () => {
             </div>
             <div style={{ display: "flex", gap: 4, width: "100%", marginTop: 18 }}>
               <button
-                style={{ ...buttonStyle, flex: 1 }}
+                style={{
+                  borderRadius: 999,
+                  border: "none",
+                  background: "#f4f0fa",
+                  color: "#3d3757",
+                  fontWeight: 500,
+                  fontSize: "1.08rem",
+                  fontFamily: "'Inter', Arial, sans-serif",
+                  padding: "10px 28px",
+                  minWidth: 0,
+                  height: 44,
+                  boxShadow: "none",
+                  outline: "none",
+                  cursor: "pointer",
+                  marginRight: 10,
+                  transition: "background 0.18s, color 0.18s",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleAdd(item);
                   setCartDrawerOpen(true);
                 }}
               >
-                <span style={{ display: "flex", alignItems: "center", fontSize: 18, marginRight: 6 }}>
-                  <svg width="20" height="20" fill="none" stroke="#5b4c9a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                    <circle cx="9" cy="21" r="1" />
-                    <circle cx="20" cy="21" r="1" />
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h7.72a2 2 0 0 0 2-1.61L23 6H6" />
-                  </svg>
-                </span>
                 Add to Cart
               </button>
               <button
-                style={{ ...buyNowButtonStyle, flex: 1 }}
+                style={{
+                  borderRadius: 999,
+                  border: "none",
+                  background: "#6d5cae",
+                  color: "#fff",
+                  fontWeight: 500,
+                  fontSize: "1.08rem",
+                  fontFamily: "'Inter', Arial, sans-serif",
+                  padding: "10px 28px",
+                  minWidth: 0,
+                  height: 44,
+                  boxShadow: "none",
+                  outline: "none",
+                  cursor: "pointer",
+                  transition: "background 0.18s, color 0.18s",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
                 onClick={async (e) => {
                   e.stopPropagation();
                   // Check if item already in cart
@@ -726,22 +756,38 @@ const ListingPage: React.FC = () => {
                             </span>
                           )}
                         </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+                        <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 8, marginTop: 4, minHeight: 36 }}>
                           <button onClick={() => handleCartQtyChange(item.id, -1)} style={{ fontSize: 18, padding: "2px 8px" }}>-</button>
                           <span>{item.qty}</span>
                           <button onClick={() => handleCartQtyChange(item.id, 1)} style={{ fontSize: 18, padding: "2px 8px" }}>+</button>
                           <button
                             onClick={() => handleRemoveFromCart(item.id)}
                             style={{
-                              marginLeft: 12,
+                              position: "absolute",
+                              right: 0,
+                              top: "50%",
+                              transform: "translateY(-50%)",
                               color: "#7b8aaf",
                               background: "none",
                               border: "none",
-                              cursor: "pointer"
+                              cursor: "pointer",
+                              fontWeight: 400,
+                              fontSize: "0.97rem",
+                              padding: "4px 12px",
+                              borderRadius: 8,
+                              transition: "background 0.15s",
+                              outline: "none",
+                              minWidth: 70,
+                              textAlign: "center",
+                              fontFamily: "'Inter', Arial, sans-serif"
                             }}
+                            aria-label="Remove item"
+                            title="Remove"
                           >
                             Remove
                           </button>
+                          {/* Add right padding to prevent overlap with Remove btn */}
+                          <span style={{ display: "inline-block", width: 80 }}></span>
                         </div>
                       </div>
                     </div>
