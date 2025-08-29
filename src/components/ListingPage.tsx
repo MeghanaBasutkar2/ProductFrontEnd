@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useCart, theme } from "../components/common-dependencies/CartContext";
+import SlideToTopButton from "./SlideToTopButton";
 
 const cardContainerStyle: React.CSSProperties = {
   display: "grid",
@@ -343,6 +344,7 @@ const ListingPage: React.FC = () => {
 
   return (
     <div
+      id="listing-scroll-container"
       style={{
         minHeight: "100vh",
         width: "100vw",
@@ -797,6 +799,15 @@ const ListingPage: React.FC = () => {
           </div>
         </div>
       )}
+      <div
+        id="listing-scroll-container"
+        style={{
+          // ...your styles
+        }}
+      >
+        {/* ...rest of your code... */}
+        <SlideToTopButton scrollContainerId="listing-scroll-container" />
+      </div>
     </div>
   );
 };
