@@ -15,8 +15,8 @@ const futuristicFont = "'Rajdhani', 'Orbitron', 'Exo', Arial, sans-serif";
 
 // --- Styles ---
 const pageStyle: React.CSSProperties = {
-  position: "fixed", // Ensures the background covers the viewport
-  inset: 0,          // Top, right, bottom, left = 0
+  position: "fixed",
+  inset: 0,
   minHeight: "100vh",
   width: "100vw",
   background: bgGradient,
@@ -25,7 +25,7 @@ const pageStyle: React.CSSProperties = {
   padding: 0,
   boxSizing: "border-box",
   border: "none",
-  overflow: "auto", // Allow scrolling if needed
+  overflow: "auto",
 };
 
 const contentWrapperStyle: React.CSSProperties = {
@@ -70,7 +70,7 @@ const sectionTitleStyle: React.CSSProperties = {
   margin: "0 0 22px 0",
   color: blue,
   letterSpacing: "0.01em",
-  fontFamily: futuristicFont,
+  fontFamily: "'Inter', Arial, sans-serif",
   textTransform: "capitalize",
 };
 
@@ -79,7 +79,7 @@ const labelStyle: React.CSSProperties = {
   marginBottom: 4, // Make this 4px for all labels for even spacing
   fontSize: "0.98rem",
   color: "#222",
-  fontFamily: futuristicFont,
+  fontFamily: "'Inter', Arial, sans-serif",
 };
 
 const inputStyle: React.CSSProperties = {
@@ -90,7 +90,7 @@ const inputStyle: React.CSSProperties = {
   border: `2px solid #e0e0e0`,
   marginBottom: 16,
   fontSize: "1.08rem",
-  fontFamily: futuristicFont,
+  fontFamily: "'Inter', Arial, sans-serif",
   background: "#f8f9fb",
   boxSizing: "border-box",
   display: "block",
@@ -131,7 +131,7 @@ const submitBtnStyle: React.CSSProperties = {
   cursor: "pointer",
   fontWeight: 700,
   fontSize: "1.1rem",
-  fontFamily: futuristicFont,
+  fontFamily: "'Inter', Arial, sans-serif",
   boxShadow: "0 2px 12px rgba(91,76,154,0.10)",
   transition: "background 0.2s",
   display: "block",
@@ -178,17 +178,19 @@ const cartImgStyle: React.CSSProperties = {
 };
 
 const cartTitleStyle: React.CSSProperties = {
-  fontWeight: 600,
-  fontSize: "1.02rem",
-  color: "#222",
-  fontFamily: futuristicFont,
+  fontWeight: 1000,
+  fontSize: "1.08rem",
+  color: "#37184bff",
+  fontFamily: "'Roboto', 'Arial', sans-serif",
+  letterSpacing: "0.01em",
+  marginBottom: 2,
 };
 
 const cartPriceStyle: React.CSSProperties = {
   fontWeight: 700,
   color: blue,
   fontSize: "1.02rem",
-  fontFamily: futuristicFont,
+  fontFamily: "'Inter', Arial, sans-serif",
 };
 
 const summaryWrapperStyle: React.CSSProperties = {
@@ -206,6 +208,7 @@ const summaryWrapperStyle: React.CSSProperties = {
   boxShadow: "0 -2px 12px 0 rgba(120,144,156,0.04)",
   position: "static",
   marginBottom: 90, // Give space for payment section
+  fontFamily: "'Inter', Arial, sans-serif",
 };
 
 function getDisplayPrice(item: any) {
@@ -403,8 +406,8 @@ const CustomerDetailPage: React.FC = () => {
               autoplay
               style={lottieStyle}
             />
-            <h2 style={{ color: purple, margin: "8px 0 8px 0" }}>You’re all set!</h2>
-            <div style={{ color: blue, fontSize: "1.08rem", marginBottom: 12 }}>
+            <h2 style={{ color: purple, margin: "8px 0 8px 0", fontFamily: "'Inter', Arial, sans-serif" }}>You’re all set!</h2>
+            <div style={{ color: blue, fontSize: "1.08rem", marginBottom: 12, fontFamily: "'Inter', Arial, sans-serif" }}>
               You can now pay on the go.<br />Thank you for shopping with us!
             </div>
           </div>
