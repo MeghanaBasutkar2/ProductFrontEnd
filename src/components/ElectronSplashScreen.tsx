@@ -81,7 +81,6 @@ const cardStyle: React.CSSProperties = {
   display: "flex",
   flexDirection: "column",
   justifyContent: "flex-end",
-  // For smooth glow overlay
   willChange: "box-shadow, filter, transform",
 };
 
@@ -92,7 +91,7 @@ const cardHoverStyle: React.CSSProperties = {
 };
 
 const iconStyle: React.CSSProperties = {
-  fontSize: "2.1rem", // Reduced icon size
+  fontSize: "2.1rem",
   marginBottom: "12px",
   color: "#fda085",
   filter: "drop-shadow(0 2px 8px #f6d36555)",
@@ -245,16 +244,16 @@ const ElectronSplashScreen: React.FC = () => {
               width: '100%'
             }}>
               <span style={{
-                ...subHeaderStyle,
-                paddingTop: 0,
-                marginBottom: 0,
-                fontSize: '1.32rem',
-                fontWeight: 600,
+                fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+                fontWeight: 500,
+                fontSize: '1.18rem',
+                color: '#d6bcf6ff',
                 letterSpacing: '0.01em',
-                color: '#a7b6d9',
-                lineHeight: 1.1,
+                lineHeight: 1.13,
                 display: 'flex',
                 alignItems: 'center',
+                marginBottom: 0,
+                paddingTop: 0,
               }}>
                 Ignite Your Imagination
                 <span style={{ display: 'inline-flex', alignItems: 'center', marginLeft: 8, marginTop: 2 }}>
@@ -337,16 +336,17 @@ const ElectronSplashScreen: React.FC = () => {
                         <div style={{ position: "relative", zIndex: 2 }}>
                           <div
                             style={{
-                              fontWeight: 700,
-                              fontSize: "1.15rem",
+                              fontFamily: "'Roboto', 'Arial', sans-serif",
+                              fontWeight: 1000,
+                              fontSize: "1.1rem",
                               marginBottom: 8,
-                              minHeight: 52,
-                              maxHeight: 52,
+                              minHeight: 60,
+                              maxHeight: 66,
                               maxWidth: 180,
                               width: 180,
                               overflow: "hidden",
                               display: "-webkit-box",
-                              WebkitLineClamp: 2,
+                              WebkitLineClamp: 3,
                               WebkitBoxOrient: "vertical",
                               textOverflow: "ellipsis",
                               textAlign: "center",
@@ -354,7 +354,11 @@ const ElectronSplashScreen: React.FC = () => {
                               marginRight: "auto",
                               alignItems: "center",
                               justifyContent: "center",
-                              color: "#181818",
+                              color: "#37184bff",
+                              letterSpacing: "0.01em",
+                              lineHeight: 1.18,
+                              wordBreak: "break-word",
+                              whiteSpace: "normal",
                             }}
                             title={type.productTypeHeading}
                           >
