@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Lottie from "lottie-react";
 import splashLottie from "../components/lottie/splash-lottie.json";
+import SlideToTopButton from "./ui/SlideToTopButton";
 
 const pageStyle: React.CSSProperties = {
   background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
@@ -148,7 +149,7 @@ const ElectronSplashScreen: React.FC = () => {
   };
 
   return (
-    <div style={pageStyle}>
+    <div id="splash-scroll-container" style={pageStyle}>
       <div style={lampContainerStyle}>
         {/* Splash Lottie Animation */}
         <Lottie
@@ -280,6 +281,7 @@ const ElectronSplashScreen: React.FC = () => {
           </div>
         )}
       </div>
+      <SlideToTopButton scrollContainerId="splash-scroll-container" />
     </div>
   );
 };

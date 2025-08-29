@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useCart, theme } from "../components/common-dependencies/CartContext";
-import SlideToTopButton from "./SlideToTopButton";
+import SlideToTopButton from "./ui/SlideToTopButton";
 
 const cardContainerStyle: React.CSSProperties = {
   display: "grid",
