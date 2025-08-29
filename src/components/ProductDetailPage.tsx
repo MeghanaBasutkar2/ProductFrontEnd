@@ -247,12 +247,15 @@ const ProductDetailPage: React.FC = () => {
           </div>
           <div
             style={{
-              fontWeight: 500,
-              color: "#222",
-              fontSize: "1.12rem",
+              fontWeight: 700,
+              color: "#4f8cff",
+              fontSize: "1.08rem",
               fontFamily: "'Inter', Arial, sans-serif",
-              letterSpacing: 0,
+              letterSpacing: "0.04em",
+              textAlign: "left",
               marginBottom: 18,
+              transition: "color 0.2s",
+              userSelect: "none",
             }}
           >
             {(!isNaN(Number(product.discountedPrice)) && Number(product.discountedPrice) > 0 && product.discountedPrice !== product.price) ? (
@@ -260,10 +263,14 @@ const ProductDetailPage: React.FC = () => {
                 <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 400 }}>
                   ₹{product.price}
                 </span>
-                <span style={{ color: theme.blue, fontWeight: 600 }}>₹{product.discountedPrice} INR</span>
+                <span style={{ fontWeight: 700, color: "#4f8cff", fontFamily: "'Inter', Arial, sans-serif", letterSpacing: "0.04em" }}>
+                  ₹{product.discountedPrice}
+                </span>
               </>
             ) : (
-              <>₹{product.price} INR</>
+              <span style={{ fontWeight: 700, color: "#4f8cff", fontFamily: "'Inter', Arial, sans-serif", letterSpacing: "0.04em" }}>
+                ₹{product.price}
+              </span>
             )}
           </div>
           <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
@@ -439,11 +446,14 @@ const ProductDetailPage: React.FC = () => {
                           {item.title || item.name}
                         </div>
                         <div style={{
-                          fontWeight: 500,
-                          color: "#222",
-                          fontSize: "1.12rem",
+                          fontWeight: 700,
+                          color: "#4f8cff",
+                          fontSize: "1.08rem",
                           fontFamily: "'Inter', Arial, sans-serif",
-                          letterSpacing: 0,
+                          letterSpacing: "0.04em",
+                          textAlign: "left",
+                          transition: "color 0.2s",
+                          userSelect: "none",
                         }}>
                           {(typeof item.discountedPrice === "number" &&
                             !isNaN(item.discountedPrice) &&
@@ -454,10 +464,14 @@ const ProductDetailPage: React.FC = () => {
                               <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 400 }}>
                                 ₹{item.price}
                               </span>
-                              <span style={{ color: theme.blue, fontWeight: 600 }}>₹{item.discountedPrice} INR</span>
+                              <span style={{ fontWeight: 700, color: "#4f8cff", fontFamily: "'Inter', Arial, sans-serif", letterSpacing: "0.04em" }}>
+                                ₹{item.discountedPrice}
+                              </span>
                             </>
                           ) : (
-                            <>₹{item.price} INR</>
+                            <span style={{ fontWeight: 700, color: "#4f8cff", fontFamily: "'Inter', Arial, sans-serif", letterSpacing: "0.04em" }}>
+                              ₹{item.price}
+                            </span>
                           )}
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
@@ -514,7 +528,7 @@ const ProductDetailPage: React.FC = () => {
                     }}
                   >
                     Subtotal:{" "}
-                    <span style={{ color: "#4f8cff", fontWeight: 700 }}>₹{getCartTotal()} INR</span>
+                    <span style={{ color: "#4f8cff", fontWeight: 700 }}>₹{getCartTotal()}</span>
                   </div>
                   <button
                     style={{

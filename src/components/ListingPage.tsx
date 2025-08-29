@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useCart, theme } from "../components/common-dependencies/CartContext";
 import SlideToTopButton from "./ui/SlideToTopButton";
+import bgImg from '../assets/bg_img_day.png';
 
 const cardContainerStyle: React.CSSProperties = {
   display: "grid",
@@ -116,13 +117,17 @@ const descStyle: React.CSSProperties = {
   fontFamily: "'Inter', Arial, sans-serif",
 };
 
+// Match PDP price font: Inter, bold, blue, increased spacing, slightly smaller
 const priceStyle: React.CSSProperties = {
-  fontWeight: 500, // Slightly less bold, as in example
-  color: "#222",
-  fontSize: "1.12rem", // Slightly larger, as in example
+  fontWeight: 700,
+  color: "#4f8cff",
+  fontSize: "1.08rem",
   margin: "8px 0 0 0",
   fontFamily: "'Inter', Arial, sans-serif",
-  letterSpacing: 0,
+  letterSpacing: "0.04em",
+  textAlign: "left",
+  transition: "color 0.2s",
+  userSelect: "none",
 };
 
 function truncate(str: string, n: number) {
@@ -227,12 +232,16 @@ const cartDescStyle: React.CSSProperties = {
   lineHeight: 1.3,
 };
 
+// Match PDP price font for cart: Inter, bold, blue, increased spacing, slightly smaller
 const cartPriceStyle: React.CSSProperties = {
-  fontWeight: 500,
-  color: "#222",
-  fontSize: "1.12rem",
+  fontWeight: 700,
+  color: "#4f8cff",
+  fontSize: "1.08rem",
   fontFamily: "'Inter', Arial, sans-serif",
-  letterSpacing: 0,
+  letterSpacing: "0.04em",
+  textAlign: "left",
+  transition: "color 0.2s",
+  userSelect: "none",
 };
 
 const ListingPage: React.FC = () => {
@@ -348,8 +357,7 @@ const ListingPage: React.FC = () => {
       style={{
         minHeight: "100vh",
         width: "100vw",
-        background: "linear-gradient(135deg, #f6f6f6 60%, #e9e9ff 100%)",
-        fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+        fontFamily: "'Poppins', 'Inter', 'Roboto', Arial, sans-serif",
         margin: 0,
         padding: 0,
         boxSizing: "border-box",
@@ -366,6 +374,7 @@ const ListingPage: React.FC = () => {
         flexDirection: "column",
         alignItems: "center",
         paddingTop: 32,
+        background: "#f5f7fa",
       }}
     >
       <div
@@ -378,23 +387,15 @@ const ListingPage: React.FC = () => {
           marginBottom: 24,
         }}
       >
-        <div
-          style={{
-            fontWeight: 700,
-            fontSize: "1.35rem", // Match Contact Information font size
-            marginBottom: "24px",
-            textAlign: "left",
-            color: theme.blue,
-            fontFamily: theme.futuristicFont,
-            letterSpacing: "0.01em",
-            textTransform: "lowercase", // All small caps
-          }}
-        >
-          Find your dream lights!
-        </div>
+        {/* Title removed as requested */}
         <div style={searchBarWrapperStyle}>
           <input
-            style={searchInputStyle}
+            style={{
+              ...searchInputStyle,
+              fontFamily: "'Poppins', 'Inter', 'Roboto', Arial, sans-serif",
+              color: "#37184bff",
+              fontWeight: 500,
+            }}
             type="text"
             placeholder="Search based on product name, type..."
             value={search}
@@ -468,20 +469,24 @@ const ListingPage: React.FC = () => {
             </div>
             <div
               style={{
-                fontWeight: 600,
-                fontSize: "1.05rem",
-                color: "#444",
-                fontFamily: "'Inter', Arial, sans-serif",
-                letterSpacing: 0,
-                lineHeight: 1.2,
-                minHeight: "2.6em",
-                maxHeight: "2.6em",
+                fontWeight: 1000,
+                fontSize: "1.1rem",
+                color: "#37184bff",
+                fontFamily: "'Roboto', 'Arial', sans-serif",
+                letterSpacing: "0.01em",
+                lineHeight: 1.18,
+                height: "3.6em", // exactly 3 lines tall
                 overflow: "hidden",
                 display: "-webkit-box",
-                WebkitLineClamp: 2,
+                WebkitLineClamp: 3,
                 WebkitBoxOrient: "vertical",
                 textOverflow: "ellipsis",
                 whiteSpace: "normal",
+                textAlign: "left",
+                margin: "0 0 8px 0",
+                alignItems: "flex-start",
+                justifyContent: "flex-start",
+                wordBreak: "break-word",
               }}
               title={item.title || item.name}
             >
@@ -501,13 +506,13 @@ const ListingPage: React.FC = () => {
                   <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 400 }}>
                     ₹{item.price}
                   </span>
-                  <span style={{ color: theme.blue, fontWeight: 600, fontFamily: theme.futuristicFont }}>
-                    ₹{item.discountedPrice} INR
+                  <span style={{ ...priceStyle }}>
+                    ₹{item.discountedPrice}
                   </span>
                 </>
               ) : (
-                <span style={{ color: theme.blue, fontWeight: 600, fontFamily: theme.futuristicFont }}>
-                  ₹{item.price} INR
+                <span style={{ ...priceStyle }}>
+                  ₹{item.price}
                 </span>
               )}
             </div>
@@ -710,13 +715,13 @@ const ListingPage: React.FC = () => {
                               <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 400 }}>
                                 ₹{item.price}
                               </span>
-                              <span style={{ color: theme.blue, fontWeight: 600, fontFamily: theme.futuristicFont }}>
-                                ₹{item.discountedPrice} INR
+                              <span style={{ ...cartPriceStyle }}>
+                                ₹{item.discountedPrice}
                               </span>
                             </>
                           ) : (
-                            <span style={{ color: theme.blue, fontWeight: 600, fontFamily: theme.futuristicFont }}>
-                              ₹{item.price} INR
+                            <span style={{ ...cartPriceStyle }}>
+                              ₹{item.price}
                             </span>
                           )}
                         </div>
@@ -770,7 +775,7 @@ const ListingPage: React.FC = () => {
                     }}
                   >
                     Subtotal:{" "}
-                    <span style={{ color: "#4f8cff", fontWeight: 700 }}>₹{getCartTotal()} INR</span>
+                    <span style={{ color: "#4f8cff", fontWeight: 700 }}>₹{getCartTotal()}</span>
                   </div>
                   <button
                     style={{
