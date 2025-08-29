@@ -10,10 +10,10 @@ const containerStyle: React.CSSProperties = {
 };
 
 const boxStyle: React.CSSProperties = {
-  background: "linear-gradient(90deg, #a259ff 0%, #6f7bfd 100%)",
+  background: "linear-gradient(90deg, #5f3c8bff 0%, #1121cfff 100%)",
   color: "#fff",
   border: "none",
-  borderRadius: 0,
+  borderRadius: 2,
   width: 60,
   height: 30,
   display: "flex",
@@ -111,10 +111,24 @@ const SlideToTopButton: React.FC<SlideToTopButtonProps> = ({ scrollContainerId, 
         </svg>
         <span
           style={{
-            fontSize: "0.92rem",
+            fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
+            fontSize: "1rem",
             fontWeight: 500,
-            letterSpacing: 1.5,
+            letterSpacing: "0.01em",
             textTransform: "uppercase",
+            color: "#a77fd9",
+            lineHeight: 1.13,
+            padding: 0,
+            margin: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'none',
+            border: 'none',
+            borderRadius: 0,
+            opacity: 0.85,
+            transition: 'color 0.2s',
+            userSelect: 'none',
           }}
         >
           TOP

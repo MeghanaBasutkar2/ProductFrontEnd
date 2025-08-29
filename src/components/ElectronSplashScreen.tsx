@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import bgImg from '../assets/bg_img.png';
+import bgImg from '../assets/bg_img_night.png';
 import Lottie from "lottie-react";
 import splashLottie from "../components/lottie/splash-lottie.json";
 import SlideToTopButton from './ui/SlideToTopButton';
@@ -32,37 +32,41 @@ const pageStyle: React.CSSProperties = {
   overflowY: "auto", // Enable vertical scrolling everywhere
 };
 
-const lampContainerStyle: React.CSSProperties = {
-  width: "100%",
-  maxWidth: 400,
-  margin: "48px auto 0 auto",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
+// Responsive styles for background image
+const bgImageStyle: React.CSSProperties = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100vw",
+  height: "auto",
+  minHeight: "100vh",
+  zIndex: 0,
+  objectFit: "cover",
+  pointerEvents: "none",
+  userSelect: "none",
+  margin: 0,
+  padding: 0,
+  transition: "all 0.2s",
 };
 
-const lampSVGStyle: React.CSSProperties = {
-  width: "180px",
-  height: "180px",
-  marginBottom: "-32px",
-};
-
+// Responsive card container
 const cardContainerStyle: React.CSSProperties = {
   display: "flex",
   justifyContent: "center",
   alignItems: "flex-start",
-  gap: "24px", // Reduced gap between cards
-  padding: "32px 12px 32px 12px", // Reduced padding
+  gap: "24px",
+  padding: "32px 12px 32px 12px",
   width: "100%",
   flexWrap: "wrap",
-  maxWidth: "1000px", // Slightly reduced max width
+  maxWidth: "1000px",
   margin: "0 auto",
   boxSizing: "border-box",
   overflowX: "hidden",
   minHeight: "0",
-  maxHeight: "none", // Remove maxHeight to avoid clipping
+  maxHeight: "none",
 };
 
+// Responsive card style
 const cardStyle: React.CSSProperties = {
   background: "rgba(255,255,255,0.97)",
   borderRadius: "24px",
@@ -83,6 +87,68 @@ const cardStyle: React.CSSProperties = {
   justifyContent: "flex-end",
   willChange: "box-shadow, filter, transform",
 };
+
+// Add responsive styles via a style tag
+if (typeof document !== 'undefined' && !document.getElementById('splash-responsive-styles')) {
+  const styleSheet = document.createElement('style');
+  styleSheet.id = 'splash-responsive-styles';
+  styleSheet.innerHTML = `
+    @media (max-width: 700px) {
+      #splash-scroll-container .card-container {
+        gap: 12px !important;
+        padding: 18px 2vw 18px 2vw !important;
+        max-width: 98vw !important;
+      }
+      #splash-scroll-container .card {
+        width: 92vw !important;
+        min-width: 0 !important;
+        max-width: 98vw !important;
+        margin-bottom: 16px !important;
+        min-height: 120px !important;
+        padding: 14px 6px !important;
+      }
+      #splash-bg-img {
+        width: 100vw !important;
+        min-height: 100vh !important;
+        object-fit: cover !important;
+        left: 0 !important;
+        top: 0 !important;
+      }
+    }
+    @media (max-width: 480px) {
+      #splash-scroll-container .card {
+        width: 98vw !important;
+        max-width: 99vw !important;
+        min-height: 220px !important;
+        font-size: 0.98rem !important;
+        padding: 10px 2px !important;
+      }
+      #splash-bg-img {
+        width: 100vw !important;
+        min-height: 100vh !important;
+        object-fit: cover !important;
+      }
+    }
+  `;
+  document.head.appendChild(styleSheet);
+}
+
+const lampContainerStyle: React.CSSProperties = {
+  width: "100%",
+  maxWidth: 400,
+  margin: "48px auto 0 auto",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+};
+
+const lampSVGStyle: React.CSSProperties = {
+  width: "180px",
+  height: "180px",
+  marginBottom: "-32px",
+};
+
+
 
 const cardHoverStyle: React.CSSProperties = {
   transform: "scale(1.05) translateY(-8px)",
@@ -214,33 +280,22 @@ const ElectronSplashScreen: React.FC = () => {
     <div id="splash-scroll-container" style={pageStyle}>
       {/* Background image, not skewed, covers width, natural height, top-left of page */}
       <img
+        id="splash-bg-img"
         src={bgImg}
         alt="Background Decorative"
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100vw",
-          height: "auto",
-          zIndex: 0,
-          objectFit: "none",
-          pointerEvents: "none",
-          userSelect: "none",
-          margin: 0,
-          padding: 0,
-        }}
+        style={bgImageStyle}
       />
       <div style={{ height: 12 }} />
       <div style={contentWrapperStyle}>
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', width: '100%' }}>
             <span style={headerStyle}>\Electron\/Innovations/</span>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
+              justifyContent: 'flex-start',
               gap: 10,
-              marginTop: 22,
+              marginTop: 8,
               width: '100%'
             }}>
               <span style={{
@@ -267,6 +322,7 @@ const ElectronSplashScreen: React.FC = () => {
               </span>
             </div>
           </div>
+          <div style={{ marginTop: 40 }} />
           {loading ? (
             <div style={{ textAlign: "center", margin: "0px 0" }}>Loading...</div>
           ) : (
@@ -289,10 +345,11 @@ const ElectronSplashScreen: React.FC = () => {
                     {cat.categoryDisplayName}
                   </div>
 
-                  <div style={cardContainerStyle}>
+                  <div className="card-container" style={cardContainerStyle}>
                     {cat.items.map((type: any) => (
                       <div
                         key={type.productTypeId}
+                        className="card"
                         style={{
                           ...cardStyle,
                           background: type.imageUrl
