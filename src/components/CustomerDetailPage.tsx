@@ -538,15 +538,25 @@ return (
                 {loading ? "Placing Order..." : "Place Order"}
               </button>
             </form>
-          {/* Cart icon: Flush with the right edge of the contact info card, vertically centered */}
+          {/* Cart icon: Only show in phone view, always show cart drawer in desktop view */}
+          <style>{`
+            @media (min-width: 701px) {
+              .cart-fab-btn { display: none !important; }
+            }
+            @media (max-width: 700px) {
+              .cart-fab-btn { display: flex !important; }
+            }
+          `}</style>
           <div
+            className="cart-fab-btn"
             style={{
               position: 'absolute',
               top: '50%',
-              right: 0, // always flush with the card edge, all screen sizes
+              right: 0,
               transform: 'translateY(-50%)',
               zIndex: 200,
               pointerEvents: 'none',
+              display: window.innerWidth <= 700 ? 'flex' : 'none',
             }}
           >
             <button
@@ -584,22 +594,23 @@ return (
             </button>
           </div>
           </div>
-          {/* Cart drawer (all screen sizes): show when cartSidebarOpen is true */}
-          {cartSidebarOpen && (
+          {/* Cart drawer: always show in desktop, show as popup in mobile */}
+          {(window.innerWidth > 700 || cartSidebarOpen) && (
             <div
               style={{
-                position: 'fixed',
+                position: window.innerWidth > 700 ? 'fixed' : 'fixed',
                 top: 0,
                 right: 0,
-                width: '100vw',
+                width: window.innerWidth <= 700 ? '100vw' : 400,
+                maxWidth: '100vw',
                 height: '100vh',
-                background: 'rgba(30,40,60,0.18)',
+                background: window.innerWidth <= 700 ? 'rgba(30,40,60,0.18)' : 'transparent',
                 zIndex: 2000,
                 display: 'flex',
                 justifyContent: 'flex-end',
                 transition: 'background 0.2s cubic-bezier(.4,2,.6,1)',
               }}
-              onClick={() => setCartSidebarOpen(false)}
+              onClick={window.innerWidth <= 700 ? () => setCartSidebarOpen(false) : undefined}
             >
               <div
                 style={{
@@ -615,13 +626,21 @@ return (
                   boxSizing: 'border-box',
                   /* No border radius for PLP/PDP style */
                   boxShadow: '0 -2px 24px 0 rgba(120,144,156,0.10)',
-                  animation: 'slideInCartDrawer 0.4s cubic-bezier(.4,2,.6,1)',
+                  animation: window.innerWidth <= 700 ? 'slideInCartDrawer 0.4s cubic-bezier(.4,2,.6,1)' : undefined,
                   margin: 0,
                   backgroundImage: undefined,
                   transition: 'box-shadow 0.25s cubic-bezier(.4,2,.6,1), background 0.25s cubic-bezier(.4,2,.6,1)',
                 }}
                 onClick={e => e.stopPropagation()}
               >
+                <style>{`
+                  @media (min-width: 701px) {
+                    .cart-close-btn { display: none !important; }
+                  }
+                  @media (max-width: 700px) {
+                    .cart-close-btn { display: flex !important; }
+                  }
+                `}</style>
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -644,13 +663,14 @@ return (
                     textTransform: 'none',
                   }}>Cart</h2>
                   <button
+                    className="cart-close-btn"
                     style={{
                       background: 'none',
                       border: 'none',
                       borderRadius: '50%',
                       width: 36,
                       height: 36,
-                      display: 'flex',
+                      display: window.innerWidth <= 700 ? 'flex' : 'none',
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
