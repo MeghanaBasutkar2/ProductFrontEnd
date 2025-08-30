@@ -36,6 +36,9 @@ const contentWrapperStyle: React.CSSProperties = {
   boxSizing: "border-box",
   margin: 0,
   padding: 0,
+  gap: window.innerWidth > 700 ? 4 : 0, // Further reduce gap between panels on desktop
+  justifyContent: 'center',
+  alignItems: 'flex-start',
 };
 
 const leftStyle: React.CSSProperties = {
@@ -574,7 +577,7 @@ return (
               ...rightStyle,
               background: '#fff',
               borderRadius: 24,
-              margin: 32,
+              margin: '32px 0 32px 0', // Remove left margin for tighter layout
               boxShadow: '-8px 0 32px 0 rgba(120,144,156,0.13)',
               minHeight: '60vh',
               maxHeight: '80vh',
@@ -583,8 +586,19 @@ return (
               overflow: 'hidden',
               position: 'relative',
               padding: 0,
+              alignItems: 'flex-start',
             }}>
-              <div style={{ ...sectionTitleStyle, fontSize: '1.25rem', margin: '32px 0 18px 32px', color: '#232526', letterSpacing: 1.2, fontWeight: 800 }}>Your Cart</div>
+              <div style={{
+                ...sectionTitleStyle,
+                fontSize: '1.25rem',
+                margin: '32px 0 18px 24px', // Left align title
+                color: '#232526',
+                letterSpacing: 1.2,
+                fontWeight: 800,
+                textAlign: 'left',
+                width: '100%',
+                display: 'block',
+              }}>Your Cart</div>
               <div style={{
                 ...cartListStyle,
                 maxHeight: formCardHeight ? formCardHeight : 500,
@@ -643,14 +657,15 @@ return (
                 fontSize: '1.13rem',
                 color: '#4f8cff',
                 justifyContent: 'flex-start',
-                alignItems: 'center',
+                alignItems: 'flex-start',
                 padding: '0 24px',
+                textAlign: 'left',
+                flexDirection: 'column',
+                width: '100%',
+                display: 'block',
               }}>
-                <span style={{ fontWeight: 800, color: '#4f8cff', fontFamily: "'Inter', Arial, sans-serif", fontSize: '1.13rem', letterSpacing: '0.04em', userSelect: 'none' }}>
-                  Subtotal:
-                </span>
-                <span style={{ fontWeight: 800, color: '#4f8cff', fontFamily: "'Inter', Arial, sans-serif", fontSize: '1.13rem', letterSpacing: '0.04em', marginLeft: 8, userSelect: 'none' }}>
-                  ₹{getCartTotal(cart)} INR
+                <span style={{ fontWeight: 800, color: '#4f8cff', fontFamily: "'Inter', Arial, sans-serif", fontSize: '1.13rem', letterSpacing: '0.04em', userSelect: 'none', marginTop: 10, marginBottom: 2, textAlign: 'left', display: 'block' }}>
+                  Subtotal: ₹{getCartTotal(cart)}
                 </span>
               </div>
             </div>
