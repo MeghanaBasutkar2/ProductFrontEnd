@@ -184,7 +184,7 @@ const cartImgStyle: React.CSSProperties = {
 
 const cartTitleStyle: React.CSSProperties = {
   fontWeight: 1000,
-  fontSize: "1.08rem",
+  fontSize: "1rem", // Match PLP/PDP size
   color: "#182c4bff",
   fontFamily: "'Roboto', 'Arial', sans-serif",
   letterSpacing: "0.01em",
@@ -194,7 +194,7 @@ const cartTitleStyle: React.CSSProperties = {
 const cartPriceStyle: React.CSSProperties = {
   fontWeight: 700,
   color: blue,
-  fontSize: "1.02rem",
+  fontSize: "0.98rem", // Match PLP/PDP size
   fontFamily: "'Inter', Arial, sans-serif",
 };
 
