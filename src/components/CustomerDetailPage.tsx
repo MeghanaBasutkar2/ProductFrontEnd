@@ -551,10 +551,10 @@ const CustomerDetailPage: React.FC = () => {
             ))}
           </div>
           <div style={summaryWrapperStyle}>
-            <span style={{ color: blue, fontWeight: 700 }}>
+            <span style={{ fontWeight: 700, color: "#4f8cff", fontFamily: "'Inter', Arial, sans-serif", fontSize: "1.08rem", letterSpacing: "0.04em", userSelect: "none" }}>
               Subtotal:
             </span>
-            <span style={{ color: blue, fontWeight: 800, marginLeft: 8 }}>
+            <span style={{ fontWeight: 700, color: "#4f8cff", fontFamily: "'Inter', Arial, sans-serif", fontSize: "1.08rem", letterSpacing: "0.04em", marginLeft: 8, userSelect: "none" }}>
               ₹{getCartTotal(cart)} INR
             </span>
           </div>

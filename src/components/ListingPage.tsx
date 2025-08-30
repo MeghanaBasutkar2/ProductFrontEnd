@@ -816,16 +816,23 @@ const ListingPage: React.FC = () => {
                 >
                   <div
                     style={{
-                      fontWeight: 600,
+                      fontWeight: 700,
                       margin: "0 0 12px 0",
                       textAlign: "center",
                       color: "#4f8cff",
                       fontSize: "1.08rem",
                       width: "100%",
+                      fontFamily: "'Inter', Arial, sans-serif",
+                      letterSpacing: "0.04em",
+                      userSelect: "none",
                     }}
                   >
-                    Subtotal:{" "}
-                    <span style={{ color: "#4f8cff", fontWeight: 700 }}>₹{getCartTotal()}</span>
+                    <span style={{ fontWeight: 700, color: "#4f8cff", fontFamily: "'Inter', Arial, sans-serif", letterSpacing: "0.04em" }}>
+                      Subtotal:
+                    </span>{" "}
+                    <span style={{ fontWeight: 700, color: "#4f8cff", fontFamily: "'Inter', Arial, sans-serif", letterSpacing: "0.04em" }}>
+                      ₹{getCartTotal()}
+                    </span>
                   </div>
                   <button
                     style={{
