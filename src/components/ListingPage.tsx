@@ -149,7 +149,7 @@ const pillButtonStyle: React.CSSProperties = {
   color: "#6d5cae",
   fontWeight: 600,
   fontSize: "1.08rem",
-  padding: "10px 28px",
+  padding: "0 20px",
   marginRight: 0,
   cursor: "pointer",
   outline: "none",
@@ -157,7 +157,7 @@ const pillButtonStyle: React.CSSProperties = {
   boxShadow: "0 2px 8px rgba(109,92,174,0.04)",
   display: "flex",
   alignItems: "center",
-  height: 48,
+  height: 36,
   transition: "background 0.18s, color 0.18s, border 0.18s",
 };
 
@@ -206,10 +206,10 @@ const searchBarWrapperStyle: React.CSSProperties = {
 const searchInputStyle: React.CSSProperties = {
   width: "100%",
   padding: "0 28px",
-  height: 48,
+  height: 36,
   borderRadius: 999,
   border: "1.5px solid #e3dff5",
-  fontSize: "1.18rem",
+  fontSize: "1.08rem",
   fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
   color: "#6d5cae",
   background: "#f8f6fc",
