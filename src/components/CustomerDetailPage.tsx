@@ -185,7 +185,7 @@ const cartImgStyle: React.CSSProperties = {
 const cartTitleStyle: React.CSSProperties = {
   fontWeight: 1000,
   fontSize: "1.08rem",
-  color: "#37184bff",
+  color: "#182c4bff",
   fontFamily: "'Roboto', 'Arial', sans-serif",
   letterSpacing: "0.01em",
   marginBottom: 2,
@@ -563,11 +563,8 @@ return (
                 title="Open Cart"
                 onClick={() => setCartSidebarOpen(true)}
               >
-                {/* Double right arrow SVG */}
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <polyline points="10 8 18 16 10 24" fill="none" stroke="#4f8cff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <polyline points="16 8 24 16 16 24" fill="none" stroke="#4f8cff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+                {/* Cart icon SVG */}
+                <img src={require('../assets/cart.svg').default} alt="Open Cart" style={{ width: 28, height: 28, display: 'block' }} />
               </button>
             )}
           </div>
@@ -592,7 +589,7 @@ return (
                 ...sectionTitleStyle,
                 fontSize: '1.18rem',
                 margin: '32px 0 18px 24px',
-                color: '#4f4f6f', // Subtle blue-grey
+                color: blue,
                 letterSpacing: 0.5,
                 fontWeight: 600,
                 textAlign: 'left',
@@ -711,36 +708,34 @@ return (
                     }}
                     onClick={e => e.stopPropagation()}
                   >
-                    {/* Close button with left arrow */}
-                    <button
-                      style={{
-                        position: 'absolute',
-                        top: 18,
-                        left: 18,
-                        background: '#fff',
-                        border: '1.5px solid #e0e0e0',
-                        borderRadius: '50%',
-                        width: 44,
-                        height: 44,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        boxShadow: '0 2px 12px rgba(179,157,219,0.10)',
-                        zIndex: 10,
-                        transition: 'box-shadow 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1)',
-                      }}
-                      aria-label="Close Cart"
-                      title="Close Cart"
-                      onClick={() => setCartSidebarOpen(false)}
-                    >
-                      {/* Double left arrow SVG */}
-                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <polyline points="22 8 14 16 22 24" fill="none" stroke="#4f8cff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <polyline points="16 8 8 16 16 24" fill="none" stroke="#4f8cff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </button>
-                    <div style={{ ...sectionTitleStyle, fontSize: '1.25rem', margin: '18px 0 18px 12px', color: '#232526', letterSpacing: 1.2, fontWeight: 800 }}>Your Cart</div>
+                    <div style={{ display: 'flex', alignItems: 'center', margin: '18px 0 18px 12px' }}>
+                      <div style={{ ...sectionTitleStyle, fontSize: '1.25rem', color: blue, letterSpacing: 1.2, fontWeight: 800, margin: 0 }}>Cart</div>
+                      <button
+                        style={{
+                          marginLeft: 12,
+                          background: '#fff',
+                          border: '1.5px solid #e0e0e0',
+                          borderRadius: '50%',
+                          width: 36,
+                          height: 36,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          boxShadow: '0 2px 8px rgba(179,157,219,0.08)',
+                          zIndex: 10,
+                          transition: 'box-shadow 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1)',
+                        }}
+                        aria-label="Close Cart"
+                        title="Close Cart"
+                        onClick={() => setCartSidebarOpen(false)}
+                      >
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <line x1="5.5" y1="5.5" x2="14.5" y2="14.5" stroke={blue} strokeWidth="2.2" strokeLinecap="round"/>
+                          <line x1="14.5" y1="5.5" x2="5.5" y2="14.5" stroke={blue} strokeWidth="2.2" strokeLinecap="round"/>
+                        </svg>
+                      </button>
+                    </div>
                     <div
                       style={{
                         ...cartListStyle,
