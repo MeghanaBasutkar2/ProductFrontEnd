@@ -305,14 +305,14 @@ const ProductDetailPage: React.FC = () => {
           }} />
           <div style={{ margin: "0 0 0 24px", paddingRight: 24 }}>
             {/* Section: Product Details */}
-            <div style={{ fontWeight: 700, fontSize: "1.08rem", marginBottom: 6, color: "#474fa3ff", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+            <div style={{ fontWeight: 700, fontSize: "1rem", marginBottom: 6, color: "#474fa3ff", textTransform: "uppercase", letterSpacing: "0.08em" }}>
               Product Details
             </div>
-            <div style={{ color: "#7b8aaf", fontSize: "1.01rem", marginBottom: 14, whiteSpace: "pre-line", lineHeight: 1.6 }}>
+            <div style={{ color: "#7b8aaf", fontSize: "1rem", marginBottom: 14, whiteSpace: "pre-line", lineHeight: 1.6 }}>
               {product.description1}
             </div>
             {/* Section: Technical Details */}
-            <div style={{ fontWeight: 700, fontSize: "1.08rem", marginBottom: 6, color: "#474fa3ff", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+            <div style={{ fontWeight: 700, fontSize: "1rem", marginBottom: 6, color: "#474fa3ff", textTransform: "uppercase", letterSpacing: "0.08em" }}>
               Technical Details
             </div>
             <div style={{ color: "#7b8aaf", fontSize: "1.01rem", marginBottom: 14, whiteSpace: "pre-line", lineHeight: 1.6 }}>
@@ -320,14 +320,14 @@ const ProductDetailPage: React.FC = () => {
             </div>
             {/* Section: Product Code */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-              <span style={{ fontWeight: 700, fontSize: "1.08rem", color: "#474fa3ff", letterSpacing: "0.08em", textTransform: "uppercase" }}>Product Code</span>
+              <span style={{ fontWeight: 700, fontSize: "1rem", color: "#474fa3ff", letterSpacing: "0.08em", textTransform: "uppercase" }}>Product Code</span>
             </div>
             <div style={{ color: "#7b8aaf", fontSize: "1.01rem", marginBottom: 14, marginLeft: 2 }}>
               {product.orderCode || product.id}
             </div>
             {/* Section: Variants */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-              <span style={{ fontWeight: 700, fontSize: "1.08rem", color: "#474fa3ff", letterSpacing: "0.08em", textTransform: "uppercase" }}>Variants</span>
+              <span style={{ fontWeight: 700, fontSize: "1rem", color: "#474fa3ff", letterSpacing: "0.08em", textTransform: "uppercase" }}>Variants</span>
             </div>
             <div style={{ color: "#7b8aaf", fontSize: "1.01rem", marginBottom: 18, background: "#f6f8ff", borderRadius: 8, padding: "6px 12px", display: "inline-block" }}>
               {[product.variant1, product.variant2, product.variant3].filter(Boolean).join(" | ")}
