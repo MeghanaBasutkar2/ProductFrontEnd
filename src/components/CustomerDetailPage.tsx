@@ -140,15 +140,16 @@ const submitBtnStyle: React.CSSProperties = {
 
 const rightStyle: React.CSSProperties = {
   flex: 1,
-  background: "#fff",
-  padding: "36px 0 0 0",
-  borderLeft: `1.5px solid #e0e0e0`,
+  background: "none",
+  padding: window.innerWidth <= 700 ? "18px 0 0 0" : "36px 0 0 0",
+  borderLeft: window.innerWidth <= 700 ? "none" : `1.5px solid #e0e0e0`,
   display: "flex",
   flexDirection: "column",
   position: "relative",
-  boxShadow: "0 0 24px 0 rgba(120,144,156,0.06)",
-  minWidth: 340,
+  alignItems: "center",
+  minWidth: window.innerWidth <= 700 ? 0 : 340,
   maxWidth: 540,
+  boxSizing: "border-box",
 };
 
 const cartListStyle: React.CSSProperties = {
@@ -225,6 +226,7 @@ function getCartTotal(cart: any[]) {
 
 const API_URL = "http://localhost:9090/lighting/api/orders/place-order";
 
+
 const CustomerDetailPage: React.FC = () => {
   const history = useHistory();
 
@@ -242,6 +244,8 @@ const CustomerDetailPage: React.FC = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
 
   const formCardRef = useRef<HTMLFormElement>(null);
   const [formCardHeight, setFormCardHeight] = React.useState<number>(0);
@@ -395,172 +399,249 @@ const CustomerDetailPage: React.FC = () => {
   if (!cartLoaded) return null;
 
   return (
-    <div style={pageStyle}>
-      {showSuccess && (
-        <>
-          <div style={dialogOverlayStyle}></div>
-          <div style={dialogBoxStyle}>
-            <Lottie
-              animationData={happyShopperLottie}
-              loop
-              autoplay
-              style={lottieStyle}
-            />
-            <h2 style={{ color: purple, margin: "8px 0 8px 0", fontFamily: "'Inter', Arial, sans-serif" }}>You’re all set!</h2>
-            <div style={{ color: blue, fontSize: "1.08rem", marginBottom: 12, fontFamily: "'Inter', Arial, sans-serif" }}>
-              You can now pay on the go.<br />Thank you for shopping with us!
+    <>
+      <div style={pageStyle}>
+        {showSuccess && (
+          <>
+            <div style={dialogOverlayStyle}></div>
+            <div style={dialogBoxStyle}>
+              <Lottie
+                animationData={happyShopperLottie}
+                loop
+                autoplay
+                style={lottieStyle}
+              />
+              <h2 style={{ color: purple, margin: "8px 0 8px 0", fontFamily: "'Inter', Arial, sans-serif" }}>You’re all set!</h2>
+              <div style={{ color: blue, fontSize: "1.08rem", marginBottom: 12, fontFamily: "'Inter', Arial, sans-serif" }}>
+                You can now pay on the go.<br />Thank you for shopping with us!
+              </div>
             </div>
-          </div>
-        </>
-      )}
-      <div style={contentWrapperStyle}>
-        <div style={leftStyle}>
-          <form ref={formCardRef} style={formCardStyle} onSubmit={handleSubmit} autoComplete="off">
-            <div style={sectionTitleStyle}>Contact information</div>
-            <div style={inputRowStyle}>
+          </>
+        )}
+        <div style={contentWrapperStyle}>
+          <div style={leftStyle}>
+            {/* Show cart open button only on mobile */}
+            {window.innerWidth <= 700 && (
+              <button
+                style={{
+                  position: "absolute",
+                  top: 18,
+                  right: 18,
+                  background: "#fff",
+                  border: "1.5px solid #e0e0e0",
+                  borderRadius: "50%",
+                  width: 44,
+                  height: 44,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  boxShadow: "0 2px 12px rgba(179,157,219,0.10)",
+                  zIndex: 10,
+                  transition: "box-shadow 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1)",
+                }}
+                aria-label="Open Cart"
+                title="Open Cart"
+                onClick={() => setCartSidebarOpen(true)}
+              >
+                <svg width="22" height="22" fill="none" stroke="#4f8cff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                  <polyline points="9 6 15 12 9 18" />
+                </svg>
+              </button>
+            )}
+            <form ref={formCardRef} style={formCardStyle} onSubmit={handleSubmit} autoComplete="off">
+              <div style={sectionTitleStyle}>Contact Information</div>
+              <div style={inputRowStyle}>
+                <div style={labelInputColumn}>
+                  <label style={labelStyle}>First Name</label>
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    style={inputStyle}
+                    type="text"
+                    value={firstName}
+                    onChange={e => setFirstName(e.target.value)}
+                    placeholder="First Name"
+                    autoComplete="given-name"
+                    required
+                  />
+                </div>
+                <div style={{ width: 14 }} />
+                <div style={labelInputColumn}>
+                  <label style={labelStyle}>Last Name</label>
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    style={inputStyle}
+                    type="text"
+                    value={lastName}
+                    onChange={e => setLastName(e.target.value)}
+                    placeholder="Last Name"
+                    autoComplete="family-name"
+                  />
+                </div>
+              </div>
               <div style={labelInputColumn}>
-                <label style={labelStyle}>First Name</label>
+                <label style={labelStyle}>Phone Number</label>
                 <input
-                  id="firstName"
-                  name="firstName"
+                  id="phone"
+                  name="phone"
                   style={inputStyle}
-                  type="text"
-                  value={firstName}
-                  onChange={e => setFirstName(e.target.value)}
-                  placeholder="First Name"
-                  autoComplete="given-name"
+                  type="tel"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  placeholder="Phone Number"
+                  autoComplete="tel"
                   required
                 />
               </div>
-              <div style={{ width: 14 }} /> {/* gap between columns */}
               <div style={labelInputColumn}>
-                <label style={labelStyle}>Last Name</label>
+                <label style={labelStyle}>Email</label>
                 <input
-                  id="lastName"
-                  name="lastName"
+                  id="email"
+                  name="email"
                   style={inputStyle}
-                  type="text"
-                  value={lastName}
-                  onChange={e => setLastName(e.target.value)}
-                  placeholder="Last Name"
-                  autoComplete="family-name"
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="Email"
+                  autoComplete="email"
+                  required
                 />
               </div>
-            </div>
-            <div style={labelInputColumn}>
-              <label style={labelStyle}>Phone Number</label>
-              <input
-                id="phone"
-                name="phone"
-                style={inputStyle}
-                type="tel"
-                value={phone}
-                onChange={e => setPhone(e.target.value)}
-                placeholder="Phone Number"
-                autoComplete="tel"
-                required
-              />
-            </div>
-            <div style={labelInputColumn}>
-              <label style={labelStyle}>Email</label>
-              <input
-                id="email"
-                name="email"
-                style={inputStyle}
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="Email"
-                autoComplete="email"
-                required
-              />
-            </div>
-            <div style={inputRowStyle}>
-              <div style={{ ...labelInputColumn, flex: 2 }}>
-                <label style={labelStyle}>Address</label>
-                <input
-                  id="address"
-                  name="address"
-                  style={inputStyle}
-                  type="text"
-                  value={address}
-                  onChange={e => setAddress(e.target.value)}
-                  placeholder="Address"
-                  autoComplete="street-address"
-                />
-              </div>
-              <div style={{ width: 14 }} />
-              <div style={{ ...labelInputColumn, flex: 1 }}>
-                <label style={labelStyle}>Pincode</label>
-                <input
-                  id="pincode"
-                  name="pincode"
-                  style={inputStyle}
-                  type="text"
-                  value={pincode}
-                  onChange={e => setPincode(e.target.value)}
-                  placeholder="Pincode"
-                  autoComplete="postal-code"
-                />
-              </div>
-            </div>
-            <span style={errorStyle}>{error}</span>
-            <button style={submitBtnStyle} type="submit" disabled={loading}>
-              {loading ? "Placing Order..." : "Place Order"}
-            </button>
-          </form>
-        </div>
-        <div style={rightStyle}>
-          <div style={{ ...sectionTitleStyle, fontSize: "1.25rem", margin: "0 0 18px 32px" }}>Your Cart</div>
-          <div
-            style={{
-              ...cartListStyle,
-              maxHeight: formCardHeight ? formCardHeight : 500, // fallback if not measured yet
-              overflowY: "auto",
-              minHeight: 0,
-            }}
-          >
-            {cart.map(item => (
-              <div key={item.id} style={cartItemStyle}>
-                <img
-                  src={item.imageUrl && item.imageUrl !== "default.jpg"
-                    ? item.imageUrl
-                    : "https://img.icons8.com/ios-filled/200/light.png"}
-                  alt={item.name}
-                  style={cartImgStyle}
-                />
-                <div style={{ flex: 1 }}>
-                  <div style={cartTitleStyle}>{item.title || item.name}</div>
-                  <div style={cartPriceStyle}>
-                    {(typeof item.discountedPrice === "number" &&
-                      !isNaN(item.discountedPrice) &&
-                      item.discountedPrice > 0 &&
-                      item.discountedPrice < item.price) ? (
-                      <>
-                        <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
-                          ₹{item.price}
-                        </span>
-                        <span style={{ color: "#4f8cff" }}>₹{item.discountedPrice} × {item.qty}</span>
-                      </>
-                    ) : (
-                      <>₹{item.price} × {item.qty}</>
-                    )}
-                  </div>
+              <div style={inputRowStyle}>
+                <div style={{ ...labelInputColumn, flex: 2 }}>
+                  <label style={labelStyle}>Address</label>
+                  <input
+                    id="address"
+                    name="address"
+                    style={inputStyle}
+                    type="text"
+                    value={address}
+                    onChange={e => setAddress(e.target.value)}
+                    placeholder="Address"
+                    autoComplete="street-address"
+                  />
+                </div>
+                <div style={{ width: 14 }} />
+                <div style={{ ...labelInputColumn, flex: 1 }}>
+                  <label style={labelStyle}>Pincode</label>
+                  <input
+                    id="pincode"
+                    name="pincode"
+                    style={inputStyle}
+                    type="text"
+                    value={pincode}
+                    onChange={e => setPincode(e.target.value)}
+                    placeholder="Pincode"
+                    autoComplete="postal-code"
+                  />
                 </div>
               </div>
-            ))}
+              <span style={errorStyle}>{error}</span>
+              <button style={submitBtnStyle} type="submit" disabled={loading}>
+                {loading ? "Placing Order..." : "Place Order"}
+              </button>
+            </form>
           </div>
-          <div style={summaryWrapperStyle}>
-            <span style={{ fontWeight: 700, color: "#4f8cff", fontFamily: "'Inter', Arial, sans-serif", fontSize: "1.08rem", letterSpacing: "0.04em", userSelect: "none" }}>
-              Subtotal:
-            </span>
-            <span style={{ fontWeight: 700, color: "#4f8cff", fontFamily: "'Inter', Arial, sans-serif", fontSize: "1.08rem", letterSpacing: "0.04em", marginLeft: 8, userSelect: "none" }}>
-              ₹{getCartTotal(cart)} INR
-            </span>
-          </div>
+          {/* Desktop cart remains as before */}
+          {window.innerWidth > 700 && (
+            <div style={rightStyle}>
+              {/* ...existing code for desktop cart... */}
+              <div
+                style={{
+                  background: "#fff",
+                  borderRadius: 24,
+                  boxShadow: "0 4px 32px rgba(120,144,156,0.10)",
+                  position: "relative",
+                  overflow: "hidden",
+                  width: 480,
+                  maxWidth: "100%",
+                  margin: "0 0 18px 0",
+                  padding: "24px 0 0 0",
+                  minHeight: 320,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "stretch",
+                  borderLeft: `7px solid #18191a`,
+                }}
+              >
+                <div style={{ ...sectionTitleStyle, fontSize: "1.25rem", margin: "0 0 18px 32px", color: "#232526", letterSpacing: 1.2, fontWeight: 800 }}>Your Cart</div>
+                <div
+                  style={{
+                    ...cartListStyle,
+                    maxHeight: formCardHeight ? formCardHeight : 500,
+                    overflowY: "auto",
+                    minHeight: 0,
+                    padding: "0 24px 0 24px",
+                  }}
+                >
+                  {cart.map(item => (
+                    <div key={item.id} style={{
+                      ...cartItemStyle,
+                      background: "#f6f8ff",
+                      borderRadius: 12,
+                      marginBottom: 14,
+                      boxShadow: "0 2px 8px rgba(120,144,156,0.06)",
+                      padding: "10px 16px",
+                      border: "none",
+                      alignItems: "center",
+                      display: "flex",
+                    }}>
+                      <img
+                        src={item.imageUrl && item.imageUrl !== "default.jpg"
+                          ? item.imageUrl
+                          : "https://img.icons8.com/ios-filled/200/light.png"}
+                        alt={item.name}
+                        style={{ ...cartImgStyle, width: 40, height: 40, borderRadius: 8, marginRight: 10 }}
+                      />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ ...cartTitleStyle, fontWeight: 800, fontSize: "1.08rem", color: "#232526", marginBottom: 2 }}>{item.title || item.name}</div>
+                        <div style={{ ...cartPriceStyle, color: "#4f8cff", fontWeight: 700, fontSize: "1.08rem" }}>
+                          {(typeof item.discountedPrice === "number" &&
+                            !isNaN(item.discountedPrice) &&
+                            item.discountedPrice > 0 &&
+                            item.discountedPrice < item.price) ? (
+                            <>
+                              <span style={{ textDecoration: "line-through", color: "#bdbdbd", marginRight: 8, fontWeight: 500 }}>
+                                ₹{item.price}
+                              </span>
+                              <span style={{ color: "#4f8cff", fontWeight: 700 }}>₹{item.discountedPrice} × {item.qty}</span>
+                            </>
+                          ) : (
+                            <>₹{item.price} × {item.qty}</>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{
+                  ...summaryWrapperStyle,
+                  background: "#f6f8ff",
+                  borderTop: "none",
+                  borderRadius: "0 0 24px 24px",
+                  marginBottom: 0,
+                  boxShadow: "none",
+                  fontWeight: 800,
+                  fontSize: "1.13rem",
+                  color: "#4f8cff",
+                  justifyContent: "flex-end",
+                  padding: "0 24px",
+                }}>
+                  <span style={{ fontWeight: 800, color: "#4f8cff", fontFamily: "'Inter', Arial, sans-serif", fontSize: "1.13rem", letterSpacing: "0.04em", userSelect: "none" }}>
+                    Subtotal:
+                  </span>
+                  <span style={{ fontWeight: 800, color: "#4f8cff", fontFamily: "'Inter', Arial, sans-serif", fontSize: "1.13rem", letterSpacing: "0.04em", marginLeft: 8, userSelect: "none" }}>
+                    ₹{getCartTotal(cart)} INR
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
