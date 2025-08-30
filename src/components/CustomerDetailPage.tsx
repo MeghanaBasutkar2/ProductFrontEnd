@@ -58,10 +58,10 @@ const formCardStyle: React.CSSProperties = {
   background: cardBg,
   borderRadius: 20,
   boxShadow: "0 4px 24px rgba(120,144,156,0.10)",
-  padding: "32px 32px 28px 32px", // Increased right padding to 32px to match left/start
+  padding: "20px 24px 16px 24px", // reduced vertical padding for a more compact card
   width: "100%",
   maxWidth: 480,
-  margin: 16,
+  margin: 10,
   display: "flex",
   flexDirection: "column",
   gap: 0,
@@ -125,7 +125,7 @@ const errorStyle: React.CSSProperties = {
 };
 
 const submitBtnStyle: React.CSSProperties = {
-  marginTop: 16,
+  marginTop: 6, // reduced from 16 to 6 for tighter spacing
   background: blue,
   color: "#fff",
   border: "none",
@@ -505,7 +505,7 @@ return (
                   required
                 />
               </div>
-              <div style={inputRowStyle}>
+              <div style={{ ...inputRowStyle, marginBottom: 2 }}>
                 <div style={{ ...labelInputColumn, flex: 2 }}>
                   <label style={labelStyle}>Address</label>
                   <input
@@ -538,278 +538,217 @@ return (
                 {loading ? "Placing Order..." : "Place Order"}
               </button>
             </form>
-            {/* Show collapse/expand button only on mobile */}
-            {window.innerWidth <= 700 && (
-              <button
+          {/* Cart icon: Flush with the right edge of the contact info card, vertically centered */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              right: 0, // always flush with the card edge, all screen sizes
+              transform: 'translateY(-50%)',
+              zIndex: 200,
+              pointerEvents: 'none',
+            }}
+          >
+            <button
+              style={{
+                background: '#fff',
+                border: '1.5px solid #e0e0e0',
+                borderRadius: '50%',
+                width: 54,
+                height: 54,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                boxShadow: '0 8px 28px 0 rgba(60,60,120,0.15), 0 2px 8px 0 rgba(91,76,154,0.13)',
+                transition: 'box-shadow 0.22s cubic-bezier(.4,2,.6,1), transform 0.18s cubic-bezier(.4,2,.6,1)',
+                outline: 'none',
+                borderColor: '#e0e0e0',
+                filter: 'drop-shadow(0 2px 8px rgba(120,144,156,0.10))',
+                padding: 0,
+                pointerEvents: 'auto',
+              }}
+              aria-label="Open Cart"
+              title="Open Cart"
+              onClick={() => setCartSidebarOpen(true)}
+              onMouseOver={e => {
+                e.currentTarget.style.boxShadow = '0 14px 36px 0 rgba(60,60,120,0.19), 0 3px 12px 0 rgba(91,76,154,0.15)';
+                e.currentTarget.style.transform = 'scale(1.08)';
+              }}
+              onMouseOut={e => {
+                e.currentTarget.style.boxShadow = '0 8px 28px 0 rgba(60,60,120,0.15), 0 2px 8px 0 rgba(91,76,154,0.13)';
+                e.currentTarget.style.transform = 'none';
+              }}
+            >
+              <img src={require('../assets/cart.svg').default} alt="Open Cart" style={{ width: 32, height: 32, display: 'block', filter: 'drop-shadow(0 1px 0 #4f8cff22)' }} />
+            </button>
+          </div>
+          </div>
+          {/* Cart drawer (all screen sizes): show when cartSidebarOpen is true */}
+          {cartSidebarOpen && (
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                right: 0,
+                width: '100vw',
+                height: '100vh',
+                background: 'rgba(30,40,60,0.18)',
+                zIndex: 2000,
+                display: 'flex',
+                justifyContent: 'flex-end',
+                transition: 'background 0.2s cubic-bezier(.4,2,.6,1)',
+              }}
+              onClick={() => setCartSidebarOpen(false)}
+            >
+              <div
                 style={{
-                  position: 'absolute',
-                  top: formCardRef.current ? (formCardRef.current.offsetHeight / 2 - 22) : '50%',
-                  right: -8,
-                  transform: 'translateY(0)',
+                  width: window.innerWidth <= 700 ? '100vw' : 400,
+                  maxWidth: '100vw',
+                  height: '100vh',
                   background: '#fff',
-                  border: '1.5px solid #e0e0e0',
-                  borderRadius: '50%',
-                  width: 44,
-                  height: 44,
+                  padding: '32px 0 0 0',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  boxSizing: 'border-box',
+                  /* No border radius for PLP/PDP style */
+                  boxShadow: '0 -2px 24px 0 rgba(120,144,156,0.10)',
+                  animation: 'slideInCartDrawer 0.4s cubic-bezier(.4,2,.6,1)',
+                  margin: 0,
+                  backgroundImage: undefined,
+                  transition: 'box-shadow 0.25s cubic-bezier(.4,2,.6,1), background 0.25s cubic-bezier(.4,2,.6,1)',
+                }}
+                onClick={e => e.stopPropagation()}
+              >
+                <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  boxShadow: '0 2px 12px rgba(179,157,219,0.10)',
-                  transition: 'box-shadow 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1)',
-                  zIndex: 10,
-                }}
-                aria-label="Open Cart"
-                title="Open Cart"
-                onClick={() => setCartSidebarOpen(true)}
-              >
-                {/* Cart icon SVG */}
-                <img src={require('../assets/cart.svg').default} alt="Open Cart" style={{ width: 28, height: 28, display: 'block' }} />
-              </button>
-            )}
-          </div>
-          {/* Cart (right) - always visible on desktop, collapsible on mobile */}
-          {window.innerWidth > 700 ? (
-            <div style={{
-              ...rightStyle,
-              background: '#fff',
-              borderRadius: 24,
-              margin: '32px 0 32px 0', // Remove left margin for tighter layout
-              boxShadow: '-8px 0 32px 0 rgba(120,144,156,0.13)',
-              minHeight: '60vh',
-              maxHeight: '80vh',
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'hidden',
-              position: 'relative',
-              padding: 0,
-              alignItems: 'flex-start',
-            }}>
-              <div style={{
-                ...sectionTitleStyle,
-                fontSize: '1.18rem',
-                margin: '32px 0 18px 24px',
-                color: blue,
-                letterSpacing: 0.5,
-                fontWeight: 600,
-                textAlign: 'left',
-                width: '100%',
-                display: 'block',
-                fontFamily: "'Inter', Arial, sans-serif",
-                textTransform: 'none',
-              }}>Cart</div>
-              <div style={{
-                ...cartListStyle,
-                maxHeight: formCardHeight ? formCardHeight : 500,
-                overflowY: 'auto',
-                minHeight: 0,
-                padding: '0 24px 0 24px',
-              }}>
-                {cart.map(item => (
-                  <div key={item.id} style={{
-                    ...cartItemStyle,
-                    background: '#f6f8ff',
-                    borderRadius: 12,
-                    marginBottom: 14,
-                    boxShadow: '0 2px 8px rgba(120,144,156,0.06)',
-                    padding: '10px 16px',
-                    border: 'none',
-                    alignItems: 'center',
-                    display: 'flex',
-                  }}>
-                    <img
-                      src={item.imageUrl && item.imageUrl !== 'default.jpg'
-                        ? item.imageUrl
-                        : 'https://img.icons8.com/ios-filled/200/light.png'}
-                      alt={item.name}
-                      style={{ ...cartImgStyle, width: 40, height: 40, borderRadius: 8, marginRight: 10 }}
-                    />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ ...cartTitleStyle, fontWeight: 800, fontSize: '1.08rem', color: '#232526', marginBottom: 2 }}>{item.title || item.name}</div>
-                      <div style={{ ...cartPriceStyle, color: '#4f8cff', fontWeight: 700, fontSize: '1.08rem' }}>
-                        {(typeof item.discountedPrice === 'number' &&
-                          !isNaN(item.discountedPrice) &&
-                          item.discountedPrice > 0 &&
-                          item.discountedPrice < item.price) ? (
-                          <>
-                            <span style={{ textDecoration: 'line-through', color: '#bdbdbd', marginRight: 8, fontWeight: 500 }}>
-                              ₹{item.price}
-                            </span>
-                            <span style={{ color: '#4f8cff', fontWeight: 700 }}>₹{item.discountedPrice} × {item.qty}</span>
-                          </>
-                        ) : (
-                          <>₹{item.price} × {item.qty}</>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div style={{
-                ...summaryWrapperStyle,
-                background: 'none',
-                borderTop: 'none',
-                borderRadius: '0 0 24px 24px',
-                marginBottom: 0,
-                boxShadow: 'none',
-                fontWeight: 800,
-                fontSize: '1.13rem',
-                color: '#4f8cff',
-                justifyContent: 'flex-start',
-                alignItems: 'flex-start',
-                padding: '0 24px',
-                textAlign: 'left',
-                flexDirection: 'column',
-                width: '100%',
-                display: 'block',
-              }}>
-                <span style={{ fontWeight: 800, color: '#4f8cff', fontFamily: "'Inter', Arial, sans-serif", fontSize: '1.13rem', letterSpacing: '0.04em', userSelect: 'none', marginTop: 10, marginBottom: 2, textAlign: 'left', display: 'block' }}>
-                  Subtotal: ₹{getCartTotal(cart)}
-                </span>
-              </div>
-            </div>
-          ) : (
-            // Mobile: show collapsible cart drawer
-            <>
-              {cartSidebarOpen && (
+                  height: 56,
+                  paddingLeft: 32,
+                  paddingRight: 16,
+                  // No borderBottom divider here
+                  margin: 0,
+                  boxSizing: 'border-box',
+                  justifyContent: 'space-between',
+                }}>
+                  <h2 style={{
+                    fontWeight: 700,
+                    fontSize: '1.18rem',
+                    margin: 0,
+                    color: '#4f4f6f',
+                    letterSpacing: 0.2,
+                    textAlign: 'left',
+                    fontFamily: "'Inter', Arial, sans-serif",
+                    textTransform: 'none',
+                  }}>Cart</h2>
+                  <button
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: 36,
+                      height: 36,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      boxShadow: 'none',
+                      zIndex: 10,
+                      color: '#aaa',
+                      fontSize: '1.7rem',
+                      fontWeight: 700,
+                      marginRight: 0,
+                      marginLeft: 0,
+                      transition: 'background 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1)',
+                    }}
+                    aria-label="Close Cart"
+                    title="Close Cart"
+                    onClick={() => setCartSidebarOpen(false)}
+                  >
+                    &times;
+                  </button>
+                </div>
                 <div
                   style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    width: '100vw',
-                    height: '100vh',
-                    background: 'rgba(30,40,60,0.18)',
-                    zIndex: 2000,
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    transition: 'background 0.2s cubic-bezier(.4,2,.6,1)',
+                    ...cartListStyle,
+                    // Height: viewport minus header (56px) and subtotal (72px)
+                    maxHeight: `calc(100vh - 56px - 72px)`,
+                    overflowY: 'auto',
+                    minHeight: 0,
+                    padding: 0,
                   }}
-                  onClick={() => setCartSidebarOpen(false)}
                 >
-                  <div
-                    style={{
-                      width: '100vw',
-                      height: '100vh',
-                      background: '#fff',
+                  {cart.map((item, idx) => (
+                    <div key={item.id} style={{
                       display: 'flex',
-                      flexDirection: 'column',
-                      boxShadow: '0 -2px 24px 0 rgba(120,144,156,0.10)',
-                      borderLeft: 'none',
-                      borderTopLeftRadius: 32,
-                      borderBottomLeftRadius: 32,
-                      animation: 'slideInCartDrawer 0.4s cubic-bezier(.4,2,.6,1)',
-                      padding: 0,
-                      margin: 0,
-                      overflow: 'hidden',
-                      position: 'relative',
-                      backgroundImage: undefined,
-                      transition: 'box-shadow 0.25s cubic-bezier(.4,2,.6,1), background 0.25s cubic-bezier(.4,2,.6,1)',
-                    }}
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', margin: '18px 0 18px 12px', justifyContent: 'space-between' }}>
-                      <div style={{ ...sectionTitleStyle, fontSize: '1.25rem', color: blue, letterSpacing: 1.2, fontWeight: 800, margin: 0 }}>Cart</div>
-                      <button
-                        style={{
-                          marginLeft: 12,
-                          background: 'none',
-                          border: 'none',
-                          borderRadius: '50%',
-                          width: 36,
-                          height: 36,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                          boxShadow: 'none',
-                          zIndex: 10,
-                          transition: 'background 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1)',
-                        }}
-                        aria-label="Close Cart"
-                        title="Close Cart"
-                        onClick={() => setCartSidebarOpen(false)}
-                      >
-                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <line x1="8" y1="8" x2="20" y2="20" stroke={blue} strokeWidth="2.5" strokeLinecap="round"/>
-                          <line x1="20" y1="8" x2="8" y2="20" stroke={blue} strokeWidth="2.5" strokeLinecap="round"/>
-                        </svg>
-                      </button>
-                    </div>
-                    <div
-                      style={{
-                        ...cartListStyle,
-                        maxHeight: formCardHeight ? formCardHeight : 500,
-                        overflowY: 'auto',
-                        minHeight: 0,
-                        padding: '0 12px 0 12px',
-                      }}
-                    >
-                      {cart.map(item => (
-                        <div key={item.id} style={{
-                          ...cartItemStyle,
-                          background: '#f6f8ff',
-                          borderRadius: 12,
-                          marginBottom: 14,
-                          boxShadow: '0 2px 8px rgba(120,144,156,0.06)',
-                          padding: '10px 8px',
-                          border: 'none',
-                          alignItems: 'center',
-                          display: 'flex',
-                        }}>
-                          <img
-                            src={item.imageUrl && item.imageUrl !== 'default.jpg'
-                              ? item.imageUrl
-                              : 'https://img.icons8.com/ios-filled/200/light.png'}
-                            alt={item.name}
-                            style={{ ...cartImgStyle, width: 40, height: 40, borderRadius: 8, marginRight: 10 }}
-                          />
-                          <div style={{ flex: 1 }}>
-                            <div style={{ ...cartTitleStyle, fontWeight: 800, fontSize: '1.08rem', color: '#232526', marginBottom: 2 }}>{item.title || item.name}</div>
-                            <div style={{ ...cartPriceStyle, color: '#4f8cff', fontWeight: 700, fontSize: '1.08rem' }}>
-                              {(typeof item.discountedPrice === 'number' &&
-                                !isNaN(item.discountedPrice) &&
-                                item.discountedPrice > 0 &&
-                                item.discountedPrice < item.price) ? (
-                                <>
-                                  <span style={{ textDecoration: 'line-through', color: '#bdbdbd', marginRight: 8, fontWeight: 500 }}>
-                                    ₹{item.price}
-                                  </span>
-                                  <span style={{ color: '#4f8cff', fontWeight: 700 }}>₹{item.discountedPrice} × {item.qty}</span>
-                                </>
-                              ) : (
-                                <>₹{item.price} × {item.qty}</>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div style={{
-                      ...summaryWrapperStyle,
-                      background: 'none',
-                      borderTop: 'none',
-                      borderRadius: '0 0 24px 24px',
-                      marginBottom: 0,
-                      boxShadow: 'none',
-                      fontWeight: 800,
-                      fontSize: '1.13rem',
-                      color: '#4f8cff',
-                      justifyContent: 'flex-start',
                       alignItems: 'center',
-                      padding: '0 12px',
+                      padding: '14px 32px 14px 32px',
+                      background: '#fff',
+                      border: 'none',
+                      boxShadow: 'none',
+                      margin: 0,
+                      borderBottom: idx !== cart.length - 1 ? '1px solid #ececf2' : 'none',
                     }}>
-                      <span style={{ fontWeight: 800, color: '#4f8cff', fontFamily: "'Inter', Arial, sans-serif", fontSize: '1.13rem', letterSpacing: '0.04em', userSelect: 'none' }}>
-                        Subtotal:
-                      </span>
-                      <span style={{ fontWeight: 800, color: '#4f8cff', fontFamily: "'Inter', Arial, sans-serif", fontSize: '1.13rem', letterSpacing: '0.04em', marginLeft: 8, userSelect: 'none' }}>
-                        ₹{getCartTotal(cart)} INR
-                      </span>
+                      <img
+                        src={item.imageUrl && item.imageUrl !== 'default.jpg'
+                          ? item.imageUrl
+                          : 'https://img.icons8.com/ios-filled/200/light.png'}
+                        alt={item.name}
+                        style={{ ...cartImgStyle, width: 40, height: 40, borderRadius: 8, marginRight: 14 }}
+                      />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ ...cartTitleStyle, fontWeight: 700, fontSize: '1.08rem', color: '#232526', marginBottom: 2 }}>{item.title || item.name}</div>
+                        <div style={{ ...cartPriceStyle, color: '#4f8cff', fontWeight: 700, fontSize: '1.08rem' }}>
+                          {(typeof item.discountedPrice === 'number' &&
+                            !isNaN(item.discountedPrice) &&
+                            item.discountedPrice > 0 &&
+                            item.discountedPrice < item.price) ? (
+                            <>
+                              <span style={{ textDecoration: 'line-through', color: '#bdbdbd', marginRight: 8, fontWeight: 500 }}>
+                                ₹{item.price}
+                              </span>
+                              <span style={{ color: '#4f8cff', fontWeight: 700 }}>₹{item.discountedPrice} × {item.qty}</span>
+                            </>
+                          ) : (
+                            <>₹{item.price} × {item.qty}</>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              )}
-            </>
+                <div style={{
+                  ...summaryWrapperStyle,
+                  background: 'none',
+                  borderTop: 'none',
+                  borderRadius: 0,
+                  marginBottom: 0,
+                  boxShadow: 'none',
+                  fontWeight: 800,
+                  fontSize: '1.13rem',
+                  color: '#4f8cff',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                  padding: '0 12px',
+                  position: 'sticky',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  minHeight: 72,
+                  backgroundColor: '#fff',
+                  zIndex: 10,
+                }}>
+                  <span style={{ fontWeight: 800, color: '#4f8cff', fontFamily: "'Inter', Arial, sans-serif", fontSize: '1.13rem', letterSpacing: '0.04em', userSelect: 'none' }}>
+                    Subtotal:
+                  </span>
+                  <span style={{ fontWeight: 800, color: '#4f8cff', fontFamily: "'Inter', Arial, sans-serif", fontSize: '1.13rem', letterSpacing: '0.04em', marginLeft: 8, userSelect: 'none' }}>
+                    ₹{getCartTotal(cart)} INR
+                  </span>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>
