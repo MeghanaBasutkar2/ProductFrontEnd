@@ -364,34 +364,35 @@ const ProductDetailPage: React.FC = () => {
           </div>
           <div style={{
             display: "flex",
-            gap: 16,
-            margin: "24px 0 0 24px",
-            marginBottom: "24px",
-            width: "calc(100% - 48px)", // full width minus left margin
             justifyContent: "space-between",
-            alignItems: "center",
+            gap: 6,
+            width: "calc(100% - 48px)", // match container's horizontal padding
+            marginTop: 24,
+            marginLeft: 24,
+            marginBottom: 24,
+            boxSizing: "border-box",
           }}>
             <button
               style={{
                 borderRadius: 999,
                 border: "none",
-                background: "linear-gradient(90deg, #f4f0fa 0%, #e9e9ff 100%)",
+                background: "#f4f0fa",
                 color: "#3d3757",
                 fontWeight: 500,
                 fontSize: "1.08rem",
                 fontFamily: "'Inter', Arial, sans-serif",
-                padding: "10px 0",
+                padding: "7px 0",
                 minWidth: 0,
-                height: 44,
-                boxShadow: "0 2px 12px rgba(120,144,156,0.08)",
+                height: 36,
+                boxShadow: "none",
                 outline: "none",
                 cursor: "pointer",
-                transition: "background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s cubic-bezier(.4,2,.6,1)",
+                flex: 1,
+                marginRight: 6,
+                transition: "background 0.18s, color 0.18s",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                flex: 1,
-                marginRight: 0,
               }}
               onMouseOver={e => e.currentTarget.style.transform = "translateY(-2px) scale(1.03)"}
               onMouseOut={e => e.currentTarget.style.transform = "scale(1)"}
@@ -406,23 +407,23 @@ const ProductDetailPage: React.FC = () => {
               style={{
                 borderRadius: 999,
                 border: "none",
-                background: "linear-gradient(90deg, #6d5cae 0%, #4f8cff 100%)",
+                background: "#6d5cae",
                 color: "#fff",
                 fontWeight: 500,
                 fontSize: "1.08rem",
                 fontFamily: "'Inter', Arial, sans-serif",
-                padding: "10px 0",
+                padding: "7px 0",
                 minWidth: 0,
-                height: 44,
-                boxShadow: "0 2px 12px rgba(120,144,156,0.10)",
+                height: 36,
+                boxShadow: "none",
                 outline: "none",
                 cursor: "pointer",
-                transition: "background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s cubic-bezier(.4,2,.6,1)",
+                flex: 1,
+                marginLeft: 6,
+                transition: "background 0.18s, color 0.18s",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                flex: 1,
-                marginLeft: 0,
               }}
               onMouseOver={e => e.currentTarget.style.transform = "translateY(-2px) scale(1.03)"}
               onMouseOut={e => e.currentTarget.style.transform = "scale(1)"}
