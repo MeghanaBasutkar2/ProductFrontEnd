@@ -590,15 +590,17 @@ return (
             }}>
               <div style={{
                 ...sectionTitleStyle,
-                fontSize: '1.25rem',
-                margin: '32px 0 18px 24px', // Left align title
-                color: '#232526',
-                letterSpacing: 1.2,
-                fontWeight: 800,
+                fontSize: '1.18rem',
+                margin: '32px 0 18px 24px',
+                color: '#4f4f6f', // Subtle blue-grey
+                letterSpacing: 0.5,
+                fontWeight: 600,
                 textAlign: 'left',
                 width: '100%',
                 display: 'block',
-              }}>Your Cart</div>
+                fontFamily: "'Inter', Arial, sans-serif",
+                textTransform: 'none',
+              }}>Cart</div>
               <div style={{
                 ...cartListStyle,
                 maxHeight: formCardHeight ? formCardHeight : 500,

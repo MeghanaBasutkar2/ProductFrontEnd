@@ -662,7 +662,18 @@ const ListingPage: React.FC = () => {
             >
               &times;
             </button>
-            <h2 style={{ fontWeight: 700, fontSize: "1.4rem", margin: "0 24px 24px 24px" }}>Cart</h2>
+            <h2 style={{
+              fontWeight: 600,
+              fontSize: '1.18rem',
+              margin: '0 24px 18px 24px',
+              color: '#4f4f6f',
+              letterSpacing: 0.5,
+              textAlign: 'left',
+              width: '100%',
+              display: 'block',
+              fontFamily: "'Inter', Arial, sans-serif",
+              textTransform: 'none',
+            }}>Cart</h2>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0, position: "relative" }}>
               <div
                 style={{
