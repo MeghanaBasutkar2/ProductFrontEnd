@@ -1,3 +1,24 @@
+// Update cart drawer price and description styles
+const cartDescStyle: React.CSSProperties = {
+  color: "#7b8aaf", // subtle, muted blue-grey
+  fontSize: "0.97rem",
+  fontWeight: 400,
+  fontFamily: "'Inter', Arial, sans-serif",
+  marginBottom: 2,
+  lineHeight: 1.3,
+};
+// Match PDP price font: Inter, bold, blue, increased spacing, slightly smaller
+const priceStyle: React.CSSProperties = {
+  fontWeight: 700,
+  color: "#4f8cff",
+  fontSize: "1.08rem",
+  margin: "8px 0 0 0",
+  fontFamily: "'Inter', Arial, sans-serif",
+  letterSpacing: "0.04em",
+  textAlign: "left",
+  transition: "color 0.2s",
+  userSelect: "none",
+};
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useCart, theme } from "../components/common-dependencies/CartContext";
@@ -114,42 +135,32 @@ const descStyle: React.CSSProperties = {
   whiteSpace: "nowrap",
   maxWidth: "100%",
   fontWeight: 400, // Normal weight as in example
-  fontFamily: "'Inter', Arial, sans-serif",
 };
 
-// Match PDP price font: Inter, bold, blue, increased spacing, slightly smaller
-const priceStyle: React.CSSProperties = {
-  fontWeight: 700,
-  color: "#4f8cff",
-  fontSize: "1.08rem",
-  margin: "8px 0 0 0",
-  fontFamily: "'Inter', Arial, sans-serif",
-  letterSpacing: "0.04em",
-  textAlign: "left",
-  transition: "color 0.2s",
-  userSelect: "none",
-};
-
+// Utility function to truncate text
 function truncate(str: string, n: number) {
   return str && str.length > n ? str.slice(0, n) + "..." : str;
 }
 
 const pillButtonStyle: React.CSSProperties = {
   borderRadius: 999,
-  border: "1px solid #e0e0e0",
-  background: "#fff",
-  fontWeight: 500,
-  fontSize: "1rem",
-  padding: "8px 20px",
-  marginRight: 12,
+  border: "1.5px solid #e3dff5",
+  background: "#f8f6fc",
+  color: "#6d5cae",
+  fontWeight: 600,
+  fontSize: "1.08rem",
+  padding: "10px 28px",
+  marginRight: 0,
   cursor: "pointer",
   outline: "none",
   minWidth: 0,
-  boxShadow: "none",
+  boxShadow: "0 2px 8px rgba(109,92,174,0.04)",
   display: "flex",
   alignItems: "center",
-  height: 40,
+  height: 48,
+  transition: "background 0.18s, color 0.18s, border 0.18s",
 };
+
 
 const dropdownStyle: React.CSSProperties = {
   position: "absolute",
@@ -195,41 +206,20 @@ const searchBarWrapperStyle: React.CSSProperties = {
 const searchInputStyle: React.CSSProperties = {
   width: "100%",
   padding: "0 28px",
-  height: 40,
+  height: 48,
   borderRadius: 999,
-  border: "1px solid #e0e0e0",
-  fontSize: "1rem", // Match pillButtonStyle
-  fontFamily: "'Poppins', 'Inter', Arial, sans-serif", // Match pillButtonStyle
-  color: "#5b4c9a", // Match pillButtonStyle color
-  background: "#fff",
+  border: "1.5px solid #e3dff5",
+  fontSize: "1.18rem",
+  fontFamily: "'Inter', 'Poppins', Arial, sans-serif",
+  color: "#6d5cae",
+  background: "#f8f6fc",
   boxSizing: "border-box",
   outline: "none",
-  transition: "border 0.2s",
+  transition: "border 0.2s, box-shadow 0.2s",
   display: "flex",
   alignItems: "center",
-};
-
-// Add this style block in your component or in a CSS file for the placeholder color:
-<style>
-{`
-input::placeholder {
-  color: #5b4c9a;
-  opacity: 1;
-  font-family: 'Poppins', 'Inter', Arial, sans-serif;
-  font-size: 1rem;
-  font-weight: 500;
-}
-`}
-</style>
-
-// Update cart drawer price and description styles
-const cartDescStyle: React.CSSProperties = {
-  color: "#7b8aaf", // subtle, muted blue-grey
-  fontSize: "0.97rem",
-  fontWeight: 400,
-  fontFamily: "'Inter', Arial, sans-serif",
-  marginBottom: 2,
-  lineHeight: 1.3,
+  fontWeight: 500,
+  boxShadow: "0 2px 8px rgba(109,92,174,0.04)",
 };
 
 // Match PDP price font for cart: Inter, bold, blue, increased spacing, slightly smaller
@@ -381,7 +371,7 @@ const ListingPage: React.FC = () => {
         style={{
           width: "100%",
           maxWidth: 1100,
-          display: "flex",
+          display: "f lex",
           flexDirection: "column",
           alignItems: "flex-start",
           marginBottom: 24,
@@ -396,29 +386,29 @@ const ListingPage: React.FC = () => {
               color: "#37184bff",
               fontWeight: 500,
             }}
-            type="text"
-            placeholder="Search based on product name, type..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <div style={{ position: "relative" }} ref={sortDropdownRef}>
-            <button
-              style={{
-                ...pillButtonStyle,
-                minWidth: 0,
-                width: "auto",
-                justifyContent: "center",
-                color: "#5b4c9a",
-                paddingLeft: "0.7em",
-                paddingRight: "0.7em",
-                whiteSpace: "nowrap",
-              }}
-              onClick={() => setSortDropdownOpen((open) => !open)}
-              type="button"
-            >
-              Price Sort
-              <span style={{ marginLeft: 8, fontSize: 16 }}>▼</span>
-            </button>
+              type="text"
+              placeholder="Search based on product name, type..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <div style={{ position: "relative" }} ref={sortDropdownRef}>
+              <button
+                style={{
+                  ...pillButtonStyle,
+                  minWidth: 0,
+                  width: "auto",
+                  justifyContent: "center",
+                  color: "#6d5cae",
+                  paddingLeft: "0.7em",
+                  paddingRight: "0.7em",
+                  whiteSpace: "nowrap",
+                }}
+                onClick={() => setSortDropdownOpen((open) => !open)}
+                type="button"
+              >
+                Price Sort
+                <span style={{ marginLeft: 8, fontSize: 18, color: "#6d5cae" }}>▼</span>
+              </button>
             {sortDropdownOpen && (
               <div style={dropdownStyle}>
                 <button
@@ -516,7 +506,17 @@ const ListingPage: React.FC = () => {
                 </span>
               )}
             </div>
-            <div style={{ display: "flex", gap: 4, width: "100%", marginTop: 18 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 6,
+                width: "100%",
+                marginTop: 18,
+                padding: "0 0px",
+                boxSizing: "border-box",
+              }}
+            >
               <button
                 style={{
                   borderRadius: 999,
@@ -526,13 +526,14 @@ const ListingPage: React.FC = () => {
                   fontWeight: 500,
                   fontSize: "1.08rem",
                   fontFamily: "'Inter', Arial, sans-serif",
-                  padding: "10px 28px",
+                  padding: "7px 0",
                   minWidth: 0,
-                  height: 44,
+                  height: 36,
                   boxShadow: "none",
                   outline: "none",
                   cursor: "pointer",
-                  marginRight: 10,
+                  flex: 1,
+                  marginRight: 6,
                   transition: "background 0.18s, color 0.18s",
                   display: "flex",
                   alignItems: "center",
@@ -544,7 +545,7 @@ const ListingPage: React.FC = () => {
                   setCartDrawerOpen(true);
                 }}
               >
-                Add to Cart
+                Add to cart
               </button>
               <button
                 style={{
@@ -555,12 +556,14 @@ const ListingPage: React.FC = () => {
                   fontWeight: 500,
                   fontSize: "1.08rem",
                   fontFamily: "'Inter', Arial, sans-serif",
-                  padding: "10px 28px",
+                  padding: "7px 0",
                   minWidth: 0,
-                  height: 44,
+                  height: 36,
                   boxShadow: "none",
                   outline: "none",
                   cursor: "pointer",
+                  flex: 1,
+                  marginLeft: 6,
                   transition: "background 0.18s, color 0.18s",
                   display: "flex",
                   alignItems: "center",
@@ -580,7 +583,7 @@ const ListingPage: React.FC = () => {
                   });
                 }}
               >
-                Buy Now
+                Buy now
               </button>
             </div>
             {item.hurryUpPromoText && (
