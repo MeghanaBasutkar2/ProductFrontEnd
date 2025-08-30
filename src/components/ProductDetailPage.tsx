@@ -106,19 +106,35 @@ const ProductDetailPage: React.FC = () => {
           boxSizing: "border-box",
         }}
       >
-        {/* Main Product Image */}
+        {/* Main Product Image with halo */}
         <div
           style={{
             flex: window.innerWidth <= 700 ? "unset" : "0 0 420px",
             display: "flex",
             justifyContent: "center",
+            alignItems: "center",
             position: "relative",
             width: window.innerWidth <= 700 ? "100%" : 420,
             maxWidth: window.innerWidth <= 700 ? "100%" : 420,
             marginBottom: window.innerWidth <= 700 ? 20 : 0,
             boxSizing: "border-box",
+            minHeight: 340,
           }}
         >
+          {/* Halo background */}
+          <div style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: window.innerWidth <= 700 ? 220 : 340,
+            height: window.innerWidth <= 700 ? 220 : 340,
+            borderRadius: "50%",
+            background: "radial-gradient(circle, #e9e9ff 0%, #c7d2fe 60%, #fff0 100%)",
+            filter: "blur(32px)",
+            zIndex: 0,
+            pointerEvents: "none",
+          }} />
           <img
             src={
               product.imageUrl && product.imageUrl !== "default.jpg"
@@ -128,18 +144,22 @@ const ProductDetailPage: React.FC = () => {
             alt={product.name}
             style={{
               width: "100%",
-              maxWidth: window.innerWidth <= 700 ? "100%" : 380,
-              height: window.innerWidth <= 700 ? "auto" : 320,
+              maxWidth: window.innerWidth <= 700 ? "100%" : 340,
+              height: window.innerWidth <= 700 ? "auto" : 280,
               objectFit: "contain",
-              borderRadius: 16,
+              borderRadius: 20,
               background: "#fff",
-              border: "1.5px solid #e0e0e0",
-              boxShadow: "0 4px 24px rgba(120,144,156,0.08)",
+              border: "2.5px solid #e0e0e0",
+              boxShadow: "0 8px 32px 0 rgba(120,144,156,0.13)",
               display: "block",
               margin: "0 auto",
+              position: "relative",
+              zIndex: 1,
+              transition: "box-shadow 0.3s cubic-bezier(.4,2,.6,1)",
+              animation: "fadeIn 0.7s cubic-bezier(.4,2,.6,1)",
             }}
           />
-          {/* Share Button */}
+          {/* Share Button with microinteraction */}
           <button
             onClick={handleShare}
             style={{
@@ -157,10 +177,12 @@ const ProductDetailPage: React.FC = () => {
               cursor: "pointer",
               boxShadow: "0 2px 12px rgba(179,157,219,0.10)",
               zIndex: 10,
-              transition: "box-shadow 0.2s",
+              transition: "box-shadow 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1)",
             }}
             aria-label="Share Product"
             title="Share Product"
+            onMouseOver={e => e.currentTarget.style.transform = "scale(1.08)"}
+            onMouseOut={e => e.currentTarget.style.transform = "scale(1)"}
           >
             <svg width="22" height="22" fill="none" stroke="#7b1fa2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
               <circle cx="18" cy="5" r="3"/>
@@ -171,7 +193,7 @@ const ProductDetailPage: React.FC = () => {
             </svg>
           </button>
         </div>
-        {/* Product Details */}
+        {/* Product Details Card with accent bar */}
         <div
           style={{
             flex: 1,
@@ -180,71 +202,138 @@ const ProductDetailPage: React.FC = () => {
             width: "100%",
             boxSizing: "border-box",
             padding: window.innerWidth <= 700 ? "0 2px" : 0,
+            background: "#fff",
+            borderRadius: 24,
+            boxShadow: "0 4px 32px rgba(120,144,156,0.10)",
+            position: "relative",
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            animation: "fadeIn 0.8s cubic-bezier(.4,2,.6,1)",
           }}
         >
+          {/* Accent bar */}
+          <div style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 7,
+            background: "linear-gradient(180deg, #18191a 0%, #232526 100%)",
+            borderTopLeftRadius: 24,
+            borderBottomLeftRadius: 24,
+            zIndex: 2,
+          }} />
           <button
             style={{
-              marginBottom: 18,
-              background: "none",
-              border: "1.5px solid #e0e0e0",
-              borderRadius: 8,
-              padding: "6px 18px",
-              color: "#7b1fa2",
-              fontWeight: 600,
-              cursor: "pointer",
+              margin: "24px 0 0 24px",
+              background: "linear-gradient(90deg, #0f1315ff 0%, #090a0aff 100%)",
+              border: "none",
+              borderRadius: 600,
+              padding: "0 18px 0 8px",
+              color: "#a77fd9",
+              fontWeight: 700,
               fontFamily: "'Poppins', 'Inter', Arial, sans-serif",
-              letterSpacing: "0.01em",
-              boxShadow: "0 2px 8px rgba(179,157,219,0.07)",
+              fontSize: "0.75rem",
+              letterSpacing: 1.5,
+              textTransform: "uppercase",
+              height: 20,
+              minWidth: 0,
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              boxShadow: "0 2px 16px rgba(73, 68, 135, 0.1)",
+              cursor: "pointer",
+              userSelect: "none",
+              outline: "none",
+              borderWidth: 0,
+              transition: "box-shadow 0.22s, border 0.22s, transform 0.22s cubic-bezier(.4,2,.6,1), filter 0.4s cubic-bezier(.4,2,.6,1)",
+              alignSelf: "flex-start",
             }}
             onClick={() => history.goBack()}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'scale(1.045) translateY(-3px)';
+              e.currentTarget.style.filter = 'brightness(1.04)';
+              e.currentTarget.style.boxShadow = '0 0 24px 4px #00eaff88, 0 6px 24px rgba(0,0,0,0.10)';
+              e.currentTarget.style.border = '2.5px solid #00eaff';
+              e.currentTarget.style.transition = 'box-shadow 0.25s cubic-bezier(.4,2,.6,1), border 0.22s, transform 0.22s cubic-bezier(.4,2,.6,1), filter 0.4s cubic-bezier(.4,2,.6,1)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = '';
+              e.currentTarget.style.filter = '';
+              e.currentTarget.style.boxShadow = '0 2px 16px rgba(73, 68, 135, 0.1)';
+              e.currentTarget.style.border = 'none';
+              e.currentTarget.style.transition = 'box-shadow 0.22s, border 0.22s, transform 0.22s cubic-bezier(.4,2,.6,1), filter 0.4s cubic-bezier(.4,2,.6,1)';
+            }}
           >
-            &larr; Back
+            <svg width="10" height="10" viewBox="0 0 22 22" fill="none" style={{ marginRight: 1, marginLeft: 0, display: 'inline-block' }}>
+              <polyline points="13 5 7 11 13 17" stroke="#fff" strokeWidth="1.1" fill="none" />
+            </svg>
+            BACK
           </button>
           <div style={{
-            fontWeight: 600,
-            fontSize: "1.3rem",
-            marginBottom: 8,
-            color: "#222",
+            fontWeight: 900,
+            fontSize: "1.1rem",
+            margin: "18px 0 0 24px",
+            color: "#474fa3ff",
             letterSpacing: "0.01em",
-            textShadow: "0 2px 12px rgba(123,31,162,0.06)"
+            textShadow: "0 2px 12px rgba(123,31,162,0.06)",
+            lineHeight: 1.13,
           }}>
             {product.name}
           </div>
           <div style={{
+            margin: "0 0 0 24px",
             color: "#7b8aaf",
-            fontSize: "0.98rem",
+            fontSize: "1.1rem",
             marginBottom: 12,
+            marginTop: 6,
             fontFamily: "'Inter', sans-serif",
-            letterSpacing: "0.01em"
+            letterSpacing: "0.01em",
+            fontWeight: 500,
           }}>
             {product.productTypeHeading} &mdash; {product.categoryDisplayName}
           </div>
-          <div style={{ margin: "24px 0 0 0" }}>
-            <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
+          {/* Divider */}
+          <div style={{
+            height: 2,
+            width: 48,
+            background: "linear-gradient(90deg, #4f8cff 0%, #6f7bfd 100%)",
+            margin: "0 0 18px 24px",
+            borderRadius: 2,
+            opacity: 0.18,
+          }} />
+          <div style={{ margin: "0 0 0 24px", paddingRight: 24 }}>
+            {/* Section: Product Details */}
+            <div style={{ fontWeight: 700, fontSize: "1.08rem", marginBottom: 6, color: "#474fa3ff", textTransform: "uppercase", letterSpacing: "0.08em" }}>
               Product Details
             </div>
-            <div style={{ color: "#7b8aaf", fontSize: "0.98rem", marginBottom: 10, whiteSpace: "pre-line" }}>
+            <div style={{ color: "#7b8aaf", fontSize: "1.01rem", marginBottom: 14, whiteSpace: "pre-line", lineHeight: 1.6 }}>
               {product.description1}
             </div>
-            <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
+            {/* Section: Technical Details */}
+            <div style={{ fontWeight: 700, fontSize: "1.08rem", marginBottom: 6, color: "#474fa3ff", textTransform: "uppercase", letterSpacing: "0.08em" }}>
               Technical Details
             </div>
-            <div style={{ color: "#7b8aaf", fontSize: "0.98rem", marginBottom: 10, whiteSpace: "pre-line" }}>
+            <div style={{ color: "#7b8aaf", fontSize: "1.01rem", marginBottom: 14, whiteSpace: "pre-line", lineHeight: 1.6 }}>
               {product.description2}
             </div>
-            <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
-              Product Code
+            {/* Section: Product Code */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              <span style={{ fontWeight: 700, fontSize: "1.08rem", color: "#474fa3ff", letterSpacing: "0.08em", textTransform: "uppercase" }}>Product Code</span>
             </div>
-            <div style={{ color: "#7b8aaf", fontSize: "0.98rem", marginBottom: 10 }}>
+            <div style={{ color: "#7b8aaf", fontSize: "1.01rem", marginBottom: 14, marginLeft: 2 }}>
               {product.orderCode || product.id}
             </div>
-            <div style={{ fontWeight: 600, fontSize: "1.08rem", marginBottom: 6, color: "#222" }}>
-              Variants
+            {/* Section: Variants */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+              <span style={{ fontWeight: 700, fontSize: "1.08rem", color: "#474fa3ff", letterSpacing: "0.08em", textTransform: "uppercase" }}>Variants</span>
             </div>
-            <div style={{ color: "#7b8aaf", fontSize: "0.98rem", marginBottom: 18 }}>
+            <div style={{ color: "#7b8aaf", fontSize: "1.01rem", marginBottom: 18, background: "#f6f8ff", borderRadius: 8, padding: "6px 12px", display: "inline-block" }}>
               {[product.variant1, product.variant2, product.variant3].filter(Boolean).join(" | ")}
             </div>
           </div>
+          {/* Price and Buttons (unchanged) */}
           <div
             style={{
               fontWeight: 700,
@@ -253,7 +342,7 @@ const ProductDetailPage: React.FC = () => {
               fontFamily: "'Inter', Arial, sans-serif",
               letterSpacing: "0.04em",
               textAlign: "left",
-              marginBottom: 18,
+              margin: "18px 0 0 24px",
               transition: "color 0.2s",
               userSelect: "none",
             }}
@@ -273,29 +362,39 @@ const ProductDetailPage: React.FC = () => {
               </span>
             )}
           </div>
-          <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
+          <div style={{
+            display: "flex",
+            gap: 16,
+            margin: "24px 0 0 24px",
+            marginBottom: "24px",
+            width: "calc(100% - 48px)", // full width minus left margin
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}>
             <button
               style={{
                 borderRadius: 999,
                 border: "none",
-                background: "#f4f0fa",
+                background: "linear-gradient(90deg, #f4f0fa 0%, #e9e9ff 100%)",
                 color: "#3d3757",
                 fontWeight: 500,
                 fontSize: "1.08rem",
                 fontFamily: "'Inter', Arial, sans-serif",
-                padding: "10px 28px",
+                padding: "10px 0",
                 minWidth: 0,
                 height: 44,
-                boxShadow: "none",
+                boxShadow: "0 2px 12px rgba(120,144,156,0.08)",
                 outline: "none",
                 cursor: "pointer",
-                marginRight: 10,
-                transition: "background 0.18s, color 0.18s",
+                transition: "background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s cubic-bezier(.4,2,.6,1)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flex: 1,
+                marginRight: 0,
               }}
+              onMouseOver={e => e.currentTarget.style.transform = "translateY(-2px) scale(1.03)"}
+              onMouseOut={e => e.currentTarget.style.transform = "scale(1)"}
               onClick={() => {
                 handleAdd(product);
                 setCartDrawerOpen(true);
@@ -307,23 +406,26 @@ const ProductDetailPage: React.FC = () => {
               style={{
                 borderRadius: 999,
                 border: "none",
-                background: "#6d5cae",
+                background: "linear-gradient(90deg, #6d5cae 0%, #4f8cff 100%)",
                 color: "#fff",
                 fontWeight: 500,
                 fontSize: "1.08rem",
                 fontFamily: "'Inter', Arial, sans-serif",
-                padding: "10px 28px",
+                padding: "10px 0",
                 minWidth: 0,
                 height: 44,
-                boxShadow: "none",
+                boxShadow: "0 2px 12px rgba(120,144,156,0.10)",
                 outline: "none",
                 cursor: "pointer",
-                transition: "background 0.18s, color 0.18s",
+                transition: "background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s cubic-bezier(.4,2,.6,1)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flex: 1,
+                marginLeft: 0,
               }}
+              onMouseOver={e => e.currentTarget.style.transform = "translateY(-2px) scale(1.03)"}
+              onMouseOut={e => e.currentTarget.style.transform = "scale(1)"}
               onClick={async () => {
                 await handleBuyNow();
               }}
@@ -331,7 +433,7 @@ const ProductDetailPage: React.FC = () => {
               Buy Now
             </button>
           </div>
-          <div style={{ marginBottom: "24px" }}>
+          <div style={{ margin: "0 0 24px 24px" }}>
             <span style={{ color: "#7b8aaf", fontSize: "0.98rem" }}>
               * By proceeding, you acknowledge and accept our terms and conditions.
             </span>
